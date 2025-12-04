@@ -6,7 +6,7 @@ const NavbarComponent = () => {
   const [mobileView, setMobileView] = useState(false)
   console.log(mobileView)
 return (
-    <div className='text-m w-full box-border bg-red-200'>
+    <div className='text-m w-full box-border'>
       <div className="p-6 flex justify-between font-bold items-center text-sm">
 
         {/* left side: LOGO + LINKS */}
@@ -38,7 +38,7 @@ return (
 
     </div>
     {mobileView &&
-      <div className="flex flex-col gap-3 justify-center items-center text-[#737373] font-medium tracking-wide p-7 bg-red-50">
+      <div className="flex flex-col gap-3 justify-center items-center text-[#737373] font-medium tracking-wide p-7">
         <Link>About</Link>
         <Link>Blog</Link>
         <Link>Contact</Link>
