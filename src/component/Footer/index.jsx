@@ -1,7 +1,7 @@
 import React from 'react'
 import { Facebook, Instagram, Twitter } from 'lucide-react';
 
-const FooterComponent = () => {
+const Footer = () => {
     const FooterLinks = {
         company:{
             title:"Company Info",
@@ -20,6 +20,7 @@ const FooterComponent = () => {
             links:['IOS & Android','Watch a Demo','Customers','API']
         }
     }
+    
   return (
     <footer className='bg-[#F9F9F9] h-auto pt-10 pb-10'>
         {/* top title + links */}
@@ -60,4 +61,4 @@ const FooterComponent = () => {
   )
 }
 
-export default FooterComponent
+export default Footer

@@ -1,15 +1,10 @@
 import React from "react";
-import NavbarComponent from "../../component/Navbar/NavbarComponent";
-import TopDetail from "../../component/TopDetail/TopDetail";
-import Banner from "../../component/HeroBanner/Banner";
-import Brands from "../../component/Brands/Brands";
-import FooterComponent from "../../component/FooterComponent/FooterComponent";
-
-const LandingPage = () => {
+import {TopDetail, Navbar, BrandLogos, ProductCard, Footer } from "../../component/index";
+const Landing = () => {
   const products = [
     {
       id: 1,
-      image: "/featured-products/addidas-socks.jpg",
+      image: "/images/product1.jpg",
       title: "Adidas Originals",
       description: "6 pack socks in brown",
       price: 29.99,
@@ -57,48 +52,48 @@ const LandingPage = () => {
       price: 129.0,
     },
   ];
+
   return (
     <div className="flex flex-col flex-1 w-full">
-      <TopDetail />
-      <NavbarComponent />
-
+      <TopDetail/>
+      <Navbar/>
       {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}
-      <div className="py-10 w-full pl-10 pr-15">
-        <div className="rounded-3xl h-140 bg-linear-to-r from-[#97e9fa] to-[#abecd7] w-full items-center flex justify-end">
+      <div className="py-10 w-full md:pl-10 md:pr-15 p-4">
+        <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] w-full items-center flex flex-col gap-5 md:flex-row justify-end">
           {/* banner texts*/}
-          <div className=" flex flex-col justify-around items-start gap-3 w-1/2 pl-25">
-            <span className="text-md font-bold text-[#2A7CC7]">
+          <div className="flex flex-col justify-center items-center md:justify-around md:items-start pt-10 gap-4 md:gap-6 md:w-1/2 md:pl-25">
+            <span className="text-sm font-bold text-[#2A7CC7]">
               Summer 2025
             </span>
-            <span className="text-5xl font-bold tracking-wider">
+            <span className="text-4xl md:text-6xl md:text-left text-center font-bold tracking-wider">
               NEW COLLECTION
             </span>
-            <span className="text-lg font-normal text-[#737373]">
-              We know how large object will act,
-              <br />
-              but things on a small scale.
+            <span className="md:text-left md:text-xl md:font-semibold text-center text-[#737373]">
+              We know how large object will act, but things on a small scale.
             </span>
-            <button className="rounded-md bg-[#23a6f0] text-white font-semibold py-3 px-5 w-1/4">
+            <button className="rounded-md bg-[#23a6f0] text-white font-semibold py-3 px-5 w-auto">
               SHOP NOW
             </button>
           </div>
           {/* banner image */}
-          <div className="w-1/2 h-full">
+          <div className="md:w-1/2 w-full h-full">
             <img
               src="/images/banner-image.png"
               alt=""
               className="w-full h-full object-cover"
             />
           </div>
+
         </div>
       </div>
 
       {/* Brands logos? */}
-      <Brands />
+      <BrandLogos />
 
       {/*top products of the week section */}
+<div className="hidden">
       <div className="p-3 flex justify-center h-auto">
-        <div className="flex gap-3 w-11/12 h-140">
+        <div className="flex gap-3 w-4/5 h-140">
           {/* left */}
           <div className="w-1/2 h-full relative">
             <img
@@ -139,45 +134,11 @@ const LandingPage = () => {
           </div>
         </div>
       </div>
+</div>
 
       {/* featured products */}
-      <div className="h-auto p-5">
-        <div className=" h-auto flex flex-col justify-center items-center p-10">
-          <div className="flex flex-col gap-3 mb-5 justify-center items-center">
-            <span className="text-[#737373] text-lg">Featured Products</span>
-            <span className="text-2xl font-semibold leading-none">
-              BESTSELLER PRODUCTS
-            </span>
-            <span className="text-[#737373] text-md">sth sth</span>
-          </div>
-          <div className="flex flex-wrap gap-3 justify-center mb-3">
-            {products.map((product) => (
-              <div
-                className="flex flex-col gap-2 justify-center items-center border-[#EDEDED] border-2 pb-3"
-                key={product.id}
-              >
-                <div className="h-100 w-80">
-                  <img
-                    src={product.image}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <span className="text-base font-bold">{product.title}</span>
-                <span className="text-sm font-semibold">
-                  {product.description}
-                </span>
-                <span className="text-base font-semibold text-[#23856D]">
-                  ${product.price}
-                </span>
-              </div>
-            ))}
-          </div>
-          <button className="border-2 border-[#23A6F0] rounded-md px-8 py-3 text-[#23A6F0] font-semibold mt-5">
-            LOAD MORE PRODUCTS
-          </button>
-        </div>
-      </div>
-
+        <ProductCard products={products}/>
+<div className="hidden">
       {/* about us sort of? ig */}
       <div className=" h-auto w-full mb-5">
         <div className="w-3/4  mx-auto flex items-center justify-items-start gap-5">
@@ -220,9 +181,10 @@ const LandingPage = () => {
 
       {/* arko featured posts */}
 
-      <FooterComponent />
+      <Footer/>
+</div>
     </div>
   );
 };
 
-export default LandingPage;
+export default Landing;

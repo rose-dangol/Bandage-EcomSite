@@ -27,3 +27,8 @@ Data structure (objects/lists to create):
     brands array of objects
     services  
     navLinks array
+
+
+    tailwind theme customization check for fonts, colors??
+
+    tailwind container

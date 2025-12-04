@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {TextAlignJustify, Search, Heart,User, ShoppingCart, ChevronDown} from 'lucide-react';
 
-const NavbarComponent = () => {
+const Navbar = () => {
   const [mobileView, setMobileView] = useState(false)
   console.log(mobileView)
 return (
-    <div className='text-m w-full box-border'>
+    <div className='text-md w-full box-border'>
       <div className="p-6 flex justify-between font-bold items-center text-sm">
 
         {/* left side: LOGO + LINKS */}
@@ -24,9 +24,9 @@ return (
 
         {/* right side */}
         <div className='flex gap-5 text-[#23A6F0]'>
-          <div className="flex items-center gap-1.5">
+          <div className="hidden md:flex items-center gap-1.5">
             <span><User size={"16px"}/></span>
-            <span className='hidden text-sm md:inline'>Login / Register</span>
+            <span className='text-sm'>Login / Register</span>
           </div>
           <div className='flex gap-4 items-center'>
             <span><Search size={"16px"}/></span>
@@ -39,10 +39,10 @@ return (
     </div>
     {mobileView &&
       <div className="flex flex-col gap-3 justify-center items-center text-[#737373] font-medium tracking-wide p-7">
-        <Link>About</Link>
-        <Link>Blog</Link>
+        <Link>Home</Link>
+        <Link>Product</Link>
+        <Link>Pricing</Link>
         <Link>Contact</Link>
-        <Link>Pages</Link>
       </div>
     }
     </div>
@@ -50,4 +50,4 @@ return (
 
 }
 
-export default NavbarComponent
+export default Navbar
