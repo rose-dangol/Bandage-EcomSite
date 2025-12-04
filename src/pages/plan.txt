@@ -1,0 +1,29 @@
+Components:
+    TopBar - phone, email, socials
+    Navbar - navigation menu
+    Hero - banner section
+    BrandLogo - individual brand item (map)
+    ProductCard - featured products ko lagi
+    ServiceCard - fast delivery, easy exchange icons
+    BlogPostCard - featured posts props pathayera x2?
+    Footer - logo, links, copyright
+
+Props usage:
+    ProductCard - product object (name, price, image, rating,)
+    BrandLogo - brand object (name, logo svg?)
+    ServiceCard - service object (icon, title, description)
+    BlogPostCard - post object (title, image, excerpt, date, etc.)
+    Navbar - nav links array as prop?? idk
+
+useState:
+    Navbar - mobile menu toggle 
+    ProductCard - wishlist toggle, quantity selector
+    
+useEffect:
+    lazy loading? garna lai??
+
+Data structure (objects/lists to create):
+    products array of objects
+    brands array of objects
+    services  
+    navLinks array

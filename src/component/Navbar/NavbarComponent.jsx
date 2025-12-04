@@ -1,17 +1,20 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import {TextAlignJustify, Search, Heart,User, ShoppingCart, ChevronDown} from 'lucide-react';
 
 const NavbarComponent = () => {
+  const [mobileView, setMobileView] = useState(false)
+  console.log(mobileView)
 return (
-    <div className='text-m'>
-      <div className="p-5 flex justify-between">
+    <div className='text-m w-full box-border bg-red-200'>
+      <div className="p-6 flex justify-between font-bold items-center text-sm">
 
-        {/* left side */}
-        <div className='flex items-center justify-start gap-10'>
-          <span className='font-bold text-xl tracking-wide text-[#252B42]'>Bandage</span>
-          <div className='flex gap-3 text-gray-700 font-medium'>
+        {/* left side: LOGO + LINKS */}
+        <div className='flex items-center md:justify-start justify-between gap-30'>
+          <span className='text-2xl tracking-wide text-[#252B42]'>Bandage</span>
+          <div className='hidden md:flex gap-3 text-[#252B42] font-medium'>
             <Link className=''>Home</Link>
-            <Link>Shop🔻</Link>
+            <Link className='flex items-center'>Shop <ChevronDown size={"16px"}/></Link>
             <Link>About</Link>
             <Link>Blog</Link>
             <Link>Contact</Link>
@@ -20,18 +23,28 @@ return (
         </div>
 
         {/* right side */}
-        <div className='flex gap-5 text-[#23A6F0] font-medium'>
-          <div className="flex gap-0.5">
-            <span>🧑🏼</span>
-            <span>Login/Register</span>
+        <div className='flex gap-5 text-[#23A6F0]'>
+          <div className="flex items-center gap-1.5">
+            <span><User size={"16px"}/></span>
+            <span className='hidden text-sm md:inline'>Login / Register</span>
           </div>
-          <div className='flex gap-2'>
-            <span>Search</span>
-            <span>Cart</span>
-            <span>Wishlist</span>
+          <div className='flex gap-4 items-center'>
+            <span><Search size={"16px"}/></span>
+            <span><ShoppingCart size={"16px"}/></span>
+            <span><Heart size={"16px"}/></span>
+            <span className="inline sm:hidden hover:bg-gray-100" onClick={() => setMobileView(!mobileView)}><TextAlignJustify size={"16px"}/></span>
         </div>
       </div>
+
     </div>
+    {mobileView &&
+      <div className="flex flex-col gap-3 justify-center items-center text-[#737373] font-medium tracking-wide p-7 bg-red-50">
+        <Link>About</Link>
+        <Link>Blog</Link>
+        <Link>Contact</Link>
+        <Link>Pages</Link>
+      </div>
+    }
     </div>
   );
 
