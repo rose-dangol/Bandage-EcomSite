@@ -2,8 +2,11 @@
 
 @theme{
     --color-primary: #23A6F0;
+    --color-secondary: #2A7CC7;
+    --color-second-text-color: #737373;
     --font-family-sans: 'Montserrat', sans-serif;
 }
+
 *{
     font-family: 'Montserrat', sans-serif;
 }

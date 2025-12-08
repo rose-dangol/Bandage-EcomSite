@@ -5,7 +5,9 @@ import {
   BrandLogos,
   ProductCard,
   Footer,
+  DetailedProduct,
 } from "../../component/index";
+import { Heart, ShoppingCart, Eye, Download, BookOpen, CheckCircle } from 'lucide-react';
 const Landing = () => {
   const products = [
     {
@@ -87,24 +89,25 @@ const Landing = () => {
 
       {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}
       <div className="py-10 w-full mx-auto md:pl-10 md:pr-15 p-4">
-        <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] w-19/20 items-center flex flex-col gap-5 md:flex-row justify-end h-[620px] mx-auto">
+        <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] w-19/20 items-center flex flex-col gap-5 md:flex-row justify-end h-145 mx-auto">
           {/* banner texts*/}
           <div className="flex flex-col justify-center items-center md:justify-around md:items-start pt-10 gap-4 md:gap-6 md:w-1/2 md:pl-25">
-            <span className="text-sm font-bold text-[#2A7CC7]">
+            <span className="text-sm font-bold text-primary hover:text-secondary">
               Summer 2025
             </span>
             <span className="text-4xl md:text-6xl md:text-left text-center font-bold tracking-wider">
               NEW COLLECTION
             </span>
-            <span className="md:text-left md:text-xl md:font-semibold text-center text-[#737373]">
+            <span className="md:text-left md:text-xl md:font-semibold text-center text-second-text-color">
               We know how large object will act, but things on a small scale.
             </span>
-            <button className="rounded-md bg-[#23a6f0] text-white font-semibold py-3 px-5 w-auto">
+            <button className="rounded-md bg-[#23a6f0] hover:bg-secondary text-white font-semibold py-3 px-5 w-auto">
               SHOP NOW
             </button>
           </div>
+
           {/* banner image */}
-          <div className="md:w-1/2 w-full h-full justify-items-end relative">
+          <div className="hidden md:inline md:w-1/2 w-full h-full justify-items-end relative">
             <img src="/images/Ellipse-bg.png" alt="bg-ellipse" className="" />
             <img
               src="/images/Ellipse-midSize-top.png"
@@ -131,21 +134,39 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Brands logos? */}
+      {/* Brands logos*/}
       <BrandLogos />
 
       {/*top products of the week section */}
-      <div className="">
-        <div className="p-3 flex justify-center h-auto">
-          <div className="flex gap-3 w-4/5 h-140">
-            {/* left */}
-            <div className="w-1/2 h-full relative">
+      <div className="p-10 w-full">
+        <div className="mx-auto flex flex-col md:flex-row gap-4 p-6 max-w-7xl h-[572px]">
+          {/* left */}
+          <div className="w-3/5 h-full relative">
+            <img
+              src="/images/top-week1.png"
+              alt="Top product"
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
+              <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
+                <span className="text-3xl font-bold tracking-wider">
+                  Top Product of the Week
+                </span>
+                <button className="border-2 border-amber-50 px-5 py-4 w-3/5">
+                  EXPLORE ITEMS
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* right */}
+          <div className="flex flex-col w-1/2 gap-4 h-full">
+            <div className="relative w-full h-1/2">
               <img
-                src="/images/top-week1.png"
-                alt=""
+                src="/images/top-week2.png"
+                alt="Product 2"
                 className="w-full h-full object-cover"
               />
-              {/* eslai ma component banauchu and left ho ki right props thru send garchu? and tei anusar width and height change huncha? idk */}
               <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
                 <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                   <span className="text-3xl font-bold tracking-wider">
@@ -157,23 +178,21 @@ const Landing = () => {
                 </div>
               </div>
             </div>
-            {/* right */}
-            <div className="flex flex-col w-1/2 h-full">
-              <div className="h-1/2 relative">
-                <img
-                  src="/images/top-week2.png"
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-0 left-0">View Now</div>
-              </div>
-              <div className="h-1/2 relative">
-                <img
-                  src="/images/top-week3.png"
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-0 left-0">View Now</div>
+            <div className="relative w-full h-1/2">
+              <img
+                src="/images/top-week3.png"
+                alt="Product 3"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
+                <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
+                  <span className="text-3xl font-bold tracking-wider">
+                    Top Product of the Week
+                  </span>
+                  <button className="border-2 border-amber-50 px-5 py-4 w-3/5">
+                    EXPLORE ITEMS
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -181,54 +200,105 @@ const Landing = () => {
       </div>
 
       {/* featured products */}
-      <ProductCard products={products}/>
+      <ProductCard products={products} />
 
-
-      <div className="">
-        {/* about us sort of? ig */}
-        <div className=" h-auto w-full mb-5 border-amber-300 border-2">
-          <div className="w-3/4  mx-auto flex items-center justify-items-start gap-5">
-            <div className="flex gap-4">
-              <div className="h-125 w-2/5">
-                <img
-                  src="images/about-left.jpg"
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="h-125 w-1/2">
-                <img
-                  src="images/about-right.jpg"
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-              </div>
+      {/* about us sort of? ig */}
+      <div className="h-auto w-full mb-5">
+        <div className="w-3/4 mx-auto flex md:flex-row flex-col-reverse items-center justify-items-start gap-8">
+          <div className="flex gap-4 flex-1">
+            <div className="h-125 w-2/5">
+              <img
+                src="images/about-left.jpg"
+                alt=""
+                className="h-full w-full object-cover"
+              />
             </div>
-            <div className="flex flex-col gap-3 w-1/2">
-              <span className="text-[#23a6f0] font-semibold text-sm tracking-tight">
-                About US
-              </span>
-              <span className="font-bold text-5xl tracking-wide text-[#252B42]">
-                We love what we do
-              </span>
-              <span className="text-[#727272]">
-                White Feather's Jewellery prioritizes security, ensuring that
-                every transaction conducted on the site is secure and seamless
-                for clients. To do this, the organization follows to strict
-                transparency regulations throughout the entire consumer
-                purchasing process. To add to the convenience, all White
-                Feather's Jewellery goods has life time exchanging facilities
-                and 15 days return policy
-              </span>
+            <div className="h-125 w-1/2">
+              <img
+                src="images/about-right.jpg"
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-6 w-1/2">
+            <span className="text-primary font-bold text-base leading-6">
+              Featured Products
+            </span>
+            <span className="font-bold text-4xl tracking-wide text-[#252B42]">
+              We love what we do
+            </span>
+            <div className="w-3/5">
+              <p className="text-second-text-color font-normal text-[14px] leading-5 tracking-[0.2px]">
+                Problems trying to resolve the conflict between the two major
+                realms of Classical physics: Newtonian mechanics. <br />
+                <br />
+                Problems trying to resolve the conflict between the two major
+                realms of Classical physics: Newtonian mechanics
+              </p>
             </div>
           </div>
         </div>
-        {/* best services */}
-
-        {/* arko featured posts */}
-
-        <Footer />
       </div>
+
+      {/* best services */}
+      <div className="w-full py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-second-text-color text-xl font-normal leading-7 mb-2">
+              Featured Products
+            </p>
+            <h2 className="text-2xl font-bold text-[rgba(37, 43, 66, 1)] leading-8 tracking-wide">
+              THE BEST SERVICES
+            </h2>
+            <p className="text-second-text-color text-sm leading-5">
+              Problems trying to resolve the conflict between
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-8">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-6 p-4">
+                <img src="/images/easy-wins.png"></img>
+              </div>
+              <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">
+                Easy Wins
+              </h3>
+              <p className="text-second-text-color text-sm leading-7">
+                Get your best looking smile now!
+              </p>
+            </div>
+
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-6 p-4">
+              <img src="/images/concrete.svg" alt="" />
+              </div>
+              <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">Concrete</h3>
+              <p className="text-second-text-color text-sm leading-7">
+                Defalcate is most focused in helping you discover your most
+                beautiful smile
+              </p>
+            </div>
+
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-6 p-4">
+              <img src="/images/growth.svg" alt="" />
+              </div>
+              <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">
+                Hack Growth
+              </h3>
+              <p className="text-second-text-color text-sm leading-7 font-medium">
+                Overcame any hurdle or any other problem.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/*next featured posts */}
+      <DetailedProduct/>
+
+      <Footer />
     </div>
   );
 };

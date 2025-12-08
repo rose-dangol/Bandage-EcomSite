@@ -1,64 +1,87 @@
 import React from 'react'
 import { Facebook, Instagram, Twitter } from 'lucide-react';
 
-const Footer = () => {
-    const FooterLinks = {
-        company:{
-            title:"Company Info",
-            links: ['About Us', 'Carrer', 'We are hiring', 'Blog']
-        },
-        legal:{
-            title:"About Us",
-            links: ['About Us', 'Carrer', 'We are hiring', 'Blog']
-        },
-        features:{
-            title:"Features",
-            links: ['Business Marketing','User Analytic','Live Chat','Unlimited Support']
-        },
-        resources:{
-            title:"Resources",
-            links:['IOS & Android','Watch a Demo','Customers','API']
-        }
-    }
-    
+const FooterLinks = {
+  company: {
+    title: 'Company Info',
+    links: ['About Us', 'Careers', 'We are hiring', 'Blog',]
+  },
+  legal: {
+    title: 'Legal',
+    links: ['Privacy', 'Terms', 'Cookie Policy', 'Contact']
+  },
+  features: {
+    title: 'Features',
+    links: ['Business Marketing', 'User Analytic', 'Live Chat', 'Unlimited Support']
+  },
+  resources: {
+    title: 'Resources',
+    links: ['IOS & Andriod', 'Watch a Demo', 'Customers', 'API']
+  },
+};
+
+export default function Footer() {
   return (
-    <footer className='bg-[#F9F9F9] h-auto pt-10 pb-10'>
-        {/* top title + links */}
-      <div className="max-w-11/12 mx-auto">
-        {/* logo and social media */}
-        <div className="flex justify-between items-start pb-8 border-b-2">
-            <span className='font-bold text-2xl tracking-wide text-[#252B42]'>Bandage</span>
-            <div className='flex gap-2.5'>
-                <Facebook color='#23a6f0'/>
-                <Instagram color='#23a6f0'/>
-                <Twitter color='#23a6f0'/>
+    <footer className='h-auto bg-[#FAFAFA]'>
+      {/* Main Content */}
+      <div className='w-full'>
+        {/* Header Section */}
+        <div className='px-6 md:px-12 py-12 border-b border-gray-200'>
+          <div className='flex flex-col md:flex-row md:justify-between md:items-center gap-8'>
+            <span className='font-bold text-3xl tracking-wide text-[#252B42]'>Bandage</span>
+            <div className='flex gap-4'>
+              <Facebook size={24} color='#23a6f0'/>
+              <Instagram size={24} color='#23a6f0' />
+              <Twitter size={24} color='#23a6f0'/>
             </div>
+          </div>
         </div>
-        <div className='grid grid-cols-5 p-5'>
-            {Object.entries(FooterLinks).map(([key,section])=>(
-                <div key={key}>
-                    <span>{section.title}</span>
-                    {section.links.map((link)=>(
-                        <div>
-                            <a>{link}</a>
-                        </div>
-                    ))}
+
+        {/*footer Links Grid */}
+        <div className='px-6 md:px-12 py-12 bg-white'>
+          <div className='grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12'>
+            {Object.entries(FooterLinks).map(([key, section]) => (
+              <div key={key} className='flex flex-col gap-4'>
+                <span className='font-bold text-base leading-6 tracking-[0.1px] text-[#252B42]'>
+                  {section.title}
+                </span>
+                <div className='flex flex-col gap-3'>
+                  {section.links.map((link, index) => (
+                    <a
+                      key={index}
+                      href='#'
+                      className='text-gray-600 font-medium text-sm leading-6 tracking-[0.2px] hover:text-[#23a6f0] transition-colors'
+                    >
+                      {link}
+                    </a>
+                  ))}
                 </div>
+              </div>
             ))}
-            <div className=''>
-                <span>Get In Touch</span><br/>
-                <input placeholder='Your Email'/>
-                <button>Subscribe</button>
+            <div className='md:col-span-1 flex flex-col gap-4'>
+              <span className='font-bold text-base leading-6 tracking-[0.1px] text-[#252B42]'>
+                Get In Touch
+              </span>
+              <div className='flex'>
+                <input
+                  type='email'
+                  placeholder='Your Email'
+                  className='w-full px-4 py-3 border border-gray-300 text-sm focus:outline-none focus:border-secondary'
+                />
+                <button className='bg-primary text-white px-5 py-3 font-bold hover:bg-secondary text-sm rounded'>
+                  Subscribe
+                </button>
+              </div>
             </div>
+          </div>
         </div>
       </div>
-    
-        {/* bottom border? */}
-      <div className='border-t w-full mx-auto pt-5 px-5'>
-        <span className='font-semibold text-sm text-[#727272]'>Made With Love By Finland All Right Reserved</span>
+
+      <div className='bg-[#F9F9F9] border-t border-gray-200 w-full px-6 md:px-12 py-6'>
+        <span className='font-bold text-sm text-second-text-color'>
+          Made With Love By Finland. All Rights Reserved
+        </span>
       </div>
     </footer>
-  )
+  );
 }
-
-export default Footer

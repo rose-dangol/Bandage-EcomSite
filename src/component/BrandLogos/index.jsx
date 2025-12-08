@@ -9,7 +9,7 @@ import AppleLogo from '/BrandLogo/apple.svg'
 const BrandLogos = () => {
   return (
     <div className='p-4'>
-        <div className="flex flex-col md:flex-row justify-center md:gap-30 gap-3 mb-7 items-center">
+        <div className="flex flex-col md:flex-row justify-center md:gap-30 gap-3 items-center">
             <img src={LyftLogo} alt="Lyft Logo" className='w-20 h-20' />
             <img src={HooliLogo} alt="Lyft Logo" className='w-20 h-20' />
             <img src={AwsLogo} alt="Lyft Logo" className='w-20 h-20' />
