@@ -15,6 +15,7 @@ import {
   BookOpen,
   CheckCircle,
 } from "lucide-react";
+import { getLayoutClass } from "../../utils/helper";
 const Landing = () => {
   const products = [
     {
@@ -145,8 +146,8 @@ const Landing = () => {
       <BrandLogos />
 
       {/*top products of the week section */}
-      <div className="p-10 w-full">
-        <div className="mx-auto flex flex-col md:flex-row gap-4 p-6 max-w-7xl h-[570px]">
+      <div className={getLayoutClass()}>
+        <div className="mx-auto flex flex-col md:flex-row gap-4 max-w-7xl h-[570px]">
           {/* left */}
           <div className="w-3/5 h-full relative">
             <img
@@ -210,7 +211,7 @@ const Landing = () => {
       <ProductCard products={products} />
 
       {/* about us sort of? ig */}
-      <div className="w-full mb-5">
+      <div className={getLayoutClass()}>
         <div className="w-3/4 mx-auto flex md:flex-row flex-col-reverse items-center justify-items-start gap-8">
           <div className="flex gap-4 flex-1">
             <div className="h-125 w-2/5">
@@ -249,7 +250,7 @@ const Landing = () => {
       </div>
 
       {/* best services */}
-      <div className="w-full py-20 px-6">
+      <div className={getLayoutClass()}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-second-text-color text-xl font-medium leading-7 mb-2">

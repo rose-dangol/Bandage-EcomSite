@@ -1,5 +1,6 @@
 import React from "react";
 import { Heart, Eye, ShoppingCart, Star } from "lucide-react";
+import { getLayoutClass } from "../../utils/helper";
 
 const DetailedProduct = () => {
   const productData = [
@@ -39,8 +40,8 @@ const DetailedProduct = () => {
     },
   ];
   return (
-    <div className="h-auto w-full mx-auto p-5 mb-5">
-      <div className="container mx-auto p-5 mb-3.5 font-sans">
+    <div className={`mx-auto ${getLayoutClass()}`}>
+      <div className="container mx-auto font-sans">
         <div className="flex flex-col items-center justify-center gap-9">
           <div className="flex flex-col gap-3.5 items-center">
             <span className="text-primary font-bold leading-6 tracking-[0.2px]">

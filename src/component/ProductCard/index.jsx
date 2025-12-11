@@ -1,9 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { getLayoutClass } from "../../utils/helper";
 
 const ProductCard = ({ products }) => {
+  const navigate = useNavigate();
   return (
-    <div className="h-auto w-full mx-auto p-5 mb-5">
-      <div className="container mx-auto p-5 mb-3.5 font-sans">
+    <div className={`mx-auto ${getLayoutClass}`}>
+      <div className="container mx-auto font-sans">
         <div className="flex flex-col gap-3 mb-5 justify-center items-center text-center text-second-text-color">
           <h4 className="font-normal text-xl leading-[30px] tracking-[0.2px] hidden md:inline-block">
             Featured Products
@@ -41,7 +44,12 @@ const ProductCard = ({ products }) => {
             </div>
           ))}
         </div>
-        <button className="mx-auto block border-2 border-primary rounded-md p-4 md:px-8 md:py-3 text-primary text-sm md:text-lg md:font-semibold mt-5 hover:bg-primary hover:text-white cursor-pointer">
+        <button
+          className="mx-auto block border-2 border-primary rounded-md p-4 md:px-8 md:py-3 text-primary text-sm md:text-lg md:font-semibold mt-5 hover:bg-primary hover:text-white cursor-pointer"
+          onClick={() => {
+            navigate("/shop");
+          }}
+        >
           LOAD MORE PRODUCTS
         </button>
       </div>

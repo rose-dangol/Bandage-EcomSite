@@ -3,6 +3,6 @@ util class?
 getLayoutClass
 
 
-useContext in navbar to display logged in user'sname
+useContext in navbar to display logged in user'sname - done
 
 byteGrad ko videos

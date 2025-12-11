@@ -27,7 +27,7 @@ const FooterLinks = {
 
 export default function Footer() {
   return (
-    <footer className="h-auto bg-[#FAFAFA]">
+    <footer className="bg-[#FAFAFA]">
       {/* Main Content */}
       <div className="w-full">
         {/* Header Section */}
