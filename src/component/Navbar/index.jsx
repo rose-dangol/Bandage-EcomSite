@@ -33,7 +33,7 @@ const Navbar = () => {
               onMouseEnter={() => setIsOpen(true)}
               onMouseLeave={() => setIsOpen(false)}
             >
-              <Link className="flex items-center">
+              <Link className="flex items-center" to={"/shop"}>
                 Shop
                 <ChevronDown size={"16px"} />
               </Link>
