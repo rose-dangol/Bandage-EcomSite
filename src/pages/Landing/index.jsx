@@ -7,7 +7,14 @@ import {
   Footer,
   DetailedProduct,
 } from "../../component/index";
-import { Heart, ShoppingCart, Eye, Download, BookOpen, CheckCircle } from 'lucide-react';
+import {
+  Heart,
+  ShoppingCart,
+  Eye,
+  Download,
+  BookOpen,
+  CheckCircle,
+} from "lucide-react";
 const Landing = () => {
   const products = [
     {
@@ -83,7 +90,7 @@ const Landing = () => {
   ];
 
   return (
-    <div className="flex flex-col flex-1 w-full">
+    <div className="container flex flex-col flex-1 w-full">
       <TopDetail />
       <Navbar />
 
@@ -107,7 +114,7 @@ const Landing = () => {
           </div>
 
           {/* banner image */}
-          <div className="hidden md:inline md:w-1/2 w-full h-full justify-items-end relative">
+          <div className="md:inline md:w-1/2 w-full h-full justify-items-end relative">
             <img src="/images/Ellipse-bg.png" alt="bg-ellipse" className="" />
             <img
               src="/images/Ellipse-midSize-top.png"
@@ -139,7 +146,7 @@ const Landing = () => {
 
       {/*top products of the week section */}
       <div className="p-10 w-full">
-        <div className="mx-auto flex flex-col md:flex-row gap-4 p-6 max-w-7xl h-[572px]">
+        <div className="mx-auto flex flex-col md:flex-row gap-4 p-6 max-w-7xl h-[570px]">
           {/* left */}
           <div className="w-3/5 h-full relative">
             <img
@@ -152,7 +159,7 @@ const Landing = () => {
                 <span className="text-3xl font-bold tracking-wider">
                   Top Product of the Week
                 </span>
-                <button className="border-2 border-amber-50 px-5 py-4 w-3/5">
+                <button className="border-2 border-amber-50 rounded px-5 py-4 w-3/5">
                   EXPLORE ITEMS
                 </button>
               </div>
@@ -160,36 +167,36 @@ const Landing = () => {
           </div>
 
           {/* right */}
-          <div className="flex flex-col w-1/2 gap-4 h-full">
-            <div className="relative w-full h-1/2">
+          <div className="flex flex-col gap-4 h-[calc(100%-16px)] w-2/5">
+            <div className="relative h-1/2">
               <img
                 src="/images/top-week2.png"
                 alt="Product 2"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
+              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                 <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
-                  <span className="text-3xl font-bold tracking-wider">
+                  <span className="text-xl font-normal tracking-wider">
                     Top Product of the Week
                   </span>
-                  <button className="border-2 border-amber-50 px-5 py-4 w-3/5">
+                  <button className="border-2 border-amber-50 rounded px-5 py-4 w-auto">
                     EXPLORE ITEMS
                   </button>
                 </div>
               </div>
             </div>
-            <div className="relative w-full h-1/2">
+            <div className="relative h-1/2">
               <img
                 src="/images/top-week3.png"
                 alt="Product 3"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
+              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                 <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
-                  <span className="text-3xl font-bold tracking-wider">
+                  <span className="text-xl font-normal tracking-wider">
                     Top Product of the Week
                   </span>
-                  <button className="border-2 border-amber-50 px-5 py-4 w-3/5">
+                  <button className="border-2 rounded border-amber-50 px-5 py-4 w-auto">
                     EXPLORE ITEMS
                   </button>
                 </div>
@@ -203,7 +210,7 @@ const Landing = () => {
       <ProductCard products={products} />
 
       {/* about us sort of? ig */}
-      <div className="h-auto w-full mb-5">
+      <div className="w-full mb-5">
         <div className="w-3/4 mx-auto flex md:flex-row flex-col-reverse items-center justify-items-start gap-8">
           <div className="flex gap-4 flex-1">
             <div className="h-125 w-2/5">
@@ -245,7 +252,7 @@ const Landing = () => {
       <div className="w-full py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-second-text-color text-xl font-normal leading-7 mb-2">
+            <p className="text-second-text-color text-xl font-medium leading-7 mb-2">
               Featured Products
             </p>
             <h2 className="text-2xl font-bold text-[rgba(37, 43, 66, 1)] leading-8 tracking-wide">
@@ -271,9 +278,11 @@ const Landing = () => {
 
             <div className="flex flex-col items-center text-center">
               <div className="mb-6 p-4">
-              <img src="/images/concrete.svg" alt="" />
+                <img src="/images/concrete.svg" alt="" />
               </div>
-              <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">Concrete</h3>
+              <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">
+                Concrete
+              </h3>
               <p className="text-second-text-color text-sm leading-7">
                 Defalcate is most focused in helping you discover your most
                 beautiful smile
@@ -282,7 +291,7 @@ const Landing = () => {
 
             <div className="flex flex-col items-center text-center">
               <div className="mb-6 p-4">
-              <img src="/images/growth.svg" alt="" />
+                <img src="/images/growth.svg" alt="" />
               </div>
               <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">
                 Hack Growth
@@ -296,7 +305,7 @@ const Landing = () => {
       </div>
 
       {/*next featured posts */}
-      <DetailedProduct/>
+      <DetailedProduct />
 
       <Footer />
     </div>
