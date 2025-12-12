@@ -23,7 +23,8 @@ const Landing = () => {
       image: "/images/product1.jpg",
       title: "Graphic Design",
       description: "English Department",
-      price: 29.99,
+      price: 49.99,
+      salePrice: 29.99,
     },
     {
       id: 2,
@@ -31,6 +32,7 @@ const Landing = () => {
       title: "Graphic Design",
       description: "English Department",
       price: 49.99,
+      salePrice: 49.99,
     },
     {
       id: 3,
@@ -38,6 +40,7 @@ const Landing = () => {
       title: "Graphic Design",
       description: "English Department",
       price: 49.99,
+      salePrice: 49.99,
     },
     {
       id: 4,
@@ -45,6 +48,7 @@ const Landing = () => {
       title: "Graphic Design",
       description: "English Department",
       price: 49.99,
+      salePrice: 49.99,
     },
     {
       id: 5,
@@ -52,6 +56,7 @@ const Landing = () => {
       title: "Graphic Design",
       description: "English Department",
       price: 49.99,
+      salePrice: 49.99,
     },
     {
       id: 6,
@@ -59,6 +64,7 @@ const Landing = () => {
       title: "Graphic Design",
       description: "English Department",
       price: 49.99,
+      salePrice: 49.99,
     },
     {
       id: 7,
@@ -100,16 +106,17 @@ const Landing = () => {
         <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] w-19/20 items-center flex flex-col gap-5 md:flex-row justify-end h-145 mx-auto">
           {/* banner texts*/}
           <div className="flex flex-col justify-center items-center md:justify-around md:items-start pt-10 gap-4 md:gap-6 md:w-1/2 md:pl-25">
-            <span className="text-sm font-bold text-primary hover:text-secondary">
+            <span className="heading-5 uppercase text-secondary hover:text-primary">
               Summer 2025
             </span>
-            <span className="text-4xl md:text-6xl md:text-left text-center font-bold tracking-wider">
+            <span className="heading-1 text-blueBlack md:text-left text-center">
               NEW COLLECTION
             </span>
-            <span className="md:text-left md:text-xl md:font-semibold text-center text-second-text-color">
-              We know how large object will act, but things on a small scale.
+            <span className="md:text-left md:heading-4 text-center text-grayText">
+              We know how large object will act,
+              <br /> but things on a small scale.
             </span>
-            <button className="rounded-md bg-[#23a6f0] hover:bg-secondary text-white font-semibold py-3 px-5 w-auto">
+            <button className="rounded-md bg-primary hover:bg-secondary text-white heading-3 py-4 px-10 w-auto">
               SHOP NOW
             </button>
           </div>
@@ -156,11 +163,9 @@ const Landing = () => {
               className="w-full h-full object-cover"
             />
             <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
-              <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
-                <span className="text-3xl font-bold tracking-wider">
-                  Top Product of the Week
-                </span>
-                <button className="border-2 border-amber-50 rounded px-5 py-4 w-3/5">
+              <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full w-3/5">
+                <span className="heading-3">Top Product of the Week</span>
+                <button className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full">
                   EXPLORE ITEMS
                 </button>
               </div>
@@ -177,10 +182,8 @@ const Landing = () => {
               />
               <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                 <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
-                  <span className="text-xl font-normal tracking-wider">
-                    Top Product of the Week
-                  </span>
-                  <button className="border-2 border-amber-50 rounded px-5 py-4 w-auto">
+                  <span className="heading-4">Top Product of the Week</span>
+                  <button className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4">
                     EXPLORE ITEMS
                   </button>
                 </div>
@@ -194,10 +197,8 @@ const Landing = () => {
               />
               <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                 <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
-                  <span className="text-xl font-normal tracking-wider">
-                    Top Product of the Week
-                  </span>
-                  <button className="border-2 rounded border-amber-50 px-5 py-4 w-auto">
+                  <span className="heading-4">Top Product of the Week</span>
+                  <button className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4">
                     EXPLORE ITEMS
                   </button>
                 </div>
@@ -213,6 +214,7 @@ const Landing = () => {
       {/* about us sort of? ig */}
       <div className={getLayoutClass()}>
         <div className="w-3/4 mx-auto flex md:flex-row flex-col-reverse items-center justify-items-start gap-8">
+          {/* left images */}
           <div className="flex gap-4 flex-1">
             <div className="h-125 w-2/5">
               <img
@@ -229,15 +231,12 @@ const Landing = () => {
               />
             </div>
           </div>
+          {/* right text section */}
           <div className="flex flex-col gap-6 w-1/2">
-            <span className="text-primary font-bold text-base leading-6">
-              Featured Products
-            </span>
-            <span className="font-bold text-4xl tracking-wide text-[#252B42]">
-              We love what we do
-            </span>
-            <div className="w-3/5">
-              <p className="text-second-text-color font-normal text-[14px] leading-5 tracking-[0.2px]">
+            <span className="text-primary heading-5">Featured Products</span>
+            <span className="heading-2 text-blueBlack">We love what we do</span>
+            <div className="w-7/10">
+              <p className="paragraph text-grayText">
                 Problems trying to resolve the conflict between the two major
                 realms of Classical physics: Newtonian mechanics. <br />
                 <br />
@@ -251,53 +250,43 @@ const Landing = () => {
 
       {/* best services */}
       <div className={getLayoutClass()}>
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-second-text-color text-xl font-medium leading-7 mb-2">
-              Featured Products
-            </p>
-            <h2 className="text-2xl font-bold text-[rgba(37, 43, 66, 1)] leading-8 tracking-wide">
-              THE BEST SERVICES
-            </h2>
-            <p className="text-second-text-color text-sm leading-5">
+            <p className="heading-4 text-grayText mb-3">Featured Products</p>
+            <h2 className="heading-3 text-blueBlack mb-3">THE BEST SERVICES</h2>
+            <p className="paragraph text-grayText">
               Problems trying to resolve the conflict between
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-8">
-            <div className="flex flex-col items-center text-center">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-5">
+            <div className="flex flex-col items-center text-center px-10 py-[35px]">
               <div className="mb-6 p-4">
                 <img src="/images/easy-wins.png"></img>
               </div>
-              <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">
-                Easy Wins
-              </h3>
-              <p className="text-second-text-color text-sm leading-7">
+              <h3 className="heading-3 text-blueBlack mb-3">Easy Wins</h3>
+              <p className="text-grayText paragraph">
                 Get your best looking smile now!
               </p>
             </div>
 
-            <div className="flex flex-col items-center text-center">
+            <div className="flex flex-col items-center text-center px-10 py-[35px]">
               <div className="mb-6 p-4">
                 <img src="/images/concrete.svg" alt="" />
               </div>
-              <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">
-                Concrete
-              </h3>
-              <p className="text-second-text-color text-sm leading-7">
+              <h3 className="heading-3 text-blueBlack mb-3">Concrete</h3>
+              <p className="text-grayText paragraph">
                 Defalcate is most focused in helping you discover your most
                 beautiful smile
               </p>
             </div>
 
-            <div className="flex flex-col items-center text-center">
+            <div className="flex flex-col items-center text-center px-10 py-[35px]">
               <div className="mb-6 p-4">
                 <img src="/images/growth.svg" alt="" />
               </div>
-              <h3 className="text-2xl font-bold leading-8 text-[#252B42] mb-3">
-                Hack Growth
-              </h3>
-              <p className="text-second-text-color text-sm leading-7 font-medium">
+              <h3 className="heading-3 text-blueBlack mb-3">Hack Growth</h3>
+              <p className="text-grayText paragraph">
                 Overcame any hurdle or any other problem.
               </p>
             </div>

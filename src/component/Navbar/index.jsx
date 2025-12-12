@@ -19,12 +19,12 @@ const Navbar = () => {
   const { logout } = useUserContext();
 
   return (
-    <div className="text-md w-full box-border">
-      <div className="p-6 flex justify-between font-bold items-center text-sm">
+    <div className="text-md w-full sticky top-0 z-50 bg-white/90">
+      <div className="p-6 flex justify-between items-center">
         {/* left side: LOGO + LINKS */}
         <div className="flex items-center md:justify-start justify-between gap-30">
-          <span className="text-2xl text-[#252B42]">Bandage</span>
-          <div className="hidden md:flex gap-3 text-[#252B42] font-medium">
+          <span className="heading-3 text-blueBlack">Bandage</span>
+          <div className="hidden md:flex gap-3 links text-grayText">
             <Link className="" to={"/"}>
               Home
             </Link>
@@ -57,7 +57,7 @@ const Navbar = () => {
         </div>
 
         {/* right side */}
-        <div className="flex gap-5 text-primary">
+        <div className="flex gap-5 links text-primary">
           <div className="hidden md:flex items-center gap-1.5">
             {loggedUser?.isLoggedIn ? (
               <span className="text-[#252B42] text-lg">
@@ -68,9 +68,7 @@ const Navbar = () => {
                 <span>
                   <User size={"20px"} />
                 </span>
-                <Link to={"/auth"} className="text-sm">
-                  Login / Register
-                </Link>
+                <Link to={"/auth"}>Login / Register</Link>
               </>
             )}
           </div>
@@ -105,7 +103,7 @@ const Navbar = () => {
         </div>
       </div>
       {mobileView && (
-        <div className="flex flex-col gap-3 justify-center items-center text-second-text-color font-medium tracking-wide p-7">
+        <div className="mobile-menu flex flex-col gap-3 justify-center items-center text-grayText p-7">
           <Link>Home</Link>
           <Link>Product</Link>
           <Link>Pricing</Link>

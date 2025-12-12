@@ -27,15 +27,13 @@ const FooterLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-[#FAFAFA]">
+    <footer className="w-full bg-[#FAFAFA]">
       {/* Main Content */}
-      <div className="w-full">
+      <div className="">
         {/* Header Section */}
         <div className="px-6 md:px-12 py-12 border-b border-gray-200">
           <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-8">
-            <span className="font-bold text-3xl tracking-wide text-[#252B42]">
-              Bandage
-            </span>
+            <span className="heading-3 text-blueBlack">Bandage</span>
             <div className="flex gap-4">
               <Facebook size={24} color="#23a6f0" />
               <Instagram size={24} color="#23a6f0" />
@@ -49,7 +47,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12">
             {Object.entries(FooterLinks).map(([key, section]) => (
               <div key={key} className="flex flex-col gap-4">
-                <span className="font-bold text-base leading-6 tracking-[0.1px] text-[#252B42]">
+                <span className="heading-5 text-blueBlack">
                   {section.title}
                 </span>
                 <div className="flex flex-col gap-3">
@@ -57,7 +55,7 @@ export default function Footer() {
                     <a
                       key={index}
                       href="#"
-                      className="text-gray-600 font-medium text-sm leading-6 tracking-[0.2px] hover:text-[#23a6f0] transition-colors"
+                      className="text-grayText links text-left hover:text-primary transition-colors"
                     >
                       {link}
                     </a>
@@ -66,27 +64,26 @@ export default function Footer() {
               </div>
             ))}
             <div className="md:col-span-1 flex flex-col gap-4">
-              <span className="font-bold text-base leading-6 tracking-[0.1px] text-[#252B42]">
-                Get In Touch
-              </span>
+              <span className="heading-5 text-blueBlack">Get In Touch</span>
               {/* borders */}
-              <div className="flex ">
+              <div className="flex">
                 <input
                   type="email"
                   placeholder="Your Email"
-                  className="w-full px-4 py-3 border-l border-gray-300 text-sm focus:outline-none focus:border-secondary placeholder:uppercase"
+                  className="w-full px-4 py-3 border border-gray-300 text-sm focus:outline-none focus:border-secondary placeholder:text-sm font-normal placeholder:leading-7 rounded-l"
                 />
-                <button className="bg-primary text-white px-5 py-3 font-bold hover:bg-secondary text-sm rounded">
+                <button className="bg-primary text-white px-5 py-3 font-normal hover:bg-secondary text-sm leading-7 rounded-r">
                   Subscribe
                 </button>
               </div>
+              <p className="text-xs text-grayText">Lore imp sum dolor Amit</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="bg-[#F9F9F9] border-t border-gray-200 w-full px-6 md:px-12 py-6">
-        <span className="font-bold text-sm text-second-text-color">
+        <span className="font-bold text-sm text-grayText">
           Made With Love By Finland. All Rights Reserved
         </span>
       </div>

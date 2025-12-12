@@ -1,5 +1,5 @@
 import React from "react";
-import { Heart, Eye, ShoppingCart, Star } from "lucide-react";
+import { Heart, Eye, ShoppingCart, Download, Star } from "lucide-react";
 import { getLayoutClass } from "../../utils/helper";
 
 const DetailedProduct = () => {
@@ -40,16 +40,12 @@ const DetailedProduct = () => {
     },
   ];
   return (
-    <div className={`mx-auto ${getLayoutClass()}`}>
-      <div className="container mx-auto font-sans">
+    <div className={`${getLayoutClass()}`}>
+      <div className="container mx-auto">
         <div className="flex flex-col items-center justify-center gap-9">
-          <div className="flex flex-col gap-3.5 items-center">
-            <span className="text-primary font-bold leading-6 tracking-[0.2px]">
-              Practice Advice
-            </span>
-            <span className="text-[#252b42] font-bold text-[40px] leading-[50px] tracking-[0.2px]">
-              Featured Posts
-            </span>
+          <div className="flex flex-col gap-2.5 items-center">
+            <span className="heading-6 text-primary">Practice Advice</span>
+            <span className="heading-2 text-blueBlack">Featured Posts</span>
           </div>
           <div className="grid md:grid-cols-2 grid-cols-1 mx-auto gap-10 justify-between">
             {productData.map((product) => (
@@ -65,7 +61,7 @@ const DetailedProduct = () => {
                   />
                 </div>
                 {/* sale */}
-                <div className="absolute top-5 left-5 bg-[#e74040] text-white py-1 px-3 rounded">
+                <div className=" heading-6 absolute top-5 left-5 bg-[#e74040] text-white py-1 px-3 rounded">
                   Sale!
                 </div>
                 {/* option icons */}
@@ -83,35 +79,42 @@ const DetailedProduct = () => {
                 {/* product details */}
                 <div className="flex flex-col gap-4 text-left w-96 rounded p-6 justify-center">
                   <div className="flex justify-between items-start gap-4">
-                    <div className="hidden md:flex-1">
-                      <span className="font-bold text-lg text-gray-900">
+                    <div className="hidden md:flex-1 md:inline">
+                      <span className="links text-primary">
                         {product.department}
                       </span>
                     </div>
                     {/* rating */}
-                    <div className="hidden md:flex items-center gap-1 bg-gray-900 text-white px-3 py-1 rounded">
-                      <Star size={16} fill="white" />
+                    <div className="hidden md:flex items-center gap-1 bg-gray-900 text-sm rounded-2xl text-white px-3 py-1">
+                      <img src="/images/rating-star.png" alt="" />
                       <span className="hidden md:inline font-semibold text-sm">
                         {product.rating}
                       </span>
                     </div>
                   </div>
 
-                  <span className="font-semibold text-2xl md:text-base text-gray-800">
+                  <span className="font-semibold text-2xl md:heading-6 text-blueBlack">
                     {product.title}
                   </span>
-                  <span className="text-gray-600 text-sm leading-relaxed">
+                  <span className="paragraph text-grayText">
                     {product.description}
                   </span>
 
                   <div className="flex gap-6 text-sm text-gray-700">
                     <div className="flex items-center gap-1">
-                      <ShoppingCart size={16} className="text-gray-500" />
-                      <span>{product.sales} Sales</span>
+                      <Download size={16} className="text-gray-500" />
+                      <span className="heading-6 text-grayText">
+                        {product.sales} Sales
+                      </span>
                     </div>
                   </div>
-                  <div className="font-semibold text-green-600">
-                    ${product.price}
+                  <div className="flex gap-3">
+                    <div className="heading-5 text-mutedText">
+                      ${product.price}
+                    </div>
+                    <div className="heading-5 text-[#23856d]">
+                      ${product.price}
+                    </div>
                   </div>
 
                   <div className="flex gap-3 pt-2">
@@ -122,20 +125,16 @@ const DetailedProduct = () => {
                   </div>
                   <div className="flex gap-3 items-center">
                     <img src="/images/icon1.png" alt="" />
-                    <span className="text-xs text-second-text-color truncate w-8">
+                    <span className="text-xs text-grayText truncate w-8">
                       22h of lecture is heresud
                     </span>
                     <img src="/images/icon2.png" alt="" />
-                    <span className="text-xs text-second-text-color">
-                      64 Lessons
-                    </span>
+                    <span className="text-xs text-grayText">64 Lessons</span>
                     <img src="/images/icon3.png" alt="" />
-                    <span className="text-xs text-second-text-color">
-                      Progress
-                    </span>
+                    <span className="text-xs text-grayText">Progress</span>
                   </div>
-                  <button className="flex justify-center items-center gap-5 mt-2 w-1/2 border-2 border-primary text-primary font-semibold py-2.5 rounded-3xl hover:bg-secondary hover:text-white">
-                    <span>Learn More</span>
+                  <button className="flex justify-center items-center gap-5 mt-2 w-1/2 border-2 border-primary text-primary py-2.5 rounded-3xl hover:bg-secondary hover:text-white">
+                    <span className="heading-6">Learn More</span>
                     <img
                       src="/images/right-arrow.png"
                       alt=""

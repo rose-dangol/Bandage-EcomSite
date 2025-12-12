@@ -1,13 +1,53 @@
 @import "tailwindcss";
 
-@theme{
-    --color-primary: #23A6F0;
-    --color-secondary: #2A7CC7;
-    --color-second-text-color: #737373;
-    --color-blueBlack: #252b42
-    --font-sans: 'Montserrat', sans-serif;
+@theme {
+  --color-primary: #23a6f0;
+  --color-secondary: #2a7cc7;
+  --color-grayText: #737373;
+  --color-blueBlack: #252b42;
+  --color-mutedText: #bdbdbd;
+  --font-sans: "Montserrat", sans-serif;
 }
 
 @utility section-space {
-    @apply p-20 w-full
+  @apply p-20 w-full;
+}
+
+@utility heading-1 {
+  @apply font-bold text-[58px] leading-20;
+}
+
+@utility heading-2 {
+  @apply font-bold text-[40px] leading-[57px] tracking-[0.2px];
+}
+
+@utility heading-3 {
+  @apply font-bold text-[24px] leading-8 tracking-[0.1px];
+}
+
+@utility heading-4 {
+  @apply font-medium text-[20px] leading-[30px] tracking-[0.2px];
+}
+
+@utility heading-5 {
+  @apply font-bold text-[16px] leading-6 tracking-[0.1px];
+}
+
+@utility heading-6 {
+  @apply font-semibold text-[14px] leading-6 tracking-[0.2px];
+}
+
+@utility btn-text {
+  @apply font-bold text-[14px] leading-7 tracking-[0.2px];
+}
+
+@utility paragraph {
+  @apply text-sm font-medium leading-5 tracking-[0.2px];
+}
+
+@utility links {
+  @apply font-bold text-sm leading-6 tracking-[0.2px];
+}
+@utility mobile-menu {
+  @apply font-normal text-[30px] leading-[45px] tracking-[0.2px];
 }

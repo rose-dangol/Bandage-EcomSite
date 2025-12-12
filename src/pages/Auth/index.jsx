@@ -91,7 +91,7 @@ const Auth = () => {
                 >
                   Log In
                 </button>
-                <span className="text-center text-sm text-second-text-color inline">
+                <span className="text-center text-sm text-grayText inline">
                   I don't have an account?
                   <span
                     className="text-red-500 font-medium cursor-pointer"
@@ -130,7 +130,7 @@ const Auth = () => {
                 >
                   Sign Up
                 </button>
-                <span className="text-center text-sm text-second-text-color inline">
+                <span className="text-center text-sm text-grayText inline">
                   Already have an account?
                   <span
                     className="text-red-500 font-medium cursor-pointer"

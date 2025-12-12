@@ -1,5 +1,11 @@
 import React from "react";
-import { BrandLogos, Footer, ProductCard, TopDetail } from "../../component";
+import {
+  BrandLogos,
+  Footer,
+  Navbar,
+  ProductCard,
+  TopDetail,
+} from "../../component";
 
 const AllProducts = () => {
   const products = [
@@ -77,6 +83,7 @@ const AllProducts = () => {
   return (
     <div>
       <TopDetail />
+      <Navbar />
       <ProductCard products={products} />
       <BrandLogos />
       <Footer />
