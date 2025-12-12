@@ -4,3 +4,4 @@ export { default as BrandLogos } from "./BrandLogos/";
 export { default as ProductCard } from "./ProductCard/";
 export { default as Footer } from "./Footer/";
 export { default as DetailedProduct } from "./DetailedProduct/";
+export { default as ShopCard } from "./ShopCard";

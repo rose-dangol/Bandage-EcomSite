@@ -1,14 +1,26 @@
 function useLocalStorage(key) {
   const getLocalStorage = () => {
-    return localStorage.getItem(key);
+    try {
+      return JSON.parse(localStorage.getItem(key));
+    } catch (error) {
+      console.error("Error getting data", error);
+    }
   };
 
   const setLocalStorage = (data) => {
-    localStorage.setItem(key, data);
+    try {
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (error) {
+      console.error("Error setting data", error);
+    }
   };
 
   const removeLocalStorage = () => {
-    localStorage.removeItem(key);
+    try {
+      localStorage.removeItem(key);
+    } catch (error) {
+      console.error("Error removing data", error);
+    }
   };
 
   return { getLocalStorage, setLocalStorage, removeLocalStorage };

@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const { setLocalStorage, getLocalStorage } = useLocalStorage("user");
+
 const initialValue = () => {
   const loggedUser = getLocalStorage("user");
   return loggedUser?.isLoggedIn
@@ -26,7 +27,7 @@ export const UserProvider = ({ children }) => {
       isLoggedIn: true,
     };
     setUser(userData);
-    setLocalStorage(JSON.stringify(userData));
+    setLocalStorage(userData);
   };
   const logout = () => {
     const clearUser = {

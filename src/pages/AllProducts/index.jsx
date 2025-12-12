@@ -4,8 +4,10 @@ import {
   Footer,
   Navbar,
   ProductCard,
+  ShopCard,
   TopDetail,
 } from "../../component";
+import { LayoutGrid, ListChecks } from "lucide-react";
 
 const AllProducts = () => {
   const products = [
@@ -81,12 +83,37 @@ const AllProducts = () => {
     },
   ];
   return (
-    <div>
-      <TopDetail />
-      <Navbar />
-      <ProductCard products={products} />
-      <BrandLogos />
-      <Footer />
+    <div className="container">
+      <div className="max-w-7xl mx-auto">
+        <TopDetail />
+        <Navbar />
+        <ShopCard />
+        <div className="flex justify-around">
+          <span className="heading-6 text-grayText">
+            Showing all 12 results
+          </span>
+          <div className="flex gap-[15px] items-center">
+            <span className="heading-6 text-grayText">Views:</span>
+            <div className="border p-2">
+              <LayoutGrid />
+            </div>
+            <div className="border">
+              <ListChecks />
+            </div>
+          </div>
+          <div>
+            <select>
+              <option>Popularity</option>
+              <option>Price: Low to High</option>
+              <option>Price: High to Low</option>
+            </select>
+            <button className="heading-6 bg-primary text-white">Filter</button>
+          </div>
+        </div>
+        <ProductCard products={products} />
+        <BrandLogos />
+        <Footer />
+      </div>
     </div>
   );
 };
