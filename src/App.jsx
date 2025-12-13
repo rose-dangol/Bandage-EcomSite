@@ -6,11 +6,11 @@ import Provider from "./provider";
 
 function App() {
   return (
-    <div>
+    <>
       <Provider>
         <AppRoutes />
       </Provider>
-    </div>
+    </>
   );
 }
 

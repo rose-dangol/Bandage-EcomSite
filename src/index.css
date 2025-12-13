@@ -10,7 +10,7 @@
 }
 
 @utility section-space {
-  @apply p-20 w-full;
+  @apply py-20 w-full;
 }
 
 @utility heading-1 {
@@ -38,7 +38,7 @@
 }
 
 @utility btn-text {
-  @apply font-bold text-[14px] leading-7 tracking-[0.2px];
+  @apply font-bold text-[14px] leading-7 tracking-[0.2px] text-center;
 }
 
 @utility paragraph {

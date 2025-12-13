@@ -3,9 +3,9 @@ import { UserProvider } from "./context/UserContext";
 
 const Provider = ({ children }) => {
   return (
-    <div>
+    <>
       <UserProvider>{children}</UserProvider>
-    </div>
+    </>
   );
 };
 

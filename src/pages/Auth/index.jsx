@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUserContext } from "../../context/UserContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Navbar } from "../../component";
 
@@ -10,12 +10,22 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const { login } = useUserContext();
   const handleLogin = () => {
-    login(email, password);
-    console.log(email, password);
-    navigate("/");
+    if (email == "" || password == "") {
+      setError("All fields must be filled.");
+      return;
+    }
+    if (!email.includes("@")) {
+      setError("Invalid email.");
+      return;
+    } else {
+      login(email, password);
+      console.log(email, password);
+      navigate("/");
+    }
   };
   return (
     <>
@@ -23,18 +33,15 @@ const Auth = () => {
       <div className="min-h-full flex">
         {/* form */}
         <div className="w-3/4 flex items-center justify-center p-8">
-          <div className="container mx-auto max-w-md p-10 py-16 rounded-lg shadow-lg">
+          <div className="container mx-auto h-auto max-w-md p-10 py-16 rounded-lg shadow-lg">
             <div className="mb-10">
-              <h2 className="text-2xl font-bold text-blueBlack leading-8">
-                Bandage
-              </h2>
+              <h2 className="heading-3 text-blueBlack">Bandage</h2>
             </div>
             {formstate == "Login" ? (
               <div className="flex flex-col gap-6 pt-5">
-                <h1 className="text-[58px] font-bold leading-20 tracking-[0.2px]">
-                  Login
-                </h1>
+                <h1 className="heading-1">Login</h1>
                 <div className="flex flex-col gap-2">
+                  {error && <span className="text-red-700">{error}</span>}
                   <label className="block text-sm font-medium">Email</label>
                   <input
                     type="email"
@@ -104,9 +111,7 @@ const Auth = () => {
               </div>
             ) : (
               <form className="flex flex-col gap-6 pt-5">
-                <h1 className="text-[58px] font-bold leading-20 tracking-[0.2px]">
-                  Sign Up
-                </h1>
+                <h1 className="heading-1">Sign Up</h1>
                 <div className="flex flex-col gap-2">
                   <label className="block text-sm font-medium">Email</label>
                   <input

@@ -15,6 +15,7 @@ const Navbar = () => {
   const [mobileView, setMobileView] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const loggedUser = JSON.parse(localStorage.getItem("user"));
+  const [search, setSearch] = useState(false);
 
   const { logout } = useUserContext();
 
@@ -23,7 +24,9 @@ const Navbar = () => {
       <div className="p-6 flex justify-between items-center">
         {/* left side: LOGO + LINKS */}
         <div className="flex items-center md:justify-start justify-between gap-30">
-          <span className="heading-3 text-blueBlack">Bandage</span>
+          <Link to={"/"} className="heading-3 text-blueBlack">
+            Bandage
+          </Link>
           <div className="hidden md:flex gap-3 links text-grayText">
             <Link className="" to={"/"}>
               Home
@@ -38,7 +41,7 @@ const Navbar = () => {
                 <ChevronDown size={"16px"} />
               </Link>
               {isOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded shadow-lg w-40 z-50">
+                <div className="absolute top-full left-0 bg-white border border-gray-200 rounded shadow-lg w-40 z-50">
                   <Link className="block px-4 py-2 hover:bg-gray-50" to={""}>
                     All
                   </Link>
@@ -49,7 +52,7 @@ const Navbar = () => {
                 </div>
               )}
             </div>
-            <Link>About</Link>
+            <Link to={"/about"}>About</Link>
             <Link>Blog</Link>
             <Link>Contact</Link>
             <Link>Pages</Link>
@@ -73,13 +76,13 @@ const Navbar = () => {
             )}
           </div>
           <div className="flex gap-4 items-center">
-            <span>
+            <span className="cursor-pointer">
               <Search size={"20px"} />
             </span>
-            <span>
+            <span className="cursor-pointer">
               <ShoppingCart size={"20px"} />
             </span>
-            <span>
+            <span className="cursor-pointer">
               <Heart size={"20px"} />
             </span>
             {loggedUser?.isLoggedIn ? (

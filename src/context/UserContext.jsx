@@ -2,23 +2,31 @@ import { createContext, useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
-const { setLocalStorage, getLocalStorage } = useLocalStorage("user");
-
-const initialValue = () => {
-  const loggedUser = getLocalStorage("user");
-  return loggedUser?.isLoggedIn
-    ? loggedUser
-    : {
-        email: "",
-        password: "",
-        isLoggedIn: false,
-      };
-};
+// const initialValue = () => {
+//   const loggedUser = getLocalStorage("user");
+//   return loggedUser?.isLoggedIn
+//     ? loggedUser
+//     : {
+//         email: "",
+//         password: "",
+//         isLoggedIn: false,
+//       };
+// };
 
 export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(initialValue);
+  const { setLocalStorage, getLocalStorage } = useLocalStorage("user");
+  const [user, setUser] = useState(() => {
+    const loggedUser = getLocalStorage("user");
+    return loggedUser?.isLoggedIn
+      ? loggedUser
+      : {
+          email: "",
+          password: "",
+          isLoggedIn: false,
+        };
+  });
   const login = (email, password) => {
     const userData = {
       ...user,

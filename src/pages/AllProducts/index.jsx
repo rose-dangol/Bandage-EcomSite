@@ -88,26 +88,28 @@ const AllProducts = () => {
         <TopDetail />
         <Navbar />
         <ShopCard />
-        <div className="flex justify-around">
+        <div className="py-5 flex justify-around">
           <span className="heading-6 text-grayText">
             Showing all 12 results
           </span>
           <div className="flex gap-[15px] items-center">
             <span className="heading-6 text-grayText">Views:</span>
-            <div className="border p-2">
-              <LayoutGrid />
+            <div className="border-[#ececec] border-2 p-2 rounded">
+              <LayoutGrid fill="blueBlack" />
             </div>
-            <div className="border">
-              <ListChecks />
+            <div className="border-[#ececec] border-2 p-2 rounded">
+              <ListChecks color="grayText" />
             </div>
           </div>
-          <div>
-            <select>
+          <div className="flex gap-1.5">
+            <select className="border-[#dddddd] border-2 rounded bg-[#f9f9f9] p-2">
               <option>Popularity</option>
               <option>Price: Low to High</option>
               <option>Price: High to Low</option>
             </select>
-            <button className="heading-6 bg-primary text-white">Filter</button>
+            <button className="heading-6 bg-primary text-white px-3 py-3.5 rounded">
+              Filter
+            </button>
           </div>
         </div>
         <ProductCard products={products} />

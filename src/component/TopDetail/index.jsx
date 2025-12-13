@@ -18,13 +18,15 @@ const TopDetail = () => {
             <span>
               <Phone size={"16px"} />
             </span>
-            <span>(225) 555-0118</span>
+            <a href="tel:+2255550118">(225) 555-0118</a>
           </div>
           <div className="flex items-center gap-2">
             <span>
               <Mail size={"16px"} />
             </span>
-            <span>michelle.rivera@example.com</span>
+            <a href="mailto:michelle.rivera@example.com">
+              michelle.rivera@example.com
+            </a>
           </div>
         </div>
 
