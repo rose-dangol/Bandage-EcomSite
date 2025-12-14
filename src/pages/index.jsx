@@ -1,3 +1,4 @@
 export { default as Landing } from "./Landing";
 export { default as Auth } from "./Auth";
 export { default as AllProducts } from "./AllProducts";
+export { default as AboutUs } from "./AboutUs";

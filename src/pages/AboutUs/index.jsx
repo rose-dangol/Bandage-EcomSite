@@ -50,7 +50,7 @@ const AboutUs = () => {
           className="flex flex-col items-center text-center px-10 py-[35px]"
         >
           <div className="mb-6 p-4">
-            <img src="/images/easy-wins.png" alt="" />
+            <img src="/images/easy-wins.png" alt="easy-wins" loading="lazy" />
           </div>
           <h3 className="heading-3 text-blueBlack mb-3">Easy Wins</h3>
           <p className="text-grayText paragraph">
@@ -63,7 +63,7 @@ const AboutUs = () => {
           className="flex flex-col items-center text-center px-10 py-[35px]"
         >
           <div className="mb-6 p-4">
-            <img src="/images/concrete.svg" alt="" />
+            <img src="/images/concrete.svg" alt="concrete" loading="lazy" />
           </div>
           <h3 className="heading-3 text-blueBlack mb-3">Concrete</h3>
           <p className="text-grayText paragraph">
@@ -77,7 +77,7 @@ const AboutUs = () => {
           className="flex flex-col items-center text-center px-10 py-[35px]"
         >
           <div className="mb-6 p-4">
-            <img src="/images/growth.svg" alt="" />
+            <img src="/images/growth.svg" alt="hack-growth" loading="lazy" />
           </div>
           <h3 className="heading-3 text-blueBlack mb-3">Hack Growth</h3>
           <p className="text-grayText paragraph">

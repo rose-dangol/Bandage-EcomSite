@@ -11,9 +11,9 @@ import {
 
 const TopDetail = () => {
   return (
-    <div className="bg-[#252B42] text-white links top-0 hidden sm:block max-w-full">
-      <div className="p-5 flex items-center justify-between">
-        <div className="flex items-center gap-6">
+    <div className="bg-[#252B42] text-white top-0 hidden sm:block max-w-full">
+      <div className="heading-6 p-5 flex flex-col lg:flex-row items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6">
           <div className="flex items-center gap-2">
             <span>
               <Phone size={"16px"} />

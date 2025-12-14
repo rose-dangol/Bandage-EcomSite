@@ -10,24 +10,54 @@ import { getLayoutClass } from "../../utils/helper";
 const BrandLogos = () => {
   return (
     <div className={`${getLayoutClass()}`}>
-      <div className="flex flex-col md:flex-row justify-center md:gap-30 gap-3 items-center">
+      <div className="flex flex-col md:flex-row justify-center lg:gap-30 gap-5 items-center">
         <a href="#">
-          <img src={LyftLogo} alt="Lyft Logo" className="w-20 h-20" />
+          <img
+            src={LyftLogo}
+            alt="Lyft Logo"
+            className="w-20 h-20"
+            loading="lazy"
+          />
         </a>
         <a href="#">
-          <img src={HooliLogo} alt="Lyft Logo" className="w-20 h-20" />
+          <img
+            src={HooliLogo}
+            alt="Hooli Logo"
+            className="w-20 h-20"
+            loading="lazy"
+          />
         </a>
         <a href="#">
-          <img src={AwsLogo} alt="Lyft Logo" className="w-20 h-20" />
+          <img
+            src={AwsLogo}
+            alt="aws Logo"
+            className="w-20 h-20"
+            loading="lazy"
+          />
         </a>
         <a href="#">
-          <img src={RedditLogo} alt="Lyft Logo" className="w-20 h-20" />
+          <img
+            src={RedditLogo}
+            alt="reddit Logo"
+            className="w-20 h-20"
+            loading="lazy"
+          />
         </a>
         <a href="#">
-          <img src={ZaraLogo} alt="Lyft Logo" className="w-20 h-20" />
+          <img
+            src={ZaraLogo}
+            alt="zara Logo"
+            className="w-20 h-20"
+            loading="lazy"
+          />
         </a>
         <a href="#">
-          <img src={AppleLogo} alt="Lyft Logo" className="w-20 h-20" />
+          <img
+            src={AppleLogo}
+            alt="apple Logo"
+            className="w-20 h-20"
+            loading="lazy"
+          />
         </a>
       </div>
     </div>

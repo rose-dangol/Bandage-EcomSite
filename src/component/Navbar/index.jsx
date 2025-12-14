@@ -20,14 +20,14 @@ const Navbar = () => {
   const { logout } = useUserContext();
 
   return (
-    <div className="text-md w-full sticky top-0 z-50 bg-white/90">
+    <div className="text-md w-full sticky top-0 z-500 bg-white/90">
       <div className="p-6 flex justify-between items-center">
         {/* left side: LOGO + LINKS */}
         <div className="flex items-center md:justify-start justify-between gap-30">
           <Link to={"/"} className="heading-3 text-blueBlack">
             Bandage
           </Link>
-          <div className="hidden md:flex gap-3 links text-grayText">
+          <div className="hidden lg:flex gap-3 links text-grayText">
             <Link className="" to={"/"}>
               Home
             </Link>
@@ -97,7 +97,7 @@ const Navbar = () => {
               <></>
             )}
             <span
-              className="inline sm:hidden hover:bg-gray-100"
+              className="inline md:hidden hover:bg-gray-100"
               onClick={() => setMobileView(!mobileView)}
             >
               <TextAlignJustify size={"16px"} />

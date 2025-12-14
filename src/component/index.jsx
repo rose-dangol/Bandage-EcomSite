@@ -5,3 +5,5 @@ export { default as ProductCard } from "./ProductCard/";
 export { default as Footer } from "./Footer/";
 export { default as DetailedProduct } from "./DetailedProduct/";
 export { default as ShopCard } from "./ShopCard";
+export { default as Container } from "./Container";
+export { default as Pagination } from "./Pagination";

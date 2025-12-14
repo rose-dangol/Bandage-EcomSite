@@ -1,3 +1,11 @@
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
 @import "tailwindcss";
 
 @theme {
@@ -7,6 +15,7 @@
   --color-blueBlack: #252b42;
   --color-mutedText: #bdbdbd;
   --font-sans: "Montserrat", sans-serif;
+  --breakpoint-xl: 1377px;
 }
 
 @utility section-space {
