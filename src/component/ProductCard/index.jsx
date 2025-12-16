@@ -5,7 +5,7 @@ import { getLayoutClass } from "../../utils/helper";
 const ProductCard = ({ products }) => {
   const navigate = useNavigate();
   const handleClick = (id) => {
-    navigate(`/product-detail/${id}`);
+    navigate(`/products/${id}/`);
   };
   return (
     <div>
