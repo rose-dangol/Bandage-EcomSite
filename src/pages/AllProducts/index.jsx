@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BrandLogos,
   Container,
@@ -9,10 +9,56 @@ import {
   ShopCard,
   TopDetail,
 } from "../../component";
-import { LayoutGrid, ListChecks } from "lucide-react";
+import { LayoutGrid, ListChecks, Signal } from "lucide-react";
+// import apiClient, { jsonPlaceholderClient } from "../../apiClient";
+import api from "../../apiClient";
 
 const AllProducts = () => {
-  const [viewType, setViewType] = useState("grid");
+  // const [viewType, setViewType] = useState("grid");
+
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+    });
+  }, []);
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const controller = new AbortController();
+      const timeOut = setTimeout(() => {
+        controller.abort();
+      }, 10);
+      try {
+        const response = await api.get("products/", {
+          signal: controller.signal,
+        });
+        clearTimeout(timeOut);
+        const actualData = response.data.data;
+        setProducts(actualData);
+      } catch (error) {
+        if (error.name == "AbortError") {
+          console.error("Request Timed Out.");
+          return;
+        }
+        console.error(error.message);
+      }
+      //response-> {data: {…}, status: 200, statusText: 'OK', headers: AxiosHeaders, config: {…}..}
+      //ani response.data-> {data:actual data array, meta, etc}  soo actual data= response.data.data
+    };
+    fetchProducts();
+  }, []);
+  console.log(products);
+  {
+    /*
+    const getProducts = async () => {
+      const response = await jsonPlaceholderClient.get("/posts");
+      console.log(response.data);
+    };
+    getProducts();
+  
+    */
+  }
+
   const Allproducts = [
     {
       id: 1,
@@ -126,8 +172,6 @@ const AllProducts = () => {
 
   return (
     <div className="w=full">
-      <TopDetail />
-      <Navbar />
       <Container>
         <ShopCard />
         <div className="py-6 flex justify-between items-center lg:flex-row flex-col gap-6">
@@ -149,16 +193,17 @@ const AllProducts = () => {
               <option>Price: Low to High</option>
               <option>Price: High to Low</option>
             </select>
-            <button className="heading-6 bg-primary text-white px-3 py-3.5 rounded">
+            <button className="heading-6 btn-transitions bg-primary hover:bg-secondary text-white px-3 py-3.5 rounded">
               Filter
             </button>
           </div>
         </div>
-        <ProductCard products={Allproducts} />
-        <Pagination />
+        <div className="">
+          <ProductCard products={Allproducts} />
+          <Pagination />
+        </div>
         <BrandLogos />
       </Container>
-      <Footer />
     </div>
   );
 };

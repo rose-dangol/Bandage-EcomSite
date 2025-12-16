@@ -18,33 +18,33 @@ const TopDetail = () => {
             <span>
               <Phone size={"16px"} />
             </span>
-            <a href="tel:+2255550118">(225) 555-0118</a>
+            <Link to="tel:+2255550118">(225) 555-0118</Link>
           </div>
           <div className="flex items-center gap-2">
             <span>
               <Mail size={"16px"} />
             </span>
-            <a href="mailto:michelle.rivera@example.com">
+            <Link to="mailto:michelle.rivera@example.com">
               michelle.rivera@example.com
-            </a>
+            </Link>
           </div>
         </div>
 
         <div className="">Follow us and get a chance to win 80% off!</div>
         <div className="flex items-center gap-4">
           <span className="">Follow us:</span>
-          <a href="#" className="">
+          <Link to={""} className="">
             <Instagram size={"16px"} />
-          </a>
-          <a href="#" className="">
+          </Link>
+          <Link to={""} className="">
             <Youtube size={"16px"} />
-          </a>
-          <a href="#" className="">
+          </Link>
+          <Link to={""} className="">
             <Facebook size={"16px"} />
-          </a>
-          <a href="#" className="">
+          </Link>
+          <Link to={""} className="">
             <Twitter size={"16px"} />
-          </a>
+          </Link>
         </div>
       </div>
     </div>
