@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { act, useEffect, useRef, useState } from "react";
 import {
   BrandLogos,
   Container,
@@ -11,8 +11,8 @@ import {
 } from "../../component";
 import { LayoutGrid, ListChecks, Signal } from "lucide-react";
 import api, { jsonPlaceholderClient } from "../../apiClient";
-
 const AllProducts = () => {
+  const a = 6;
   // const [viewType, setViewType] = useState("grid");
   const [products, setProducts] = useState([]);
   useEffect(() => {
@@ -22,31 +22,34 @@ const AllProducts = () => {
   }, []);
 
   let controllerRef = useRef(null);
-
-  const fetchProducts = async () => {
-    console.log(controllerRef, "testing");
-    if (controllerRef.current) {
-      controllerRef.current.abort();
-      console.log("Previous request cancelled!");
-    }
-    controllerRef.current = new AbortController();
-    try {
-      const response = await api.get("products/", {
-        signal: controllerRef.current.signal,
-      });
-      const actualData = response.data.data;
-      setProducts(actualData);
-      console.log(actualData);
-    } catch (error) {
-      if (error.name == "AbortError") {
-        console.error("Request Timed Out.");
-        return;
+  useEffect(() => {
+    const fetchProducts = async () => {
+      console.log(controllerRef, "testing");
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+        console.log("Previous request cancelled!");
       }
-      console.error(error.message);
-    }
-    //response-> {data: {…}, status: 200, statusText: 'OK', headers: AxiosHeaders, config: {…}..}
-    //ani response.data-> {data:actual data array, meta, etc}  soo actual data= response.data.data
-  };
+      controllerRef.current = new AbortController();
+      try {
+        const response = await api.get("products/", {
+          signal: controllerRef.current.signal,
+        });
+        const actualData = response.data.data;
+        setProducts(actualData);
+        console.log(actualData);
+        console.log(actualData[0].name);
+      } catch (error) {
+        if (error.name == "AbortError") {
+          console.error("Request Timed Out.");
+          return;
+        }
+        console.error(error.message);
+      }
+      //response-> {data: {…}, status: 200, statusText: 'OK', headers: AxiosHeaders, config: {…}..}
+      //ani response.data-> {data:actual data array, meta, etc}  soo actual data= response.data.data
+    };
+    fetchProducts();
+  }, []);
   {
     /*
     const getProducts = async () => {
@@ -172,7 +175,7 @@ const AllProducts = () => {
   return (
     <div className="w=full">
       <Container>
-        <button onClick={() => fetchProducts()}>Get Data</button>
+        {/* <button onClick={() => fetchProducts()}>Get Data</button> */}
         <ShopCard />
         <div className="py-6 flex justify-between items-center lg:flex-row flex-col gap-6">
           <span className="heading-6 text-grayText">
@@ -198,7 +201,24 @@ const AllProducts = () => {
             </button>
           </div>
         </div>
+        <div className="flex flex-wrap gap-3 bg-red-200">
+          <span className="heading-5">Data from backend:</span>
+          {products.map((product) => {
+            return (
+              <div key={product.id}>
+                <p className="heading-6">
+                  {product.id}
+                  {"->"}
+                  {product.name}
+                </p>
+              </div>
+            );
+          })}
+        </div>
         <div className="">
+          {products.map((product) => {
+            <p key={product.id}>{product.name}</p>;
+          })}
           <ProductCard products={Allproducts} />
           <Pagination />
         </div>

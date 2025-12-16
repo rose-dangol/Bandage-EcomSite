@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getLayoutClass } from "../../utils/helper";
+// import { getLayoutClass } from "../../utils/helper";
 
 const ProductCard = ({ products }) => {
   const navigate = useNavigate();

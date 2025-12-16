@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 const ProductDetail = () => {
   const { id } = useParams();
   const [productDetail, setProductDetail] = useState(null);
+
   let controllerRef = useRef(null);
   useEffect(() => {
     const fetchProductData = async () => {
