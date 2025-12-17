@@ -1,5 +1,5 @@
-function useLocalStorage(key) {
-  const getLocalStorage = () => {
+function useLocalStorage() {
+  const getLocalStorage = (key) => {
     try {
       return JSON.parse(localStorage.getItem(key));
     } catch (error) {
@@ -7,7 +7,7 @@ function useLocalStorage(key) {
     }
   };
 
-  const setLocalStorage = (data) => {
+  const setLocalStorage = (key, data) => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
@@ -15,7 +15,7 @@ function useLocalStorage(key) {
     }
   };
 
-  const removeLocalStorage = () => {
+  const removeLocalStorage = (key) => {
     try {
       localStorage.removeItem(key);
     } catch (error) {

@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 html {
   scrollbar-width: none;
 }
@@ -59,4 +60,7 @@ html::-webkit-scrollbar {
 }
 @utility mobile-menu {
   @apply font-normal text-[30px] leading-[45px] tracking-[0.2px];
+}
+@utility btn-transitions {
+  @apply transition-colors duration-500;
 }

@@ -1,45 +1,53 @@
 import React from "react";
-import { Heart, Eye, ShoppingCart, Download, Star } from "lucide-react";
+import {
+  Heart,
+  Eye,
+  ShoppingCart,
+  Download,
+  Star,
+  ChevronRight,
+} from "lucide-react";
 import { getLayoutClass } from "../../utils/helper";
 import Container from "../Container";
 
+const PRODUCT_DATA = [
+  {
+    id: 1,
+    image: "/images/featured1.jpg",
+    department: "English Department",
+    title: "Graphic Design",
+    description:
+      "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
+    rating: 4.9,
+    sales: 15,
+    price: 6.4,
+    colors: [
+      { name: "Blue", value: "#3B82F6" },
+      { name: "Red", value: "#EF4444" },
+      { name: "Green", value: "#22C55E" },
+      { name: "Yellow", value: "#EAB308" },
+    ],
+  },
+  {
+    id: 2,
+    department: "Chinese Department",
+    image: "/images/featured2.jpg",
+    title: "Web Development",
+    description:
+      "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
+    rating: 4.9,
+    sales: 17,
+    price: 16.4,
+    colors: [
+      { name: "Blue", value: "#3B82F6" },
+      { name: "Green", value: "#22C55E" },
+      { name: "Red", value: "#EF4444" },
+      { name: "Black", value: "#EAB308" },
+    ],
+  },
+];
+
 const DetailedProduct = () => {
-  const productData = [
-    {
-      id: 1,
-      image: "/images/featured1.jpg",
-      department: "English Department",
-      title: "Graphic Design",
-      description:
-        "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
-      rating: 4.9,
-      sales: 15,
-      price: 6.4,
-      colors: [
-        { name: "Blue", value: "#3B82F6" },
-        { name: "Red", value: "#EF4444" },
-        { name: "Green", value: "#22C55E" },
-        { name: "Yellow", value: "#EAB308" },
-      ],
-    },
-    {
-      id: 2,
-      department: "Chinese Department",
-      image: "/images/featured2.jpg",
-      title: "Web Development",
-      description:
-        "We focus on ergonomics and meeting you where you work. It's only a keystroke away.",
-      rating: 4.9,
-      sales: 17,
-      price: 16.4,
-      colors: [
-        { name: "Blue", value: "#3B82F6" },
-        { name: "Green", value: "#22C55E" },
-        { name: "Red", value: "#EF4444" },
-        { name: "Black", value: "#EAB308" },
-      ],
-    },
-  ];
   return (
     <div className={`${getLayoutClass()}`}>
       <div className="flex flex-col items-center justify-center gap-10 ">
@@ -50,7 +58,7 @@ const DetailedProduct = () => {
           </span>
         </div>
         <div className="grid lg:grid-cols-2 grid-cols-1 mx-auto gap-8">
-          {productData.map((product) => (
+          {PRODUCT_DATA.map((product) => (
             <div
               className="flex md:flex-row flex-col gap-3 relative"
               key={product.id}
@@ -67,7 +75,7 @@ const DetailedProduct = () => {
                 Sale!
               </div>
               {/* option icons */}
-              <div className="hidden lg:flex gap-5 justify-center items-center absolute bottom-8 left-10">
+              <div className="hidden md:flex flex-row gap-5 justify-center items-center absolute bottom-8 left-10">
                 <div className="bg-white rounded-full h-10 w-10 p-2">
                   <Heart className="object-cover h-full w-full" />
                 </div>
@@ -127,7 +135,10 @@ const DetailedProduct = () => {
 
                 <div className="flex gap-3 items-center">
                   <img src="/images/icon1.png" alt="clock-icon" />
-                  <span className="text-xs text-grayText truncate w-8">
+                  <span
+                    className="text-xs text-grayText truncate w-8"
+                    title="22h of lecture is heresud"
+                  >
                     22h of lecture is heresud
                   </span>
                   <img
@@ -141,14 +152,12 @@ const DetailedProduct = () => {
                   <img src="/images/icon3.png" alt="progress-icon" />
                   <span className="text-xs text-grayText">Progress</span>
                 </div>
-                <button className="flex justify-center items-center gap-5 mt-2 w-1/2 md:border-2 cursor-pointer border-primary md:text-primary text-grayText py-2.5 rounded-3xl hover:bg-secondary hover:text-white">
-                  <span className="heading-6">Learn More</span>
-                  <img
-                    src="/images/right-arrow.png"
-                    alt=""
-                    className="max-h-5"
-                  />
-                </button>
+                <div className="group">
+                  <button className="flex justify-center items-center gap-3 mt-2 w-1/2 md:border-2 cursor-pointer border-primary md:text-primary text-grayText py-2.5 rounded-3xl btn-transitions group-hover:bg-secondary group-hover:text-white group-hover:border-secondary">
+                    <span className="heading-6">Learn More</span>
+                    <ChevronRight />
+                  </button>
+                </div>
               </div>
             </div>
           ))}

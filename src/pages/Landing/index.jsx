@@ -1,3 +1,4 @@
+import { Layout } from "lucide-react";
 import {
   TopDetail,
   Navbar,
@@ -8,7 +9,7 @@ import {
   Container,
 } from "../../component/index";
 import { getLayoutClass } from "../../utils/helper";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Landing = () => {
   const products = [
     {
@@ -76,11 +77,10 @@ const Landing = () => {
       salePrice: 2.0,
     },
   ];
+  const navigate = useNavigate();
 
   return (
     <div className="w-full cursor-default">
-      <TopDetail />
-      <Navbar />
       {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}
       <div className="py-6 md:py-10 w-full mx-auto md:pl-10 md:pr-15">
         <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] md:w-19/20 w-full items-center flex flex-col gap-5 md:flex-row md:justify-end min-h-96 md:h-145 mx-auto">
@@ -99,9 +99,9 @@ const Landing = () => {
             </div>
             <Link
               to={"/shop"}
-              className="rounded-md bg-primary hover:bg-secondary text-white heading-3 py-4 px-10 w-auto uppercase"
+              className="rounded-md bg-primary btn-transitions hover:bg-secondary text-white  heading-3 py-4 px-10 w-auto uppercase"
             >
-              shop now
+              Shop now
             </Link>
           </div>
 
@@ -137,7 +137,7 @@ const Landing = () => {
         <BrandLogos />
         {/*top products of the week section */}
         <div className={getLayoutClass()}>
-          <div className="flex flex-col md:flex-row gap-4 md:h-[570px] ">
+          <div className="flex flex-col md:flex-row gap-4 md:h-[570px]">
             {/* left */}
             <div className="md:w-3/5 h-full relative">
               <img
@@ -148,8 +148,8 @@ const Landing = () => {
               <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
                 <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full w-3/5">
                   <span className="heading-3">Top Product of the Week</span>
-                  <Link className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase hover:bg-white hover:text-primary">
-                    explore items
+                  <Link className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
+                    Explore items
                   </Link>
                 </div>
               </div>
@@ -166,8 +166,8 @@ const Landing = () => {
                 <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4 uppercase hover:bg-white hover:text-primary">
-                      explore items
+                    <Link className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                      Explore items
                     </Link>
                   </div>
                 </div>
@@ -181,8 +181,8 @@ const Landing = () => {
                 <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4 uppercase hover:bg-white hover:text-primary">
-                      explore items
+                    <Link className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                      Explore items
                     </Link>
                   </div>
                 </div>
@@ -192,7 +192,17 @@ const Landing = () => {
         </div>
 
         {/* featured products */}
-        <ProductCard products={products} />
+        <div className={`mx-auto ${getLayoutClass()}`}>
+          <ProductCard products={products} />
+          <button
+            className="mx-auto btn-transitions uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
+            onClick={() => {
+              navigate("/shop");
+            }}
+          >
+            Load more products
+          </button>
+        </div>
 
         {/* about us sort of? ig */}
         <div className={getLayoutClass()}>
@@ -220,11 +230,12 @@ const Landing = () => {
               <span className="heading-2 text-blueBlack">
                 We love what we do
               </span>
-              <div className="md:w-7/10">
-                <p className="paragraph text-grayText text-left">
+              <div className="md:w-3/5 paragraph text-grayText text-left flex flex-col gap-4">
+                <p>
                   Problems trying to resolve the conflict between the two major
-                  realms of Classical physics: Newtonian mechanics. <br />
-                  <br />
+                  realms of Classical physics: Newtonian mechanics.
+                </p>
+                <p>
                   Problems trying to resolve the conflict between the two major
                   realms of Classical physics: Newtonian mechanics
                 </p>
@@ -294,7 +305,6 @@ const Landing = () => {
         {/*next featured posts */}
         <DetailedProduct />
       </Container>
-      <Footer />
     </div>
   );
 };

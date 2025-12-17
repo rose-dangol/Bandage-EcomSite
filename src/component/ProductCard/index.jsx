@@ -1,15 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getLayoutClass } from "../../utils/helper";
+// import { getLayoutClass } from "../../utils/helper";
 
 const ProductCard = ({ products }) => {
   const navigate = useNavigate();
   const handleClick = (id) => {
-    // navigate("/product-detail");
-    alert(`navigating to ${id}`);
+    navigate(`/products/${id}/`);
   };
   return (
-    <div className={`mx-auto ${getLayoutClass()}`}>
+    <div>
       <div className="flex flex-col gap-3 mb-5 justify-center items-center text-center">
         <h4 className="heading-4 text-grayText hidden md:inline-block">
           Featured Products
@@ -51,6 +50,7 @@ const ProductCard = ({ products }) => {
                 {product?.availableColors?.map((color) => (
                   <div
                     className={`w-5 h-5 rounded-full bg-${color}-500 cursor-pointer`}
+                    key={color}
                   ></div>
                 ))}
               </div>
@@ -58,14 +58,14 @@ const ProductCard = ({ products }) => {
           </div>
         ))}
       </div>
-      <button
+      {/* <button
         className="mx-auto transition-colors duration-300 uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
         onClick={() => {
           navigate("/shop");
         }}
       >
         load more products
-      </button>
+      </button> */}
     </div>
   );
 };

@@ -9,6 +9,6 @@ export const fetchProducts = async () => {
 };
 
 export const fetchProductById = async (id) => {
-  const response = await axios.get(`${API_BASE}/products/${id}`);
+  const response = await axios.get(`${API_BASE}products/${id}`);
   return response.data.data;
 };

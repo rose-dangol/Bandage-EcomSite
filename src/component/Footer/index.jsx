@@ -1,5 +1,6 @@
 import { Facebook, Instagram, Twitter } from "lucide-react";
 import Container from "../Container";
+import { Link } from "react-router-dom";
 
 const FooterLinks = {
   company: {
@@ -30,7 +31,7 @@ export default function Footer() {
     <footer className="w-full bg-[#FAFAFA]">
       {/* Main Content */}
       {/* Header Section */}
-      <div className="py-12 border-b border-gray-200">
+      <div className="py-12 border-b border-gray-200 p-10">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-8">
           <span className="heading-3 text-blueBlack">Bandage</span>
           <div className="flex gap-4">
@@ -42,20 +43,19 @@ export default function Footer() {
       </div>
 
       {/*footer Links Grid */}
-      <div className="py-12 bg-white">
+      <div className="py-12 bg-white p-10">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12">
           {Object.entries(FooterLinks).map(([key, section]) => (
             <div key={key} className="flex flex-col gap-4">
               <span className="heading-5 text-blueBlack">{section.title}</span>
               <div className="flex flex-col gap-3">
                 {section.links.map((link, index) => (
-                  <a
+                  <Link
                     key={index}
-                    href="#"
                     className="text-grayText links text-left hover:text-primary transition-colors"
                   >
                     {link}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>
@@ -69,7 +69,7 @@ export default function Footer() {
                 placeholder="Your Email"
                 className="w-full px-4 py-3 border border-gray-300 text-sm focus:outline-none focus:border-secondary placeholder:text-sm font-normal placeholder:leading-7 rounded-l"
               />
-              <button className="bg-primary text-white px-5 py-3 font-normal cursor-pointer hover:bg-secondary text-sm leading-7 rounded-r">
+              <button className="bg-primary text-white px-5 py-3 font-normal cursor-pointer btn-transitions hover:bg-secondary text-sm leading-7 rounded-r">
                 Subscribe
               </button>
             </div>
@@ -79,7 +79,7 @@ export default function Footer() {
       </div>
 
       <div className="bg-[#F9F9F9] border-t border-gray-200 w-full py-6">
-        <span className="font-bold text-sm text-grayText">
+        <span className="font-bold p-10 text-sm text-grayText">
           Made With Love By Finland. All Rights Reserved.
         </span>
       </div>
