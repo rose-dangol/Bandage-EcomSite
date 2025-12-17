@@ -10,9 +10,16 @@ import {
   TopDetail,
 } from "../../component";
 import { LayoutGrid, ListChecks } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts, fetchProductById } from "../../api";
 
 const AllProducts = () => {
-  const [viewType, setViewType] = useState("grid");
+  // const [viewType, setViewType] = useState("grid");
+  const { data: products } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
+  console.log(products);
   const Allproducts = [
     {
       id: 1,
@@ -129,6 +136,11 @@ const AllProducts = () => {
       <TopDetail />
       <Navbar />
       <Container>
+        <div>
+          {products?.map((product) => (
+            <div key={product.id}>{product.title}</div>
+          ))}
+        </div>
         <ShopCard />
         <div className="py-6 flex justify-between items-center lg:flex-row flex-col gap-6">
           <span className="heading-6 text-grayText">
