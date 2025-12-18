@@ -9,6 +9,7 @@ import {
   ProductDetail,
 } from "../pages";
 import PublicRoutes from "./publicRoutes";
+import CreateProduct from "../pages/CreateProduct";
 
 const AppRoutes = () => {
   return (
@@ -21,7 +22,8 @@ const AppRoutes = () => {
         <Route path="/about" element={<AboutUs />} />
         <Route element={<ProtectedRoutes />}>
           <Route path="/shop" element={<AllProducts />} />
-          <Route path="/products/:id/" element={<ProductDetail />} />
+          <Route path="/shop/products/:id/" element={<ProductDetail />} />
+          <Route path="/addProduct" element={<CreateProduct />} />
         </Route>
       </Route>
     </Routes>

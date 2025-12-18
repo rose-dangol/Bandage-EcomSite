@@ -1,4 +1,3 @@
-import React, { act, useEffect, useRef, useState } from "react";
 import {
   BrandLogos,
   Container,
@@ -9,72 +8,26 @@ import {
   ShopCard,
   TopDetail,
 } from "../../component";
-<<<<<<< HEAD
 import { LayoutGrid, ListChecks } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts, fetchProductById } from "../../api";
+import { fetchProducts } from "../../services/products";
 
 const AllProducts = () => {
   // const [viewType, setViewType] = useState("grid");
-  const { data: products } = useQuery({
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
   });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!products) return <div>No products found</div>;
+
   console.log(products);
-=======
-import { LayoutGrid, ListChecks, Signal } from "lucide-react";
-import api, { jsonPlaceholderClient } from "../../apiClient";
-const AllProducts = () => {
-  const a = 6;
-  // const [viewType, setViewType] = useState("grid");
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-    });
-  }, []);
-
-  let controllerRef = useRef(null);
-  useEffect(() => {
-    const fetchProducts = async () => {
-      console.log(controllerRef, "testing");
-      if (controllerRef.current) {
-        controllerRef.current.abort();
-        console.log("Previous request cancelled!");
-      }
-      controllerRef.current = new AbortController();
-      try {
-        const response = await api.get("products/", {
-          signal: controllerRef.current.signal,
-        });
-        const actualData = response.data.data;
-        setProducts(actualData);
-        console.log(actualData);
-        console.log(actualData[0].name);
-      } catch (error) {
-        if (error.name == "AbortError") {
-          console.error("Request Timed Out.");
-          return;
-        }
-        console.error(error.message);
-      }
-      //response-> {data: {…}, status: 200, statusText: 'OK', headers: AxiosHeaders, config: {…}..}
-      //ani response.data-> {data:actual data array, meta, etc}  soo actual data= response.data.data
-    };
-    fetchProducts();
-  }, []);
-  {
-    /*
-    const getProducts = async () => {
-      const response = await jsonPlaceholderClient.get("/posts");
-      console.log(response.data);
-    };
-    getProducts();
-  
-    */
-  }
-
->>>>>>> axios-branch
   const Allproducts = [
     {
       id: 1,
@@ -189,15 +142,9 @@ const AllProducts = () => {
   return (
     <div className="w=full">
       <Container>
-<<<<<<< HEAD
-        <div>
-          {products?.map((product) => (
-            <div key={product.id}>{product.title}</div>
-          ))}
-        </div>
-=======
-        {/* <button onClick={() => fetchProducts()}>Get Data</button> */}
->>>>>>> axios-branch
+        {/* {products?.map((product) => (
+          <div key={product.id}>{product.name}</div>
+        ))} */}
         <ShopCard />
         <div className="py-6 flex justify-between items-center lg:flex-row flex-col gap-6">
           <span className="heading-6 text-grayText">
@@ -223,27 +170,8 @@ const AllProducts = () => {
             </button>
           </div>
         </div>
-        <div className="flex flex-wrap gap-3 bg-red-200">
-          <span className="heading-5">Data from backend:</span>
-          {products.map((product) => {
-            return (
-              <div key={product.id}>
-                <p className="heading-6">
-                  {product.id}
-                  {"->"}
-                  {product.name}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-        <div className="">
-          {products.map((product) => {
-            <p key={product.id}>{product.name}</p>;
-          })}
-          <ProductCard products={Allproducts} />
-          <Pagination />
-        </div>
+        <ProductCard products={Allproducts} />
+        <Pagination />
         <BrandLogos />
       </Container>
     </div>
