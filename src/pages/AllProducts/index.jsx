@@ -142,9 +142,9 @@ const AllProducts = () => {
   return (
     <div className="w=full">
       <Container>
-        {/* {products?.map((product) => (
+        {products?.map((product) => (
           <div key={product.id}>{product.name}</div>
-        ))} */}
+        ))}
         <ShopCard />
         <div className="py-6 flex justify-between items-center lg:flex-row flex-col gap-6">
           <span className="heading-6 text-grayText">

@@ -62,5 +62,5 @@ html::-webkit-scrollbar {
   @apply font-normal text-[30px] leading-[45px] tracking-[0.2px];
 }
 @utility btn-transitions {
-  @apply transition-colors duration-500;
+  @apply transition-colors duration-500 text-[16px];
 }
