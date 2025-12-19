@@ -7,3 +7,4 @@ export { default as DetailedProduct } from "./DetailedProduct/";
 export { default as ShopCard } from "./ShopCard";
 export { default as Container } from "./Container";
 export { default as Pagination } from "./Pagination";
+export { default as Breadcrumb } from "./Breadcrumb";

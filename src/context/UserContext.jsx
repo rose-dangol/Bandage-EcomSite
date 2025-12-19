@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { createContext, useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
@@ -16,7 +18,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }) => {
-  const { setLocalStorage, getLocalStorage } = useLocalStorage("user");
+  const { setLocalStorage, getLocalStorage } = useLocalStorage();
   const [user, setUser] = useState(() => {
     const loggedUser = getLocalStorage("user");
     return loggedUser?.isLoggedIn
@@ -35,7 +37,7 @@ export const UserProvider = ({ children }) => {
       isLoggedIn: true,
     };
     setUser(userData);
-    setLocalStorage(userData);
+    setLocalStorage("user", userData);
   };
   const logout = () => {
     const clearUser = {
@@ -45,7 +47,7 @@ export const UserProvider = ({ children }) => {
       isLoggedIn: false,
     };
     setUser(clearUser);
-    setLocalStorage(JSON.stringify(clearUser));
+    setLocalStorage("user", JSON.stringify(clearUser));
   };
   const value = {
     user,

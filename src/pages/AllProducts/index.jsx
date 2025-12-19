@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   BrandLogos,
   Container,
@@ -10,9 +9,25 @@ import {
   TopDetail,
 } from "../../component";
 import { LayoutGrid, ListChecks } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "../../services/products";
 
 const AllProducts = () => {
-  const [viewType, setViewType] = useState("grid");
+  // const [viewType, setViewType] = useState("grid");
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!products) return <div>No products found</div>;
+
+  console.log(products);
   const Allproducts = [
     {
       id: 1,
@@ -126,9 +141,10 @@ const AllProducts = () => {
 
   return (
     <div className="w=full">
-      <TopDetail />
-      <Navbar />
       <Container>
+        {products?.map((product) => (
+          <div key={product.id}>{product.name}</div>
+        ))}
         <ShopCard />
         <div className="py-6 flex justify-between items-center lg:flex-row flex-col gap-6">
           <span className="heading-6 text-grayText">
@@ -149,7 +165,7 @@ const AllProducts = () => {
               <option>Price: Low to High</option>
               <option>Price: High to Low</option>
             </select>
-            <button className="heading-6 bg-primary text-white px-3 py-3.5 rounded">
+            <button className="heading-6 btn-transitions bg-primary hover:bg-secondary text-white px-3 py-3.5 rounded">
               Filter
             </button>
           </div>
@@ -158,7 +174,6 @@ const AllProducts = () => {
         <Pagination />
         <BrandLogos />
       </Container>
-      <Footer />
     </div>
   );
 };

@@ -1,16 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
-
+import { ChevronRight } from "lucide-react";
+import Breadcrumb from "../Breadcrumb";
 const ShopCard = () => {
   const location = useLocation();
-  const pathnames = location.pathname.split("/").filter((x) => x);
+
   return (
     <div className="w-full">
       <div className="flex md:flex-row flex-col justify-between items-center gap-4 py-6">
         <span className="heading-3 text-blueBlack">Shop</span>
-        <div className="breadcrimbs">
-          <span>Home {">"}</span>
-          <span>Shop</span>
-        </div>
+        <Breadcrumb location={location} />
       </div>
 
       <div className="flex lg:flex-row flex-col gap-4 justify-between items-center pb-12">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useUserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
@@ -10,17 +10,30 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const { login } = useUserContext();
-  const handleLogin = () => {
-    if (email == "" || password == "") {
-      setError("All fields must be filled.");
-      return;
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
     }
-    if (!email.includes("@")) {
-      setError("Invalid email.");
-      return;
+  };
+  const handleLogin = () => {
+    const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex =
+      /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/;
+    if (email === "") {
+      setEmailError("This field must be filled.");
+    }
+    if (password === "") {
+      setPasswordError("This field must be filled.");
+    } else if (!emailRegex.test(email)) {
+      setEmailError("Invalid email.");
+    } else if (!passwordRegex.test(password)) {
+      setPasswordError(
+        "Password must be 8-16 chars with uppercase, lowercase, number, and special char."
+      );
     } else {
       login(email, password);
       console.log(email, password);
@@ -32,7 +45,7 @@ const Auth = () => {
       <Navbar />
       <div className="min-h-full flex">
         {/* form */}
-        <div className="w-3/4 flex items-center justify-center p-8">
+        <div className="md:w-3/4 w-full flex items-center justify-center p-8">
           <div className="container mx-auto h-auto max-w-md p-10 py-16 rounded-lg shadow-lg">
             <div className="mb-10">
               <h2 className="heading-3 text-blueBlack">Bandage</h2>
@@ -41,7 +54,6 @@ const Auth = () => {
               <div className="flex flex-col gap-6 pt-5">
                 <h1 className="heading-1">Login</h1>
                 <div className="flex flex-col gap-2">
-                  {error && <span className="text-red-700">{error}</span>}
                   <label className="block text-sm font-medium">Email</label>
                   <input
                     type="email"
@@ -50,8 +62,12 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
+                      setEmailError("");
                     }}
                   />
+                  {emailError && (
+                    <span className="text-red-500 text-sm">{emailError}</span>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2 relative">
@@ -76,7 +92,9 @@ const Auth = () => {
                     onChange={(e) => {
                       setPassword(e.target.value);
                       console.log(password);
+                      setPasswordError("");
                     }}
+                    onKeyDown={handleKeyPress}
                   />
                   {/* <Eye /> */}
                   {showPassword ? (
@@ -90,10 +108,15 @@ const Auth = () => {
                       onClick={() => setShowPassword(!showPassword)}
                     />
                   )}
+                  {passwordError && (
+                    <span className="text-sm text-red-500">
+                      {passwordError}
+                    </span>
+                  )}
                 </div>
                 <button
                   type="submit"
-                  className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded hover:bg-secondary"
+                  className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded btn-transitions hover:bg-secondary"
                   onClick={handleLogin}
                 >
                   Log In
@@ -131,7 +154,7 @@ const Auth = () => {
                 </div>
                 <button
                   type="submit"
-                  className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded hover:bg-secondary"
+                  className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded btn-transitions hover:bg-secondary"
                 >
                   Sign Up
                 </button>
@@ -151,7 +174,7 @@ const Auth = () => {
         </div>
 
         {/* image */}
-        <div className="h-[calc(100vh-80px)] w-2/5">
+        <div className="hidden md:inline h-[calc(100vh-80px)] w-2/5">
           <img
             src="/images/auth-pic.png"
             alt="AuthPage"

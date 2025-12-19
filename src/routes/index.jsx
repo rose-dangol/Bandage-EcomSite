@@ -1,7 +1,15 @@
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoutes from "./protectedRoutes";
-import { Auth, AboutUs, Landing, AllProducts } from "../pages";
+import {
+  Auth,
+  AboutUs,
+  Landing,
+  AllProducts,
+  Layout,
+  ProductDetail,
+} from "../pages";
 import PublicRoutes from "./publicRoutes";
+import CreateProduct from "../pages/CreateProduct";
 
 const AppRoutes = () => {
   return (
@@ -9,10 +17,14 @@ const AppRoutes = () => {
       <Route element={<PublicRoutes />}>
         <Route path="/auth" element={<Auth />} />
       </Route>
-      <Route path="/" element={<Landing />} />
-      <Route path="/about" element={<AboutUs />} />
-      <Route element={<ProtectedRoutes />}>
-        <Route path="/shop" element={<AllProducts />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Landing />} />
+        <Route path="/about" element={<AboutUs />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/shop" element={<AllProducts />} />
+          <Route path="/shop/products/:id/" element={<ProductDetail />} />
+          <Route path="/addProduct" element={<CreateProduct />} />
+        </Route>
       </Route>
     </Routes>
   );

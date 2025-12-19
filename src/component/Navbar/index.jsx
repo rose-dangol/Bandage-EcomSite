@@ -42,7 +42,10 @@ const Navbar = () => {
               </Link>
               {isOpen && (
                 <div className="absolute top-full left-0 bg-white border border-gray-200 rounded shadow-lg w-40 z-50">
-                  <Link className="block px-4 py-2 hover:bg-gray-50" to={""}>
+                  <Link
+                    className="block px-4 py-2 hover:bg-gray-50"
+                    to={"/shop"}
+                  >
                     All
                   </Link>
                   <Link className="block px-4 py-2 hover:bg-gray-50">
