@@ -1,13 +1,20 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addProduct } from "../../services/products";
-import { useState } from "react";
-import { Breadcrumb, Container } from "../../component";
-import { useLocation } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addProduct,
+  fetchProductById,
+  getImageUrl,
+} from "../../services/products";
+import { useEffect, useState } from "react";
+import { Breadcrumb, Container, Creatable } from "../../component";
+import { useLocation, useParams } from "react-router-dom";
 import { Trash2, CirclePlus } from "lucide-react";
+import toast from "react-hot-toast";
 
 const CreateProduct = () => {
   const location = useLocation();
+  const { id } = useParams();
   const [colorInput, setColorInput] = useState("");
+  const [category, setCategory] = useState();
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -16,6 +23,38 @@ const CreateProduct = () => {
     discount: "",
     colors: [],
   });
+
+  const { data: product } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => fetchProductById(id),
+
+    enabled: !!id,
+  });
+
+  console.log(product);
+
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        name: product.name || "",
+        description: product.description || "",
+        image: product.img || [],
+        price: product.price || "",
+        discount: product.discount || "",
+        colors: product.colors || [],
+      });
+    }
+  }, [product]);
+
+  // const [formData, setFormData] = useState({
+  //   name: "",
+  //   description: "",
+  //   image: [],
+  //   price: "",
+  //   discount: "",
+  //   colors: [],
+  //   // categoryId: "",
+  // });
   const queryClient = useQueryClient();
 
   const handleColorAdd = () => {
@@ -33,7 +72,7 @@ const CreateProduct = () => {
   };
 
   const mutation = useMutation({
-    mutationFn: () => addProduct(formData),
+    mutationFn: () => addProduct({ ...formData, categoryId: category }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setFormData({
@@ -43,14 +82,14 @@ const CreateProduct = () => {
         price: "",
         discount: "",
         colors: [],
+        // categoryId: "",
       });
-      alert("Product created successfully!");
+      toast.success("Product added successfully!");
     },
     onError: (error) => {
-      alert(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`);
     },
   });
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -81,7 +120,6 @@ const CreateProduct = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
     mutation.mutate(formData);
   };
 
@@ -138,7 +176,8 @@ const CreateProduct = () => {
                     key={img.id}
                     className="flex items-center justify-between border border-[#ECECEC] p-3"
                   >
-                    <span>{img.file.name}</span>
+                    <span>{img.file?.name}</span>
+                    <img src={getImageUrl(img?.url)} className="h-12 w-10" />
                     <Trash2
                       color="red"
                       strokeWidth={"1px"}
@@ -201,12 +240,22 @@ const CreateProduct = () => {
             />
           </div>
         </div>
-
         <div className="flex flex-col gap-2">
+          <label className="font-normal leading-6 tracking-[0.1px] text-[#252B42]">
+            Category
+          </label>
+          <Creatable
+            setCategory={setCategory}
+            id={id}
+            name={product?.category?.name || ""}
+          />
+        </div>
+
+        <div className="flex flex-col gap-3">
           <label className="font-normal leading-6 tracking-[0.1px] text-[#252B42]">
             Colors
           </label>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <input
               type="text"
               placeholder="Add Colors"
@@ -223,22 +272,28 @@ const CreateProduct = () => {
               onClick={handleColorAdd}
             />
           </div>
-          {formData.colors.map((color, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <input
-                type="text"
-                value={color}
-                className="w-full px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
-                disabled
-              />
-              <Trash2
-                color="red"
-                strokeWidth={"1px"}
-                size={"24px"}
-                onClick={() => handleRemoveColor(index)}
-              />
-            </div>
-          ))}
+          <div className="flex w-full justify-between flex-wrap gap-5">
+            {formData.colors.map((color, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <input
+                  type="text"
+                  value={color}
+                  className={`px-4 py-2 rounded border border-[#E6E6E6] outline-none focus:border-primary transition focus:outline-none focus:ring-2 focus:ring-primary`}
+                  style={{
+                    background: color,
+                    color: color === "white" ? "black" : "white",
+                  }}
+                  disabled
+                />
+                <Trash2
+                  color="red"
+                  strokeWidth={"1px"}
+                  size={"24px"}
+                  onClick={() => handleRemoveColor(index)}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <button

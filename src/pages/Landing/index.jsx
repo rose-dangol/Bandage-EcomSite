@@ -10,75 +10,21 @@ import {
 } from "../../component/index";
 import { getLayoutClass } from "../../utils/helper";
 import { Link, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "../../services/products";
 const Landing = () => {
-  const products = [
-    {
-      id: 1,
-      image: "/images/product1.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 49.99,
-      salePrice: 29.99,
-    },
-    {
-      id: 2,
-      image: "/images/product2.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 49.99,
-      salePrice: 49.99,
-    },
-    {
-      id: 3,
-      image: "/images/product3.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 49.99,
-      salePrice: 49.99,
-    },
-    {
-      id: 4,
-      image: "/images/product4.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 49.99,
-      salePrice: 49.99,
-    },
-    {
-      id: 5,
-      image: "/images/product5.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 49.99,
-      salePrice: 49.99,
-    },
-    {
-      id: 6,
-      image: "/images/product8.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 49.99,
-      salePrice: 49.99,
-    },
-    {
-      id: 7,
-      image: "/images/product6.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 129.0,
-      salePrice: 29.0,
-    },
-    {
-      id: 8,
-      image: "/images/product7.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 129.0,
-      salePrice: 2.0,
-    },
-  ];
   const navigate = useNavigate();
-
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!products) return <div>No products found</div>;
   return (
     <div className="w-full cursor-default">
       {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}

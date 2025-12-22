@@ -27,124 +27,10 @@ const AllProducts = () => {
   if (error) return <div>Error: {error.message}</div>;
   if (!products) return <div>No products found</div>;
 
-  console.log(products);
-  const Allproducts = [
-    {
-      id: 1,
-      image: "/images/AllProduct/image-1.jpg",
-      title: "Graphic Design",
-      description: "English Department",
-      price: 29.99,
-      salePrice: 19.99,
-      availableColors: ["blue", "red", "yellow", "green"],
-    },
-    {
-      id: 2,
-      image: "/images/AllProduct/image-2.jpg",
-      title: "Web Development",
-      description: "Computer Science",
-      price: 39.99,
-      salePrice: 24.99,
-      availableColors: ["blue", "green", "yellow", "red"],
-    },
-    {
-      id: 3,
-      image: "/images/AllProduct/image-3.jpg",
-      title: "UI/UX Design",
-      description: "Design Basics",
-      price: 34.99,
-      salePrice: 22.99,
-      availableColors: ["red", "blue", "green"],
-    },
-    {
-      id: 4,
-      image: "/images/AllProduct/image-4.jpg",
-      title: "Mobile App Dev",
-      description: "React Native Course",
-      price: 44.99,
-      salePrice: 29.99,
-      availableColors: ["yellow", "blue", "red"],
-    },
-    {
-      id: 5,
-      image: "/images/AllProduct/image-5.jpg",
-      title: "Data Science",
-      description: "Python & Analytics",
-      price: 49.99,
-      salePrice: 34.99,
-      availableColors: ["green", "red", "yellow"],
-    },
-    {
-      id: 6,
-      image: "/images/AllProduct/image-6.jpg",
-      title: "Cloud Computing",
-      description: "AWS Fundamentals",
-      price: 54.99,
-      salePrice: 39.99,
-      availableColors: ["blue", "yellow", "green"],
-    },
-    {
-      id: 7,
-      image: "/images/AllProduct/image-7.jpg",
-      title: "Cybersecurity",
-      description: "Network Security",
-      price: 59.99,
-      salePrice: 44.99,
-      availableColors: ["red", "blue", "yellow"],
-    },
-    {
-      id: 8,
-      image: "/images/AllProduct/image-8.jpg",
-      title: "Machine Learning",
-      description: "AI & Deep Learning",
-      price: 64.99,
-      salePrice: 49.99,
-      availableColors: ["green", "blue", "red"],
-    },
-    {
-      id: 9,
-      image: "/images/AllProduct/image-9.jpg",
-      title: "Frontend Mastery",
-      description: "HTML, CSS, JavaScript",
-      price: 39.99,
-      salePrice: 26.99,
-      availableColors: ["yellow", "green", "blue"],
-    },
-    {
-      id: 10,
-      image: "/images/AllProduct/image-10.jpg",
-      title: "Backend Engineering",
-      description: "Node.js & Express",
-      price: 44.99,
-      salePrice: 31.99,
-      availableColors: ["red", "yellow", "green"],
-    },
-    {
-      id: 11,
-      image: "/images/AllProduct/image-11.jpg",
-      title: "Database Design",
-      description: "SQL & MongoDB",
-      price: 34.99,
-      salePrice: 23.99,
-      availableColors: ["blue", "red", "green"],
-    },
-    {
-      id: 12,
-      image: "/images/AllProduct/image-12.jpg",
-      title: "DevOps Essentials",
-      description: "Docker & Kubernetes",
-      price: 54.99,
-      salePrice: 41.99,
-      availableColors: ["green", "yellow", "blue"],
-    },
-  ];
-
+  console.log(products[1].img[0]);
   return (
     <div className="w=full">
       <Container>
-        {products?.map((product) => (
-          <div key={product.id}>{product.name}</div>
-        ))}
         <ShopCard />
         <div className="py-6 flex justify-between items-center lg:flex-row flex-col gap-6">
           <span className="heading-6 text-grayText">
@@ -170,7 +56,7 @@ const AllProducts = () => {
             </button>
           </div>
         </div>
-        <ProductCard products={Allproducts} />
+        <ProductCard products={products} />
         <Pagination />
         <BrandLogos />
       </Container>

@@ -10,6 +10,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useUserContext } from "../../context/UserContext";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [mobileView, setMobileView] = useState(false);
