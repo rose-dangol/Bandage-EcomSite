@@ -3,6 +3,7 @@ import {
   addProduct,
   fetchProductById,
   getImageUrl,
+  updateProduct,
 } from "../../services/products";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Container, Creatable } from "../../component";
@@ -13,7 +14,7 @@ import toast from "react-hot-toast";
 const CreateProduct = () => {
   const location = useLocation();
   const { id } = useParams();
-  const [colorInput, setColorInput] = useState("");
+  const [colorInput, setColorInput] = useState([]);
   const [category, setCategory] = useState();
   const [formData, setFormData] = useState({
     name: "",
@@ -27,7 +28,6 @@ const CreateProduct = () => {
   const { data: product } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
-
     enabled: !!id,
   });
 
@@ -35,26 +35,19 @@ const CreateProduct = () => {
 
   useEffect(() => {
     if (product) {
+      console.log(product, "inside use effect");
       setFormData({
         name: product.name || "",
         description: product.description || "",
-        image: product.img || [],
+        image: product.image || [],
         price: product.price || "",
         discount: product.discount || "",
         colors: product.colors || [],
       });
+      setCategory(product.category.id);
     }
   }, [product]);
 
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   description: "",
-  //   image: [],
-  //   price: "",
-  //   discount: "",
-  //   colors: [],
-  //   // categoryId: "",
-  // });
   const queryClient = useQueryClient();
 
   const handleColorAdd = () => {
@@ -62,7 +55,7 @@ const CreateProduct = () => {
       ...prev,
       colors: [...prev.colors, colorInput],
     }));
-    setColorInput("");
+    setColorInput();
   };
   const handleRemoveColor = (index) => {
     setFormData((prev) => ({
@@ -71,7 +64,7 @@ const CreateProduct = () => {
     }));
   };
 
-  const mutation = useMutation({
+  const AddMutation = useMutation({
     mutationFn: () => addProduct({ ...formData, categoryId: category }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -90,6 +83,19 @@ const CreateProduct = () => {
       toast.error(`Error: ${error.message}`);
     },
   });
+
+  const UpdateMutation = useMutation({
+    mutationFn: () => updateProduct(id, { ...formData, categoryId: category }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["product", id] });
+      toast.success("Product updated successfully!");
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
+    },
+  });
+
+  console.log(category);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -111,6 +117,7 @@ const CreateProduct = () => {
       }));
     }
   };
+
   const handleRemoveFile = (id) => {
     setFormData((prev) => ({
       ...prev,
@@ -120,13 +127,18 @@ const CreateProduct = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mutation.mutate(formData);
+    id ? UpdateMutation.mutate(id, formData) : AddMutation.mutate(formData);
   };
 
+  console.log(category);
   return (
     <Container>
       <div className="flex justify-between py-6">
-        <span className="heading-3">Add Products</span>
+        {product ? (
+          <span className="heading-3">Update Products</span>
+        ) : (
+          <span className="heading-3">Add Products</span>
+        )}
         <Breadcrumb location={location} />
       </div>
 
@@ -176,8 +188,12 @@ const CreateProduct = () => {
                     key={img.id}
                     className="flex items-center justify-between border border-[#ECECEC] p-3"
                   >
-                    <span>{img.file?.name}</span>
-                    <img src={getImageUrl(img?.url)} className="h-12 w-10" />
+                    {img?.url ? (
+                      <img src={getImageUrl(img?.url)} className="h-12 w-10" />
+                    ) : (
+                      <span>{img.file?.name}</span>
+                    )}
+
                     <Trash2
                       color="red"
                       strokeWidth={"1px"}
@@ -277,11 +293,12 @@ const CreateProduct = () => {
               <div key={index} className="flex items-center gap-3">
                 <input
                   type="text"
-                  value={color}
+                  value={color?.color || color}
                   className={`px-4 py-2 rounded border border-[#E6E6E6] outline-none focus:border-primary transition focus:outline-none focus:ring-2 focus:ring-primary`}
                   style={{
-                    background: color,
-                    color: color === "white" ? "black" : "white",
+                    backgroundColor: color?.color || color,
+                    color:
+                      color?.color || color === "white" ? "black" : "white",
                   }}
                   disabled
                 />

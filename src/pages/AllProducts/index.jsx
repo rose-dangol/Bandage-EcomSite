@@ -27,7 +27,7 @@ const AllProducts = () => {
   if (error) return <div>Error: {error.message}</div>;
   if (!products) return <div>No products found</div>;
 
-  console.log(products[1].img[0]);
+  console.log(products[1].image[0]);
   return (
     <div className="w=full">
       <Container>

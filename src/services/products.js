@@ -9,11 +9,11 @@ export const getImageUrl = (path) => {
   return img;
 };
 
-export const fetchProducts = async (page = 1) => {
+export const fetchProducts = async () => {
   const response = await axios.get(API_BASE, {
     params: {
       status: "active",
-      page: page,
+      // page: page,
     },
   });
   return response.data.data;
@@ -35,8 +35,8 @@ export const addProduct = async (productData) => {
   // console.log(productData.image);
   formData.append("price", productData.price);
   formData.append("discount", productData.discount);
-  productData.colors.forEach((color) => {
-    formData.append("colors", color);
+  productData.colors.forEach((color, index) => {
+    formData.append(`colors[${index}]`, color);
   });
   formData.append("categoryId", productData.categoryId);
   // console.log(formData);

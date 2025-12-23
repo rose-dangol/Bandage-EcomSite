@@ -28,10 +28,10 @@ const ProductCard = ({ products }) => {
             key={product?.id}
             onClick={() => handleClick(product?.id)}
           >
-            {product.img?.[0] && (
+            {product.image?.[0] && (
               <div className="h-[300px] w-full">
                 <img
-                  src={getImageUrl(product.img[0].url)}
+                  src={getImageUrl(product.image[0].url)}
                   className="h-full w-full object-cover"
                   alt="product-image"
                 />

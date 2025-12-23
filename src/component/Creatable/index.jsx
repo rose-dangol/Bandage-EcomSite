@@ -2,13 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addCategory, getCategories } from "../../services/category";
 import { useState, useEffect, useRef } from "react";
 
-function Creatable({ setCategory, id, name }) {
-  const [inputValue, setInputValue] = useState("");
+function Creatable({ setCategory, name = "" }) {
+  const [inputValue, setInputValue] = useState(name || "");
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
   const queryClient = useQueryClient();
-  const { data: categories } = useQuery({
+  const { data: categories = [] } = useQuery({
     queryKey: ["category"],
     queryFn: getCategories,
   });
@@ -25,7 +25,9 @@ function Creatable({ setCategory, id, name }) {
   });
 
   useEffect(() => {
-    setInputValue(name);
+    if (name) {
+      setInputValue(name);
+    }
   }, [name]);
 
   useEffect(() => {
@@ -42,7 +44,7 @@ function Creatable({ setCategory, id, name }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filterOptions = categories?.filter((category) =>
+  const filterOptions = categories.filter((category) =>
     category.name.toLowerCase().includes(inputValue.toLowerCase())
   );
 
@@ -71,7 +73,7 @@ function Creatable({ setCategory, id, name }) {
       </div>
       {isOpen && (
         <div className="absolute top-full right-0 left-0 flex flex-col border border-gray-300 bg-white mt-1 rounded shadow-lg z-10">
-          {filterOptions?.map((category) => (
+          {filterOptions.map((category) => (
             <div
               key={category.id}
               className="p-2 cursor-pointer hover:bg-gray-100"
@@ -80,7 +82,7 @@ function Creatable({ setCategory, id, name }) {
               {category.name}
             </div>
           ))}
-          {filterOptions?.length === 0 && (
+          {filterOptions.length === 0 && inputValue && (
             <div className="p-2 cursor-pointer flex justify-between items-center">
               "{inputValue}"
               <button

@@ -22,7 +22,6 @@ const ProductDetail = () => {
   const location = useLocation();
   const queryClient = useQueryClient();
 
-  const isAdmin = true;
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [category, setCategory] = useState("");
@@ -52,8 +51,8 @@ const ProductDetail = () => {
         description: product.description || "",
         categoryId: product.categoryId || "",
       });
-      if (product.color) {
-        setSelectedColor(product.color.color);
+      if (product.colors) {
+        setSelectedColor(product.colors.color);
       }
     }
   }, [product]);
@@ -83,18 +82,18 @@ const ProductDetail = () => {
       ...prev,
       category: category,
     }));
-    mutation.mutate(updatedProduct);
+    mutation.mutate(id, updatedProduct);
   };
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) =>
-      prev === 0 ? product.img.length - 1 : prev - 1
+      prev === 0 ? product.image.length - 1 : prev - 1
     );
   };
 
   const handleNextImage = () => {
     setCurrentImageIndex((prev) =>
-      prev === product.img.length - 1 ? 0 : prev + 1
+      prev === product.image.length - 1 ? 0 : prev + 1
     );
   };
 
@@ -114,7 +113,7 @@ const ProductDetail = () => {
         No Product found
       </div>
     );
-  const currentImage = product.img?.[currentImageIndex];
+  const currentImage = product.image?.[currentImageIndex];
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
@@ -138,7 +137,7 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              {product.img?.length > 1 && (
+              {product.image?.length > 1 && (
                 <>
                   <ChevronLeft
                     onClick={handlePrevImage}
@@ -156,9 +155,9 @@ const ProductDetail = () => {
               )}
             </div>
 
-            {product.img?.length > 1 && (
+            {product.image?.length > 1 && (
               <div className="flex gap-2">
-                {product.img.map((img, idx) => (
+                {product.image.map((img, idx) => (
                   <div
                     key={img.id}
                     onClick={() => setCurrentImageIndex(idx)}
@@ -199,7 +198,9 @@ const ProductDetail = () => {
 
               {/* price */}
               <div className="heading-3 text-blueBlack">
-                ${product.priceAfterDiscount?.toFixed(2) || product.price}
+                $
+                {Number(product.priceAfterDiscount)?.toFixed(2) ||
+                  product.price}
               </div>
 
               {product.discount > 0 && (
@@ -223,8 +224,7 @@ const ProductDetail = () => {
               </div>
               <div className="w-[75%] mb-2">
                 <p className="paragraph text-[#858585] text-left">
-                  {product.description ||
-                    "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.Excitation venial consequent sent nostrum met."}
+                  {product.description || "Description not available."}
                 </p>
               </div>
 
@@ -236,25 +236,28 @@ const ProductDetail = () => {
                   </span>
                 </div>
               )}
-
-              {product.color && (
+              {product.colors?.length > 0 ? (
                 <div className="flex gap-3">
-                  <button
-                    onClick={() => setSelectedColor(product.color.color)}
-                    className={`w-7 h-7 rounded-full border-2 transition ${
-                      selectedColor === product.color.color
-                        ? "border-gray-900"
-                        : "border-gray-300 hover:border-gray-600"
-                    }`}
-                    style={{
-                      backgroundColor: product.color.color,
-                    }}
-                    title={product.color.color}
-                  />
+                  {product.colors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedColor(color)}
+                      className={`w-7 h-7 rounded-full border-2 transition ${
+                        selectedColor === color
+                          ? "border-gray-900"
+                          : "border-gray-300 hover:border-gray-600"
+                      }`}
+                      style={{
+                        backgroundColor: color,
+                      }}
+                      title={color}
+                    />
+                  ))}
                 </div>
+              ) : (
+                <></>
               )}
             </div>
-
             <div className="flex gap-3 pt-6 border-t border-gray-200">
               <button className="max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition">
                 Select Options
@@ -271,71 +274,6 @@ const ProductDetail = () => {
             </div>
           </div>
         </div>
-        {/* Admin Edit Section */}
-        {isAdmin && (
-          <div className="space-y-5 w-80">
-            <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                placeholder="Enter product name"
-                value={updatedProduct.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded transition"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Price
-              </label>
-              <input
-                type="number"
-                name="price"
-                placeholder="Enter price"
-                value={updatedProduct.price}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded transition"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Category
-              </label>
-              <Creatable setCategory={setCategory} />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Active Status
-              </label>
-              <select
-                name="status"
-                value={updatedProduct.status}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded bg-white cursor-pointer"
-              >
-                <option value="">Select status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <button
-                onClick={handleEdit}
-                disabled={mutation.isPending}
-                className="flex-1 bg-primary text-white btn-text py-2 rounded hover:bg-secondary btn-transitions disabled:opacity-50"
-              >
-                {mutation.isPending ? "Updating..." : "Submit"}
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Description Section */}
         <div className="flex justify-center gap-15 links text-grayText mt-3 border-b py-5 border-b-[#ECECEC] w-[80%] mx-auto">
