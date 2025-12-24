@@ -21,6 +21,7 @@ const AllProducts = () => {
   } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
+    refetchOnWindowFocus: false,
   });
 
   if (isLoading) return <div>Loading...</div>;

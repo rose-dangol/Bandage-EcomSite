@@ -47,6 +47,19 @@ export const addProduct = async (productData) => {
 };
 
 export const updateProduct = async (id, productData) => {
-  const response = await axios.patch(`${API_BASE}${id}`, productData);
+  const formData = new FormData();
+  formData.append("name", productData.name);
+  formData.append("description", productData.description);
+  productData.image.forEach((image) => {
+    formData.append("image", image.file);
+  });
+  console.log(productData.image);
+  formData.append("price", productData.price);
+  formData.append("discount", productData.discount);
+  productData.colors.forEach((color, index) => {
+    formData.append(`colors[${index}]`, color);
+  });
+  formData.append("categoryId", productData.categoryId);
+  const response = await axios.patch(`${API_BASE}${id}`, formData);
   return response.data;
 };

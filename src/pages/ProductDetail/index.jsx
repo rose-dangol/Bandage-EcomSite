@@ -1,36 +1,25 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  fetchProductById,
-  getImageUrl,
-  updateProduct,
-} from "../../services/products";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProductById, getImageUrl } from "../../services/products";
 import {
   Heart,
   ShoppingCart,
   Eye,
   ChevronRight,
   ChevronLeft,
+  SquarePen,
   Star,
+  Trash,
 } from "lucide-react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumb, Container, Creatable } from "../../component";
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { useState } from "react";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const location = useLocation();
-  const queryClient = useQueryClient();
-
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
-  const [category, setCategory] = useState("");
-  const [updatedProduct, setUpdatedProduct] = useState({
-    name: "",
-    price: "",
-    status: "",
-    categoryId: "",
-  });
 
   // Fetching product data
   const {
@@ -40,50 +29,8 @@ const ProductDetail = () => {
   } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
+    refetchOnWindowFocus: false,
   });
-  // Setting product data
-  useEffect(() => {
-    if (product) {
-      setUpdatedProduct({
-        name: product.name || "",
-        price: product.price || "",
-        status: product.status || "",
-        description: product.description || "",
-        categoryId: product.categoryId || "",
-      });
-      if (product.colors) {
-        setSelectedColor(product.colors.color);
-      }
-    }
-  }, [product]);
-
-  const mutation = useMutation({
-    mutationFn: () => updateProduct(id, updatedProduct),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["product", id] });
-      toast.success("Product updated!");
-    },
-    onError: (error) => {
-      toast.error(`Error: ${error.message}`);
-    },
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedProduct((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleEdit = (e) => {
-    e.preventDefault();
-    setUpdatedProduct((prev) => ({
-      ...prev,
-      category: category,
-    }));
-    mutation.mutate(id, updatedProduct);
-  };
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) =>
@@ -200,7 +147,7 @@ const ProductDetail = () => {
               <div className="heading-3 text-blueBlack">
                 $
                 {Number(product.priceAfterDiscount)?.toFixed(2) ||
-                  product.price}
+                  Number(product.price)}
               </div>
 
               {product.discount > 0 && (
@@ -236,7 +183,7 @@ const ProductDetail = () => {
                   </span>
                 </div>
               )}
-              {product.colors?.length > 0 ? (
+              {product.colors?.length > 0 && (
                 <div className="flex gap-3">
                   {product.colors.map((color, index) => (
                     <button
@@ -254,8 +201,6 @@ const ProductDetail = () => {
                     />
                   ))}
                 </div>
-              ) : (
-                <></>
               )}
             </div>
             <div className="flex gap-3 pt-6 border-t border-gray-200">
@@ -272,6 +217,18 @@ const ProductDetail = () => {
                 <Eye size={20} className="text-gray-600" />
               </button>
             </div>
+          </div>
+
+          {/* action */}
+          <div className="flex flex-col items-center gap-8 text-grayText pt-10">
+            <SquarePen
+              className="hover:text-blueBlack cursor-pointer"
+              onClick={() => navigate(`/updateProduct/${product.id}`)}
+            />
+            <Trash
+              className="hover:text-red-500 cursor-pointer"
+              onClick={() => navigate()}
+            />
           </div>
         </div>
 

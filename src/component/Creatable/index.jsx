@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addCategory, getCategories } from "../../services/category";
 import { useState, useEffect, useRef } from "react";
 
-function Creatable({ setCategory, name = "" }) {
-  const [inputValue, setInputValue] = useState(name || "");
+function Creatable({ setCategory, name }) {
+  const [inputValue, setInputValue] = useState(name);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef(null);
 
@@ -11,6 +11,7 @@ function Creatable({ setCategory, name = "" }) {
   const { data: categories = [] } = useQuery({
     queryKey: ["category"],
     queryFn: getCategories,
+    refetchOnWindowFocus: false,
   });
 
   const { mutate } = useMutation({

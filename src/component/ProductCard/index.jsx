@@ -41,9 +41,11 @@ const ProductCard = ({ products }) => {
               <span className="heading-5 text-blueBlack text-center">
                 {product?.name}
               </span>
-              <span className="links text-center text-grayText mb-1 whitespace-nowrap">
-                {product?.description}
-              </span>
+              <div className="w-full text-center truncate">
+                <span className="max-w-max links text-grayText mb-1 whitespace-nowrap ">
+                  {product?.description}
+                </span>
+              </div>
               <div className="heading-5">
                 <span className="text-mutedText line-through mr-2">
                   ${product?.price}

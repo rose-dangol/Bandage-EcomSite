@@ -7,13 +7,16 @@ import {
 } from "../../services/products";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Container, Creatable } from "../../component";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Trash2, CirclePlus } from "lucide-react";
 import toast from "react-hot-toast";
+import { validateColorName } from "../../utils/colorValidation";
 
 const CreateProduct = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { id } = useParams();
+  const [error, setError] = useState("");
   const [colorInput, setColorInput] = useState([]);
   const [category, setCategory] = useState();
   const [formData, setFormData] = useState({
@@ -29,9 +32,10 @@ const CreateProduct = () => {
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
     enabled: !!id,
+    refetchOnWindowFocus: false,
   });
 
-  console.log(product);
+  // console.log(product);
 
   useEffect(() => {
     if (product) {
@@ -51,12 +55,19 @@ const CreateProduct = () => {
   const queryClient = useQueryClient();
 
   const handleColorAdd = () => {
-    setFormData((prev) => ({
-      ...prev,
-      colors: [...prev.colors, colorInput],
-    }));
-    setColorInput();
+    if (colorInput) {
+      if (validateColorName(colorInput)) {
+        setFormData((prev) => ({
+          ...prev,
+          colors: [...prev.colors, colorInput],
+        }));
+        setColorInput([]);
+      } else {
+        setError("Color must be valid");
+      }
+    }
   };
+  console.log(error);
   const handleRemoveColor = (index) => {
     setFormData((prev) => ({
       ...prev,
@@ -87,8 +98,8 @@ const CreateProduct = () => {
   const UpdateMutation = useMutation({
     mutationFn: () => updateProduct(id, { ...formData, categoryId: category }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["product", id] });
       toast.success("Product updated successfully!");
+      navigate(`/shop/products/${product.id}`);
     },
     onError: (error) => {
       toast.error(`Error: ${error.message}`);
@@ -127,6 +138,7 @@ const CreateProduct = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(formData);
     id ? UpdateMutation.mutate(id, formData) : AddMutation.mutate(formData);
   };
 
@@ -134,11 +146,9 @@ const CreateProduct = () => {
   return (
     <Container>
       <div className="flex justify-between py-6">
-        {product ? (
-          <span className="heading-3">Update Products</span>
-        ) : (
-          <span className="heading-3">Add Products</span>
-        )}
+        <span className="heading-3">
+          {product ? "Update Products" : "Add Product"}
+        </span>
         <Breadcrumb location={location} />
       </div>
 
@@ -170,9 +180,6 @@ const CreateProduct = () => {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <p className="text-xs text-gray-400 mt-1">
-            We'll never share your email with anyone else.
-          </p>
         </div>
 
         <div className="flex flex-col gap-2">
@@ -288,20 +295,20 @@ const CreateProduct = () => {
               onClick={handleColorAdd}
             />
           </div>
-          <div className="flex w-full justify-between flex-wrap gap-5">
+          <div className="flex w-full justify-items-start flex-wrap gap-10">
             {formData.colors.map((color, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={color?.color || color}
-                  className={`px-4 py-2 rounded border border-[#E6E6E6] outline-none focus:border-primary transition focus:outline-none focus:ring-2 focus:ring-primary`}
-                  style={{
-                    backgroundColor: color?.color || color,
-                    color:
-                      color?.color || color === "white" ? "black" : "white",
-                  }}
-                  disabled
-                />
+              <div key={index} className="flex items-center gap-5">
+                <div className="flex items-center space-x-1">
+                  <div
+                    className={`h-10 w-10 rounded border border-[#E6E6E6] transition`}
+                    style={{
+                      backgroundColor: color?.color || color,
+                    }}
+                  />
+                  <span className="paragraph uppercase">
+                    {color?.color || color}
+                  </span>
+                </div>
                 <Trash2
                   color="red"
                   strokeWidth={"1px"}
