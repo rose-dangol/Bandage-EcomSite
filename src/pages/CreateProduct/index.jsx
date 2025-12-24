@@ -10,7 +10,7 @@ import { Breadcrumb, Container, Creatable } from "../../component";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Trash2, CirclePlus } from "lucide-react";
 import toast from "react-hot-toast";
-import { validateColorName } from "../../utils/colorValidation";
+import { urlToObject, validateColorName } from "../../utils/helper";
 
 const CreateProduct = () => {
   const location = useLocation();
@@ -28,7 +28,7 @@ const CreateProduct = () => {
     colors: [],
   });
 
-  const { data: product } = useQuery({
+  const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
     enabled: !!id,
@@ -96,7 +96,7 @@ const CreateProduct = () => {
   });
 
   const UpdateMutation = useMutation({
-    mutationFn: () => updateProduct(id, { ...formData, categoryId: category }),
+    mutationFn: (data) => updateProduct(id, data),
     onSuccess: () => {
       toast.success("Product updated successfully!");
       navigate(`/shop/products/${product.id}`);
@@ -136,13 +136,32 @@ const CreateProduct = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
-    id ? UpdateMutation.mutate(id, formData) : AddMutation.mutate(formData);
+
+    const convertedImage = await Promise.all(
+      formData.image.map(async (imageData) => {
+        if (imageData.file) {
+          return imageData.file;
+        }
+        return urlToObject(imageData.url);
+      })
+    );
+
+    const updatedFormData = {
+      ...formData,
+      image: convertedImage,
+      categoryId: category,
+    };
+
+    id
+      ? UpdateMutation.mutate(updatedFormData)
+      : AddMutation.mutate(updatedFormData);
   };
 
-  console.log(category);
+  if (isLoading) return <h1>Loading...</h1>;
+
   return (
     <Container>
       <div className="flex justify-between py-6">
@@ -269,7 +288,6 @@ const CreateProduct = () => {
           </label>
           <Creatable
             setCategory={setCategory}
-            id={id}
             name={product?.category?.name || ""}
           />
         </div>

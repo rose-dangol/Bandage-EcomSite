@@ -1,4 +1,6 @@
 import axios from "axios";
+import { urlToObject } from "../utils/helper";
+import { ClockFading } from "lucide-react";
 
 // const API_BASE = "https://jsonplaceholder.typicode.com";
 const API_BASE = `${import.meta.env.VITE_API_URL}products/`;
@@ -48,12 +50,14 @@ export const addProduct = async (productData) => {
 
 export const updateProduct = async (id, productData) => {
   const formData = new FormData();
+  console.log(productData, "testing");
+
+  // formData.append("image", convertedImage);
   formData.append("name", productData.name);
   formData.append("description", productData.description);
   productData.image.forEach((image) => {
-    formData.append("image", image.file);
+    formData.append("image", image);
   });
-  console.log(productData.image);
   formData.append("price", productData.price);
   formData.append("discount", productData.discount);
   productData.colors.forEach((color, index) => {

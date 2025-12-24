@@ -207,15 +207,15 @@ const ProductDetail = () => {
               <button className="max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition">
                 Select Options
               </button>
-              <button className="p-3 border border-gray-300 hover:border-gray-400 rounded-full transition">
+              <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
                 <Heart size={20} className="text-gray-600" />
-              </button>
-              <button className="p-3 border border-gray-300 hover:border-gray-400 rounded-full transition">
+              </div>
+              <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
                 <ShoppingCart size={20} className="text-gray-600" />
-              </button>
-              <button className="p-3 border border-gray-300 hover:border-gray-400 rounded-full transition">
+              </div>
+              <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
                 <Eye size={20} className="text-gray-600" />
-              </button>
+              </div>
             </div>
           </div>
 
