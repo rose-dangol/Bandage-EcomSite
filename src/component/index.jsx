@@ -9,3 +9,4 @@ export { default as Container } from "./Container";
 export { default as Pagination } from "./Pagination";
 export { default as Breadcrumb } from "./Breadcrumb";
 export { default as Creatable } from "./Creatable";
+export { default as DialogBox } from "./DialogBox";

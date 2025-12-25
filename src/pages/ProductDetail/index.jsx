@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   deleteProduct,
   fetchProductById,
@@ -15,9 +15,8 @@ import {
   Trash,
 } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Breadcrumb, Container, Creatable } from "../../component";
+import { Breadcrumb, Container, DialogBox } from "../../component";
 import { useState } from "react";
-import toast from "react-hot-toast";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -74,10 +73,6 @@ const ProductDetail = () => {
     );
 
   const currentImage = product.image?.[currentImageIndex];
-
-  const handleDelete = (id) => {
-    // ;
-  };
 
   return (
     <div className="bg-[#FAFAFA]">
@@ -249,34 +244,28 @@ const ProductDetail = () => {
             />
           </div>
           {showDialog && (
-            <div className="fixed inset-0 flex items-center justify-center z-50">
-              <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full mx-4 text-center">
-                <p className="heading-4 text-blueBlack mb-2">
-                  Delete Confirmation
-                </p>
-                <p className="paragraph text-gray-600 mb-6">
-                  Are you sure you want to delete?
-                </p>
-
-                <div className="flex gap-3 justify-center">
-                  <button
-                    onClick={() => setShowDialog(false)}
-                    className="px-4 py-2 border border-gray-300 rounded text-blueBlack heading-6 cursor-pointer hover:bg-gray-50 transition"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={() => {
-                      DeleteMutation.mutate(id);
-                      setShowDialog(false);
-                    }}
-                    className="px-4 py-2 bg-red-500 text-white rounded heading-6 cursor-pointer hover:bg-red-600 transition"
-                  >
-                    Confirm
-                  </button>
-                </div>
+            <DialogBox
+              title={"Delete Confirmation"}
+              subText={"Are you sure you want to delete?"}
+            >
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => setShowDialog(false)}
+                  className="px-4 py-2 border border-gray-300 rounded text-blueBlack heading-6 cursor-pointer hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    DeleteMutation.mutate(id);
+                    setShowDialog(false);
+                  }}
+                  className="px-4 py-2 bg-red-500 text-white rounded heading-6 cursor-pointer hover:bg-red-600 transition"
+                >
+                  Confirm
+                </button>
               </div>
-            </div>
+            </DialogBox>
           )}
         </div>
 
