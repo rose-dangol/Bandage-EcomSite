@@ -1,12 +1,13 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addCategory, getCategories } from "../../services/category.service";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useClickAway } from "../../hooks/useClickAway";
 
 function Creatable({ setCategory, name }) {
   const [inputValue, setInputValue] = useState(name);
   const [categoryList, setCategoryList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useClickAway(() => setIsOpen(false));
 
   const { data: categories = [] } = useQuery({
     queryKey: ["category"],
@@ -17,20 +18,6 @@ function Creatable({ setCategory, name }) {
   useEffect(() => {
     setCategoryList(categories);
   }, [categories]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const { mutate } = useMutation({
     mutationFn: async (inputValue) => await addCategory(inputValue),
@@ -48,7 +35,7 @@ function Creatable({ setCategory, name }) {
     category.name.toLowerCase().includes(inputValue.toLowerCase())
   );
 
-  const categoryIncluded = categoryList.some((category) =>
+  const isCategoryIncluded = categoryList.some((category) =>
     category.name.toLowerCase().includes(inputValue.toLowerCase())
   );
 
@@ -58,12 +45,6 @@ function Creatable({ setCategory, name }) {
     setInputValue(category.name);
     setIsOpen(false);
   };
-  // const displayOption =
-  //   inputValue === ""
-  //     ? categoryList
-  //     : categoryList.filter((category) =>
-  //         category.name.toLowerCase().includes(inputValue.toLowerCase())
-  //       );
 
   const handleAddCategory = (inputValue) => {
     mutate(inputValue);
@@ -98,7 +79,7 @@ function Creatable({ setCategory, name }) {
                 </button>
               </div>
             )}
-          {(inputValue === "" || categoryIncluded) &&
+          {(inputValue === "" || isCategoryIncluded) &&
             categoryList
               .filter((ca) => ca.name.includes(inputValue))
               .map((c) => {

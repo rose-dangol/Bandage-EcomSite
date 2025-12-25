@@ -16,7 +16,7 @@ const CreateProduct = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [error, setError] = useState("");
+  const [error, setError] = useState({});
   const [colorInput, setColorInput] = useState([]);
   const [category, setCategory] = useState();
   const [formData, setFormData] = useState({
@@ -63,7 +63,7 @@ const CreateProduct = () => {
         }));
         setColorInput([]);
       } else {
-        setError("Color must be valid");
+        setError({ color: "Color must be valid" });
       }
     }
   };
@@ -136,16 +136,51 @@ const CreateProduct = () => {
     }));
   };
 
+  const validateForm = (updatedFormData) => {
+    const newError = {};
+
+    if (!updatedFormData.name) {
+      newError.name = "Name is required";
+    }
+
+    if (!updatedFormData.description) {
+      newError.description = "Description is required";
+    }
+
+    if (updatedFormData.image.length === 0) {
+      newError.image = "There should be atleast one image.";
+    }
+
+    if (updatedFormData.price <= 0) {
+      newError.price = "Price must be greater than 0";
+    }
+
+    if (updatedFormData.discount < 0 || updatedFormData.discount > 100) {
+      newError.discount = "Discount must be between 0-100";
+    }
+
+    if (updatedFormData.colors.length === 0) {
+      newError.colors = "Select atleast one color option";
+    }
+
+    setError(newError);
+    if (Object.keys(newError).length > 0) {
+      Object.values(newError).forEach((e) => {
+        toast.error(e);
+      });
+    }
+    return Object.keys(newError).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
 
     const convertedImage = await Promise.all(
       formData.image.map(async (imageData) => {
         if (imageData.file) {
           return imageData.file;
         }
-        return urlToObject(imageData.url);
+        return await urlToObject(imageData.url);
       })
     );
 
@@ -155,9 +190,14 @@ const CreateProduct = () => {
       categoryId: category,
     };
 
-    id
-      ? UpdateMutation.mutate(updatedFormData)
-      : AddMutation.mutate(updatedFormData);
+    // Fixed: validateForm should be called first
+    if (validateForm(updatedFormData)) {
+      if (id) {
+        UpdateMutation.mutate(updatedFormData);
+      } else {
+        AddMutation.mutate(updatedFormData);
+      }
+    }
   };
 
   if (isLoading) return <h1>Loading...</h1>;
@@ -184,7 +224,9 @@ const CreateProduct = () => {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          {/* {error && <p className="text-xs text-red-500 mt-1">Error Message</p>} */}
+          {error.name && (
+            <p className="text-xs text-red-500 mt-1">{error.name}</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -199,6 +241,9 @@ const CreateProduct = () => {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
           />
+          {error.description && (
+            <p className="text-xs text-red-500 mt-1">{error.description}</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -248,8 +293,9 @@ const CreateProduct = () => {
               </button>
             </div>
           </div>
-
-          {/* <p className="text-xs text-red-500 mt-1">Lorem ipsum dolor amit</p> */}
+          {error.image && (
+            <p className="text-xs text-red-500 mt-1">{error.image}</p>
+          )}
         </div>
 
         <div className="flex gap-2">
@@ -265,7 +311,9 @@ const CreateProduct = () => {
               onChange={handleChange}
               className="px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            {/* {error&&<p className="text-xs text-red-500 mt-1">Error Message</p>} */}
+            {error.price && (
+              <p className="text-xs text-red-500 mt-1">{error.price}</p>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -280,6 +328,9 @@ const CreateProduct = () => {
               onChange={handleChange}
               className="max-w-max px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
             />
+            {error.discount && (
+              <p className="text-xs text-red-500 mt-1">{error.discount}</p>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -290,6 +341,9 @@ const CreateProduct = () => {
             setCategory={setCategory}
             name={product?.category?.name || ""}
           />
+          {error.category && (
+            <p className="text-xs text-red-500 mt-1">{error.category}</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -313,6 +367,9 @@ const CreateProduct = () => {
               onClick={handleColorAdd}
             />
           </div>
+          {error.colors && (
+            <p className="text-xs text-red-500 mt-1">{error.colors}</p>
+          )}
           <div className="flex w-full justify-items-start flex-wrap gap-10">
             {formData.colors.map((color, index) => (
               <div key={index} className="flex items-center gap-5">

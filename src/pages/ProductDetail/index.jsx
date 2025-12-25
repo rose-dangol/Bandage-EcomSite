@@ -25,6 +25,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
+  const [showDialog, setShowDialog] = useState(false);
 
   // Fetching product data
   const {
@@ -36,6 +37,7 @@ const ProductDetail = () => {
     queryFn: () => fetchProductById(id),
     refetchOnWindowFocus: false,
   });
+
   const DeleteMutation = useMutation({
     mutationFn: (id) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
@@ -70,10 +72,13 @@ const ProductDetail = () => {
         No Product found
       </div>
     );
+
   const currentImage = product.image?.[currentImageIndex];
+
   const handleDelete = (id) => {
-    DeleteMutation.mutate(id);
+    // ;
   };
+
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
@@ -236,13 +241,43 @@ const ProductDetail = () => {
           <div className="flex flex-col items-center gap-8 text-grayText pt-10">
             <SquarePen
               className="hover:text-blueBlack cursor-pointer"
-              onClick={() => navigate(`/updateProduct/${product.id}`)}
+              onClick={() => navigate(`/updateProduct/${id}`)}
             />
             <Trash
               className="hover:text-red-500 cursor-pointer"
-              onClick={() => handleDelete(product.id)}
+              onClick={() => setShowDialog(true)}
             />
           </div>
+          {showDialog && (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full mx-4 text-center">
+                <p className="heading-4 text-blueBlack mb-2">
+                  Delete Confirmation
+                </p>
+                <p className="paragraph text-gray-600 mb-6">
+                  Are you sure you want to delete?
+                </p>
+
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={() => setShowDialog(false)}
+                    className="px-4 py-2 border border-gray-300 rounded text-blueBlack heading-6 cursor-pointer hover:bg-gray-50 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      DeleteMutation.mutate(id);
+                      setShowDialog(false);
+                    }}
+                    className="px-4 py-2 bg-red-500 text-white rounded heading-6 cursor-pointer hover:bg-red-600 transition"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Description Section */}
