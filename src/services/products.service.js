@@ -1,13 +1,11 @@
 import axios from "axios";
-import { urlToObject } from "../utils/helper";
-import { ClockFading } from "lucide-react";
 
 // const API_BASE = "https://jsonplaceholder.typicode.com";
 const API_BASE = `${import.meta.env.VITE_API_URL}products/`;
 
 export const getImageUrl = (path) => {
   const img = `${import.meta.env.VITE_API_BASE}/${path}`;
-  console.log(img);
+  // console.log(img);
   return img;
 };
 
@@ -65,5 +63,10 @@ export const updateProduct = async (id, productData) => {
   });
   formData.append("categoryId", productData.categoryId);
   const response = await axios.patch(`${API_BASE}${id}`, formData);
+  return response.data;
+};
+
+export const deleteProduct = async (id) => {
+  const response = await axios.delete(`${API_BASE}${id}`);
   return response.data;
 };

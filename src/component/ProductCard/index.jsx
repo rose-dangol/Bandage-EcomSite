@@ -1,9 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getImageUrl } from "../../services/products";
+import { getImageUrl } from "../../services/products.service";
 // import { getLayoutClass } from "../../utils/helper";
 
-const ProductCard = ({ products }) => {
+const ProductCard = ({ products, viewType }) => {
+  console.log(products);
+  console.log(viewType);
   const navigate = useNavigate();
   const handleClick = (id) => {
     navigate(`/shop/products/${id}/`);
@@ -21,10 +23,18 @@ const ProductCard = ({ products }) => {
           Problems trying to resolve the conflict between
         </span>
       </div>
-      <div className="grid xl:grid-cols-4 md:grid-cols grid-cols-1 mx-auto lg:gap-x-5 md:gap-4 gap-15 p-5 md:px-20">
+      <div
+        className={`mx-auto p-5 md:px-20 ${
+          viewType
+            ? "grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-x-5"
+            : "flex flex-col"
+        }`}
+      >
         {products.map((product) => (
           <div
-            className="flex flex-col gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:scale-105"
+            className={`flex ${
+              viewType ? "flex-col" : "flex-row"
+            } gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:scale-105`}
             key={product?.id}
             onClick={() => handleClick(product?.id)}
           >

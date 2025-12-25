@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addCategory, getCategories } from "../../services/category";
+import { addCategory, getCategories } from "../../services/category.service";
 import { useState, useEffect, useRef } from "react";
 
 function Creatable({ setCategory, name }) {
@@ -13,21 +13,10 @@ function Creatable({ setCategory, name }) {
     queryFn: getCategories,
     refetchOnWindowFocus: false,
   });
+
   useEffect(() => {
     setCategoryList(categories);
   }, [categories]);
-  // console.log(categoryList);
-  const { mutate } = useMutation({
-    mutationFn: async (inputValue) => await addCategory(inputValue),
-    onSuccess: (data) => {
-      // queryClient.invalidateQueries({ queryKey: ["category"] });
-      setCategoryList((prev) => [...prev, data.data]);
-      setCategory(data.data.id);
-    },
-    onError: (error) => {
-      console.log("error:", error.message);
-    },
-  });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -43,10 +32,25 @@ function Creatable({ setCategory, name }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const { mutate } = useMutation({
+    mutationFn: async (inputValue) => await addCategory(inputValue),
+    onSuccess: (data) => {
+      // queryClient.invalidateQueries({ queryKey: ["category"] });
+      setCategoryList((prev) => [...prev, data.data]);
+      setCategory(data.data.id);
+    },
+    onError: (error) => {
+      console.log("error:", error.message);
+    },
+  });
+
   const filterOptions = categoryList.filter((category) =>
     category.name.toLowerCase().includes(inputValue.toLowerCase())
   );
-  // console.log(categoryList);
+
+  const categoryIncluded = categoryList.some((category) =>
+    category.name.toLowerCase().includes(inputValue.toLowerCase())
+  );
 
   const handleSelectCategory = (category) => {
     console.log(category);
@@ -54,6 +58,12 @@ function Creatable({ setCategory, name }) {
     setInputValue(category.name);
     setIsOpen(false);
   };
+  // const displayOption =
+  //   inputValue === ""
+  //     ? categoryList
+  //     : categoryList.filter((category) =>
+  //         category.name.toLowerCase().includes(inputValue.toLowerCase())
+  //       );
 
   const handleAddCategory = (inputValue) => {
     mutate(inputValue);
@@ -73,7 +83,7 @@ function Creatable({ setCategory, name }) {
         />
       </div>
       {isOpen && (
-        <div className="absolute top-full right-0 left-0 flex flex-col border border-gray-300 bg-white mt-1 rounded shadow-lg z-10 bg-whi h-50 overflow-y-scroll">
+        <div className="absolute top-full right-0 left-0 flex flex-col border border-gray-300 bg-white mt-1 rounded shadow-lg z-10 bg-whi max-h-50 overflow-y-scroll [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
           {!filterOptions.some(
             (c) => c.name.toLowerCase() === inputValue.toLowerCase()
           ) &&
@@ -88,15 +98,20 @@ function Creatable({ setCategory, name }) {
                 </button>
               </div>
             )}
-          {filterOptions.map((category) => (
-            <div
-              key={category.id}
-              className="p-2 cursor-pointer hover:bg-gray-100"
-              onClick={() => handleSelectCategory(category)}
-            >
-              {category.name}
-            </div>
-          ))}
+          {(inputValue === "" || categoryIncluded) &&
+            categoryList
+              .filter((ca) => ca.name.includes(inputValue))
+              .map((c) => {
+                return (
+                  <div
+                    key={c.id}
+                    className="p-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSelectCategory(c)}
+                  >
+                    {c.name}
+                  </div>
+                );
+              })}
         </div>
       )}
     </div>

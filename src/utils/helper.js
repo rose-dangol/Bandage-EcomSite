@@ -3,11 +3,13 @@ export const getLayoutClass = () => {
 };
 
 export const urlToObject = async (image) => {
+  const imageName = image.split("products/");
+  console.log(imageName[1]);
   const imageUrl = `${import.meta.env.VITE_API_BASE}\\${image}`;
   const response = await fetch(imageUrl);
   // here image is url/location of image
   const blob = await response.blob();
-  const file = new File([blob], "image.jpg", { type: blob.type });
+  const file = new File([blob], `${imageName}`, { type: blob.type });
   return file;
 };
 

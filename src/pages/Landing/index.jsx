@@ -1,17 +1,14 @@
 import { Layout } from "lucide-react";
 import {
-  TopDetail,
-  Navbar,
   BrandLogos,
   ProductCard,
-  Footer,
   DetailedProduct,
   Container,
 } from "../../component/index";
 import { getLayoutClass } from "../../utils/helper";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts } from "../../services/products";
+import { fetchProducts } from "../../services/products.service";
 const Landing = () => {
   const navigate = useNavigate();
   const {

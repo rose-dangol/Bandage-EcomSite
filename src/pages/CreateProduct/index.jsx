@@ -4,7 +4,7 @@ import {
   fetchProductById,
   getImageUrl,
   updateProduct,
-} from "../../services/products";
+} from "../../services/products.service";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Container, Creatable } from "../../component";
 import { useLocation, useNavigate, useParams } from "react-router-dom";

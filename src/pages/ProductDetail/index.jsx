@@ -1,5 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { fetchProductById, getImageUrl } from "../../services/products";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  deleteProduct,
+  fetchProductById,
+  getImageUrl,
+} from "../../services/products.service";
 import {
   Heart,
   ShoppingCart,
@@ -13,6 +17,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumb, Container, Creatable } from "../../component";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -31,6 +36,10 @@ const ProductDetail = () => {
     queryFn: () => fetchProductById(id),
     refetchOnWindowFocus: false,
   });
+  const DeleteMutation = useMutation({
+    mutationFn: (id) => deleteProduct(id),
+    onSuccess: () => navigate("/shop"),
+  });
 
   const handlePrevImage = () => {
     setCurrentImageIndex((prev) =>
@@ -48,6 +57,7 @@ const ProductDetail = () => {
     return (
       <div className="flex items-center justify-center py-20">Loading...</div>
     );
+
   if (error)
     return (
       <div className="flex items-center justify-center py-20">
@@ -61,6 +71,9 @@ const ProductDetail = () => {
       </div>
     );
   const currentImage = product.image?.[currentImageIndex];
+  const handleDelete = (id) => {
+    DeleteMutation.mutate(id);
+  };
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
@@ -104,9 +117,9 @@ const ProductDetail = () => {
 
             {product.image?.length > 1 && (
               <div className="flex gap-2">
-                {product.image.map((img, idx) => (
+                {product.image.map((image, idx) => (
                   <div
-                    key={img.id}
+                    key={image.id}
                     onClick={() => setCurrentImageIndex(idx)}
                     className={`w-20 h-20 rounded-lg overflow-hidden border ${
                       currentImageIndex === idx
@@ -115,7 +128,7 @@ const ProductDetail = () => {
                     }`}
                   >
                     <img
-                      src={getImageUrl(img.url)}
+                      src={getImageUrl(image.url)}
                       alt={`Thumbnail ${idx}`}
                       className="w-full h-full object-cover"
                     />
@@ -227,7 +240,7 @@ const ProductDetail = () => {
             />
             <Trash
               className="hover:text-red-500 cursor-pointer"
-              onClick={() => navigate()}
+              onClick={() => handleDelete(product.id)}
             />
           </div>
         </div>

@@ -1,8 +1,6 @@
 import {
   BrandLogos,
   Container,
-  Footer,
-  Navbar,
   Pagination,
   ProductCard,
   ShopCard,
@@ -10,10 +8,11 @@ import {
 } from "../../component";
 import { LayoutGrid, ListChecks } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts } from "../../services/products";
+import { fetchProducts } from "../../services/products.service";
+import { useState } from "react";
 
 const AllProducts = () => {
-  // const [viewType, setViewType] = useState("grid");
+  const [viewType, setViewType] = useState(true);
   const {
     data: products,
     isLoading,
@@ -28,7 +27,7 @@ const AllProducts = () => {
   if (error) return <div>Error: {error.message}</div>;
   if (!products) return <div>No products found</div>;
 
-  console.log(products[1].image[0]);
+  // console.log(products[1].image[0]);
   return (
     <div className="w=full">
       <Container>
@@ -40,10 +39,10 @@ const AllProducts = () => {
           <div className="flex gap-[15px] items-center">
             <span className="heading-6 text-grayText">Views:</span>
             <div className="border-[#ececec] border-2 p-2 rounded">
-              <LayoutGrid fill="blueBlack" />
+              <LayoutGrid fill="blueBlack" onClick={() => setViewType(true)} />
             </div>
             <div className="border-[#ececec] border-2 p-2 rounded">
-              <ListChecks color="grayText" />
+              <ListChecks color="grayText" onClick={() => setViewType(false)} />
             </div>
           </div>
           <div className="flex gap-1.5">
@@ -57,7 +56,7 @@ const AllProducts = () => {
             </button>
           </div>
         </div>
-        <ProductCard products={products} />
+        <ProductCard products={products} viewType={viewType} />
         <Pagination />
         <BrandLogos />
       </Container>
