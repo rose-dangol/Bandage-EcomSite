@@ -28,13 +28,13 @@ const Pagination = ({ meta, currentPage, onPageChange }) => {
       </button>
       {totalPages.map((i) => (
         <button
+          key={i}
           onClick={() => onPageChange(i)}
           className={`p-6 flex items-center links border-r border-mutedText btn-transitions ${
             currentPage === i
               ? "text-white bg-primary"
               : "text-primary hover:bg-mutedText"
           }`}
-          key={i}
         >
           {i}
         </button>

@@ -17,6 +17,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumb, Container, DialogBox } from "../../component";
 import { useState } from "react";
+import { formatPrice } from "../../utils/helper";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -42,6 +43,11 @@ const ProductDetail = () => {
     mutationFn: (id) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
   });
+
+  // const price = new Intl.NumberFormat("en-US", {
+  //   style: "currency",
+  //   currency: "USD",
+  // });
 
   if (isLoading)
     return (
@@ -156,14 +162,14 @@ const ProductDetail = () => {
 
               {/* price */}
               <div className="heading-3 text-blueBlack">
-                $
-                {Number(product.priceAfterDiscount)?.toFixed(2) ||
-                  Number(product.price)}
+                {formatPrice(
+                  (product.priceAfterDiscount ?? product.price).toFixed(2)
+                )}
               </div>
 
               {product.discount > 0 && (
                 <div className="paragraph text-mutedText line-through">
-                  ${product.price}
+                  {formatPrice(product.price.toFixed(2))}
                 </div>
               )}
 

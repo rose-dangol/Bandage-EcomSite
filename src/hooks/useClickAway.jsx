@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+
 export const useClickAway = (callback) => {
   const containerRef = useRef(null);
   useEffect(() => {

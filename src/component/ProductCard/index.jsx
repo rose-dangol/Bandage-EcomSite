@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getImageUrl } from "../../services/products.service";
+import { formatPrice } from "../../utils/helper";
 // import { getLayoutClass } from "../../utils/helper";
 
 const ProductCard = ({ products, viewType }) => {
@@ -60,10 +61,10 @@ const ProductCard = ({ products, viewType }) => {
               </div>
               <div className="heading-5">
                 <span className="text-mutedText line-through mr-2">
-                  ${product?.price}
+                  {formatPrice(product.price)}
                 </span>
                 <span className="text-[#23856D]">
-                  ${Number(product?.priceAfterDiscount).toFixed(2)}
+                  {formatPrice(product?.priceAfterDiscount.toFixed(2))}
                 </span>
               </div>
               <div className="flex gap-3 pt-2">

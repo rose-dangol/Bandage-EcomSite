@@ -54,8 +54,8 @@ export const updateProduct = async (id, productData) => {
   // formData.append("image", convertedImage);
   formData.append("name", productData.name);
   formData.append("description", productData.description);
-  productData.image.forEach((image, index) => {
-    formData.append(`image[${index}]`, image);
+  productData.image.forEach((image) => {
+    formData.append(`image`, image);
   });
   formData.append("price", productData.price);
   formData.append("discount", productData.discount);

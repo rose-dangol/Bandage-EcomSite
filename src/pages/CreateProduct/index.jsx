@@ -43,7 +43,11 @@ const CreateProduct = () => {
       setFormData({
         name: product.name || "",
         description: product.description || "",
-        image: product.image || [],
+        image:
+          product.image?.map((url, idx) => ({
+            url,
+            id: idx,
+          })) || [],
         price: product.price || "",
         discount: product.discount || "",
         colors: product.colors || [],
@@ -129,10 +133,10 @@ const CreateProduct = () => {
     }
   };
 
-  const handleRemoveFile = (id) => {
+  const handleRemoveFile = (index) => {
     setFormData((prev) => ({
       ...prev,
-      image: prev.image.filter((img) => img.id !== id),
+      image: prev.image.filter((_, i) => i !== index),
     }));
   };
 
@@ -177,11 +181,13 @@ const CreateProduct = () => {
 
     const convertedImage = await Promise.all(
       formData.image.map(async (imageData) => {
-        console.log("image data", imageData.url?.[0]);
+        console.log("image data", imageData);
         if (imageData.file) {
           return imageData.file;
         }
-        return await urlToObject(imageData.url?.[0]);
+        if (imageData.url) {
+          return await urlToObject(imageData.url);
+        }
       })
     );
 
@@ -254,14 +260,18 @@ const CreateProduct = () => {
               <div className="flex flex-col gap-2">
                 {formData.image.map((img, index) => (
                   <div
-                    key={index}
+                    key={img.id || index}
                     className="flex items-center justify-between border border-[#ECECEC] p-3"
                   >
-                    {img ? (
-                      <img src={getImageUrl(img)} className="h-12 w-10" />
-                    ) : (
+                    {img.url ? (
+                      <img
+                        src={getImageUrl(img.url)}
+                        className="h-12 w-10"
+                        alt="preview"
+                      />
+                    ) : img.file ? (
                       <span>{img.file?.name}</span>
-                    )}
+                    ) : null}
 
                     <Trash2
                       color="red"

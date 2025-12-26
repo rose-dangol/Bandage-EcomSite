@@ -19,3 +19,12 @@ export const validateColorName = (color) => {
   // Check if the computed color is the same as the input color
   return style.color == color;
 };
+
+const price = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+});
+
+export const formatPrice = (value) => {
+  return price.format(Number(value));
+};
