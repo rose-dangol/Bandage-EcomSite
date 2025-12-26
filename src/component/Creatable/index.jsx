@@ -1,48 +1,41 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addCategory, getCategories } from "../../services/category";
-import { useState, useEffect, useRef } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { addCategory, getCategories } from "../../services/category.service";
+import { useState, useEffect } from "react";
+import { useClickAway } from "../../hooks/useClickAway";
 
-function Creatable({ setCategory, id, name }) {
-  const [inputValue, setInputValue] = useState("");
+function Creatable({ setCategory, name }) {
+  const [inputValue, setInputValue] = useState(name);
+  const [categoryList, setCategoryList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef(null);
+  const containerRef = useClickAway(() => setIsOpen(false));
 
-  const queryClient = useQueryClient();
-  const { data: categories } = useQuery({
+  const { data: categories = [] } = useQuery({
     queryKey: ["category"],
     queryFn: getCategories,
+    refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    setCategoryList(categories);
+  }, [categories]);
 
   const { mutate } = useMutation({
     mutationFn: async (inputValue) => await addCategory(inputValue),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["category"] });
+      // queryClient.invalidateQueries({ queryKey: ["category"] });
+      setCategoryList((prev) => [...prev, data.data]);
       setCategory(data.data.id);
     },
     onError: (error) => {
-      console.log("error:", error.message);
+      console.error("error:", error.message);
     },
   });
 
-  useEffect(() => {
-    setInputValue(name);
-  }, [name]);
+  const filterOptions = categoryList.filter((category) =>
+    category.name.toLowerCase().includes(inputValue.toLowerCase())
+  );
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const filterOptions = categories?.filter((category) =>
+  const isCategoryIncluded = categoryList.some((category) =>
     category.name.toLowerCase().includes(inputValue.toLowerCase())
   );
 
@@ -70,27 +63,35 @@ function Creatable({ setCategory, id, name }) {
         />
       </div>
       {isOpen && (
-        <div className="absolute top-full right-0 left-0 flex flex-col border border-gray-300 bg-white mt-1 rounded shadow-lg z-10">
-          {filterOptions?.map((category) => (
-            <div
-              key={category.id}
-              className="p-2 cursor-pointer hover:bg-gray-100"
-              onClick={() => handleSelectCategory(category)}
-            >
-              {category.name}
-            </div>
-          ))}
-          {filterOptions?.length === 0 && (
-            <div className="p-2 cursor-pointer flex justify-between items-center">
-              "{inputValue}"
-              <button
-                onClick={() => handleAddCategory(inputValue)}
-                className="bg-primary cursor-pointer text-white px-6 py-2 rounded hover:bg-secondary btn-transitions"
-              >
-                Create
-              </button>
-            </div>
-          )}
+        <div className="absolute top-full right-0 left-0 flex flex-col border border-gray-300 bg-white mt-1 rounded shadow-lg z-10 bg-whi max-h-50 overflow-y-scroll [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+          {!filterOptions.some(
+            (c) => c.name.toLowerCase() === inputValue.toLowerCase()
+          ) &&
+            inputValue && (
+              <div className="p-2 cursor-pointer flex justify-between items-center">
+                "{inputValue}"
+                <button
+                  onClick={() => handleAddCategory(inputValue)}
+                  className="bg-primary cursor-pointer text-white px-6 py-2 rounded hover:bg-secondary btn-transitions"
+                >
+                  Create
+                </button>
+              </div>
+            )}
+          {(inputValue === "" || isCategoryIncluded) &&
+            categoryList
+              .filter((ca) => ca.name.includes(inputValue))
+              .map((c) => {
+                return (
+                  <div
+                    key={c.id}
+                    className="p-2 cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSelectCategory(c)}
+                  >
+                    {c.name}
+                  </div>
+                );
+              })}
         </div>
       )}
     </div>

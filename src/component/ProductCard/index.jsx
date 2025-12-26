@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { getImageUrl } from "../../services/products";
+import { getImageUrl } from "../../services/products.service";
+import { formatPrice } from "../../utils/helper";
 // import { getLayoutClass } from "../../utils/helper";
 
-const ProductCard = ({ products }) => {
+const ProductCard = ({ products, viewType }) => {
   const navigate = useNavigate();
   const handleClick = (id) => {
     navigate(`/shop/products/${id}/`);
@@ -21,17 +22,25 @@ const ProductCard = ({ products }) => {
           Problems trying to resolve the conflict between
         </span>
       </div>
-      <div className="grid xl:grid-cols-4 md:grid-cols grid-cols-1 mx-auto lg:gap-x-5 md:gap-4 gap-15 p-5 md:px-20">
-        {products.map((product) => (
+      <div
+        className={`mx-auto p-5 md:px-20 ${
+          viewType
+            ? "grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-x-5"
+            : "flex flex-col"
+        }`}
+      >
+        {products.data?.map((product) => (
           <div
-            className="flex flex-col gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:scale-105"
+            className={`flex ${
+              viewType ? "flex-col" : "flex-row"
+            } gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:scale-105`}
             key={product?.id}
             onClick={() => handleClick(product?.id)}
           >
-            {product.img?.[0] && (
+            {product.image?.[0] && (
               <div className="h-[300px] w-full">
                 <img
-                  src={getImageUrl(product.img[0].url)}
+                  src={getImageUrl(product.image[0])}
                   className="h-full w-full object-cover"
                   alt="product-image"
                 />
@@ -41,15 +50,17 @@ const ProductCard = ({ products }) => {
               <span className="heading-5 text-blueBlack text-center">
                 {product?.name}
               </span>
-              <span className="links text-center text-grayText mb-1 whitespace-nowrap">
-                {product?.description}
-              </span>
+              <div className="w-full text-center truncate">
+                <span className="max-w-max links text-grayText mb-1 whitespace-nowrap ">
+                  {product?.description}
+                </span>
+              </div>
               <div className="heading-5">
                 <span className="text-mutedText line-through mr-2">
-                  ${product?.price}
+                  {formatPrice(product.price)}
                 </span>
                 <span className="text-[#23856D]">
-                  ${product?.priceAfterDiscount}
+                  {formatPrice(Number(product?.priceAfterDiscount)?.toFixed(2))}
                 </span>
               </div>
               <div className="flex gap-3 pt-2">

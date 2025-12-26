@@ -1,17 +1,14 @@
 import { Layout } from "lucide-react";
 import {
-  TopDetail,
-  Navbar,
   BrandLogos,
   ProductCard,
-  Footer,
   DetailedProduct,
   Container,
 } from "../../component/index";
 import { getLayoutClass } from "../../utils/helper";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { fetchProducts } from "../../services/products";
+import { fetchProducts } from "../../services/products.service";
 const Landing = () => {
   const navigate = useNavigate();
   const {
@@ -21,6 +18,7 @@ const Landing = () => {
   } = useQuery({
     queryKey: ["products"],
     queryFn: fetchProducts,
+    refetchOnWindowFocus: false,
   });
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -139,7 +137,7 @@ const Landing = () => {
 
         {/* featured products */}
         <div className={`mx-auto ${getLayoutClass()}`}>
-          <ProductCard products={products} />
+          <ProductCard products={products} viewType={true} />
           <button
             className="mx-auto btn-transitions uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
             onClick={() => {

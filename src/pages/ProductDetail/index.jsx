@@ -1,37 +1,32 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  deleteProduct,
   fetchProductById,
   getImageUrl,
-  updateProduct,
-} from "../../services/products";
+} from "../../services/products.service";
 import {
   Heart,
   ShoppingCart,
   Eye,
   ChevronRight,
   ChevronLeft,
+  SquarePen,
   Star,
+  Trash,
 } from "lucide-react";
-import { useLocation, useParams } from "react-router-dom";
-import { Breadcrumb, Container, Creatable } from "../../component";
-import { useState, useEffect } from "react";
-import toast from "react-hot-toast";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Breadcrumb, Container, DialogBox } from "../../component";
+import { useState } from "react";
+import { formatPrice } from "../../utils/helper";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const location = useLocation();
-  const queryClient = useQueryClient();
-
-  const isAdmin = true;
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
-  const [category, setCategory] = useState("");
-  const [updatedProduct, setUpdatedProduct] = useState({
-    name: "",
-    price: "",
-    status: "",
-    categoryId: "",
-  });
+  const [showDialog, setShowDialog] = useState(false);
+  // const [isFilled, setIsFilled] = useState(false);
 
   // Fetching product data
   const {
@@ -41,67 +36,24 @@ const ProductDetail = () => {
   } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
-  });
-  // Setting product data
-  useEffect(() => {
-    if (product) {
-      setUpdatedProduct({
-        name: product.name || "",
-        price: product.price || "",
-        status: product.status || "",
-        description: product.description || "",
-        categoryId: product.categoryId || "",
-      });
-      if (product.color) {
-        setSelectedColor(product.color.color);
-      }
-    }
-  }, [product]);
-
-  const mutation = useMutation({
-    mutationFn: () => updateProduct(id, updatedProduct),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["product", id] });
-      toast.success("Product updated!");
-    },
-    onError: (error) => {
-      toast.error(`Error: ${error.message}`);
-    },
+    refetchOnWindowFocus: false,
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedProduct((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const DeleteMutation = useMutation({
+    mutationFn: (id) => deleteProduct(id),
+    onSuccess: () => navigate("/shop"),
+  });
 
-  const handleEdit = (e) => {
-    e.preventDefault();
-    setUpdatedProduct((prev) => ({
-      ...prev,
-      category: category,
-    }));
-    mutation.mutate(updatedProduct);
-  };
-
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? product.img.length - 1 : prev - 1
-    );
-  };
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === product.img.length - 1 ? 0 : prev + 1
-    );
-  };
+  // const price = new Intl.NumberFormat("en-US", {
+  //   style: "currency",
+  //   currency: "USD",
+  // });
 
   if (isLoading)
     return (
       <div className="flex items-center justify-center py-20">Loading...</div>
     );
+
   if (error)
     return (
       <div className="flex items-center justify-center py-20">
@@ -114,7 +66,20 @@ const ProductDetail = () => {
         No Product found
       </div>
     );
-  const currentImage = product.img?.[currentImageIndex];
+  const imageUrls = product.image;
+  const currentImage = imageUrls?.[currentImageIndex];
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? imageUrls.length - 1 : prev - 1
+    );
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === imageUrls.length - 1 ? 0 : prev + 1
+    );
+  };
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
@@ -128,7 +93,7 @@ const ProductDetail = () => {
             <div className="relative overflow-hidden w-full h-[500px]">
               {currentImage ? (
                 <img
-                  src={getImageUrl(currentImage.url)}
+                  src={getImageUrl(currentImage)}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
@@ -137,8 +102,7 @@ const ProductDetail = () => {
                   No image available
                 </div>
               )}
-
-              {product.img?.length > 1 && (
+              {product.image?.length > 1 && (
                 <>
                   <ChevronLeft
                     onClick={handlePrevImage}
@@ -155,12 +119,11 @@ const ProductDetail = () => {
                 </>
               )}
             </div>
-
-            {product.img?.length > 1 && (
+            {product.image.length > 1 && (
               <div className="flex gap-2">
-                {product.img.map((img, idx) => (
+                {product.image.map((url, idx) => (
                   <div
-                    key={img.id}
+                    key={idx}
                     onClick={() => setCurrentImageIndex(idx)}
                     className={`w-20 h-20 rounded-lg overflow-hidden border ${
                       currentImageIndex === idx
@@ -169,7 +132,7 @@ const ProductDetail = () => {
                     }`}
                   >
                     <img
-                      src={getImageUrl(img.url)}
+                      src={getImageUrl(url)}
                       alt={`Thumbnail ${idx}`}
                       className="w-full h-full object-cover"
                     />
@@ -199,12 +162,14 @@ const ProductDetail = () => {
 
               {/* price */}
               <div className="heading-3 text-blueBlack">
-                ${product.priceAfterDiscount?.toFixed(2) || product.price}
+                {formatPrice(
+                  Number(product.priceAfterDiscount ?? product.price).toFixed(2)
+                )}
               </div>
 
               {product.discount > 0 && (
                 <div className="paragraph text-mutedText line-through">
-                  ${product.price}
+                  {formatPrice(product.price.toFixed(2))}
                 </div>
               )}
 
@@ -223,8 +188,7 @@ const ProductDetail = () => {
               </div>
               <div className="w-[75%] mb-2">
                 <p className="paragraph text-[#858585] text-left">
-                  {product.description ||
-                    "Met minim Mollie non desert Alamo est sit cliquey dolor do met sent. RELIT official consequent door ENIM RELIT Mollie.Excitation venial consequent sent nostrum met."}
+                  {product.description || "Description not available."}
                 </p>
               </div>
 
@@ -236,106 +200,78 @@ const ProductDetail = () => {
                   </span>
                 </div>
               )}
-
-              {product.color && (
+              {product.colors?.length > 0 && (
                 <div className="flex gap-3">
-                  <button
-                    onClick={() => setSelectedColor(product.color.color)}
-                    className={`w-7 h-7 rounded-full border-2 transition ${
-                      selectedColor === product.color.color
-                        ? "border-gray-900"
-                        : "border-gray-300 hover:border-gray-600"
-                    }`}
-                    style={{
-                      backgroundColor: product.color.color,
-                    }}
-                    title={product.color.color}
-                  />
+                  {product.colors.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedColor(color)}
+                      className={`w-7 h-7 rounded-full border-2 transition ${
+                        selectedColor === color
+                          ? "border-gray-900"
+                          : "border-gray-300 hover:border-gray-600"
+                      }`}
+                      style={{
+                        backgroundColor: color,
+                      }}
+                      title={color}
+                    />
+                  ))}
                 </div>
               )}
             </div>
-
             <div className="flex gap-3 pt-6 border-t border-gray-200">
               <button className="max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition">
                 Select Options
               </button>
-              <button className="p-3 border border-gray-300 hover:border-gray-400 rounded-full transition">
+              <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
                 <Heart size={20} className="text-gray-600" />
-              </button>
-              <button className="p-3 border border-gray-300 hover:border-gray-400 rounded-full transition">
+              </div>
+              <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
                 <ShoppingCart size={20} className="text-gray-600" />
-              </button>
-              <button className="p-3 border border-gray-300 hover:border-gray-400 rounded-full transition">
+              </div>
+              <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
                 <Eye size={20} className="text-gray-600" />
-              </button>
+              </div>
             </div>
           </div>
+
+          {/* action */}
+          <div className="flex flex-col items-center gap-8 text-grayText pt-10">
+            <SquarePen
+              className="hover:text-blueBlack cursor-pointer"
+              onClick={() => navigate(`/updateProduct/${id}`)}
+            />
+            <Trash
+              className="hover:text-red-500 cursor-pointer"
+              onClick={() => setShowDialog(true)}
+            />
+          </div>
+          {showDialog && (
+            <DialogBox
+              title={"Delete Confirmation"}
+              subText={"Are you sure you want to delete?"}
+            >
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => setShowDialog(false)}
+                  className="px-4 py-2 border border-gray-300 rounded text-blueBlack heading-6 cursor-pointer hover:bg-gray-50 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    DeleteMutation.mutate(id);
+                    setShowDialog(false);
+                  }}
+                  className="px-4 py-2 bg-red-500 text-white rounded heading-6 cursor-pointer hover:bg-red-600 transition"
+                >
+                  Confirm
+                </button>
+              </div>
+            </DialogBox>
+          )}
         </div>
-        {/* Admin Edit Section */}
-        {isAdmin && (
-          <div className="space-y-5 w-80">
-            <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Name
-              </label>
-              <input
-                type="text"
-                name="name"
-                placeholder="Enter product name"
-                value={updatedProduct.name}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded transition"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Price
-              </label>
-              <input
-                type="number"
-                name="price"
-                placeholder="Enter price"
-                value={updatedProduct.price}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded transition"
-              />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Category
-              </label>
-              <Creatable setCategory={setCategory} />
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Active Status
-              </label>
-              <select
-                name="status"
-                value={updatedProduct.status}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded bg-white cursor-pointer"
-              >
-                <option value="">Select status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-
-            <div className="flex gap-3 pt-4">
-              <button
-                onClick={handleEdit}
-                disabled={mutation.isPending}
-                className="flex-1 bg-primary text-white btn-text py-2 rounded hover:bg-secondary btn-transitions disabled:opacity-50"
-              >
-                {mutation.isPending ? "Updating..." : "Submit"}
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* Description Section */}
         <div className="flex justify-center gap-15 links text-grayText mt-3 border-b py-5 border-b-[#ECECEC] w-[80%] mx-auto">

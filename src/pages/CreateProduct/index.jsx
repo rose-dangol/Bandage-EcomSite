@@ -3,17 +3,21 @@ import {
   addProduct,
   fetchProductById,
   getImageUrl,
-} from "../../services/products";
+  updateProduct,
+} from "../../services/products.service";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Container, Creatable } from "../../component";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Trash2, CirclePlus } from "lucide-react";
 import toast from "react-hot-toast";
+import { urlToObject, validateColorName } from "../../utils/helper";
 
 const CreateProduct = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { id } = useParams();
-  const [colorInput, setColorInput] = useState("");
+  const [error, setError] = useState({});
+  const [colorInput, setColorInput] = useState([]);
   const [category, setCategory] = useState();
   const [formData, setFormData] = useState({
     name: "",
@@ -24,45 +28,45 @@ const CreateProduct = () => {
     colors: [],
   });
 
-  const { data: product } = useQuery({
+  const { data: product, isLoading } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
-
     enabled: !!id,
+    refetchOnWindowFocus: false,
   });
-
-  console.log(product);
 
   useEffect(() => {
     if (product) {
       setFormData({
         name: product.name || "",
         description: product.description || "",
-        image: product.img || [],
+        image:
+          product.image?.map((url, idx) => ({
+            url,
+            id: idx,
+          })) || [],
         price: product.price || "",
         discount: product.discount || "",
         colors: product.colors || [],
       });
+      setCategory(product.category.id);
     }
   }, [product]);
 
-  // const [formData, setFormData] = useState({
-  //   name: "",
-  //   description: "",
-  //   image: [],
-  //   price: "",
-  //   discount: "",
-  //   colors: [],
-  //   // categoryId: "",
-  // });
   const queryClient = useQueryClient();
 
   const handleColorAdd = () => {
-    setFormData((prev) => ({
-      ...prev,
-      colors: [...prev.colors, colorInput],
-    }));
-    setColorInput("");
+    if (colorInput) {
+      if (validateColorName(colorInput)) {
+        setFormData((prev) => ({
+          ...prev,
+          colors: [...prev.colors, colorInput],
+        }));
+        setColorInput([]);
+      } else {
+        setError({ color: "Color must be valid" });
+      }
+    }
   };
   const handleRemoveColor = (index) => {
     setFormData((prev) => ({
@@ -71,7 +75,7 @@ const CreateProduct = () => {
     }));
   };
 
-  const mutation = useMutation({
+  const AddMutation = useMutation({
     mutationFn: () => addProduct({ ...formData, categoryId: category }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -90,6 +94,18 @@ const CreateProduct = () => {
       toast.error(`Error: ${error.message}`);
     },
   });
+
+  const UpdateMutation = useMutation({
+    mutationFn: (data) => updateProduct(id, data),
+    onSuccess: () => {
+      toast.success("Product updated successfully!");
+      navigate(`/shop/products/${product.id}`);
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
+    },
+  });
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -111,22 +127,85 @@ const CreateProduct = () => {
       }));
     }
   };
-  const handleRemoveFile = (id) => {
+
+  const handleRemoveFile = (index) => {
     setFormData((prev) => ({
       ...prev,
-      image: prev.image.filter((img) => img.id !== id),
+      image: prev.image.filter((_, i) => i !== index),
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    mutation.mutate(formData);
+  const validateForm = (updatedFormData) => {
+    const newError = {};
+
+    if (!updatedFormData.name) {
+      newError.name = "Name is required";
+    }
+
+    if (!updatedFormData.description) {
+      newError.description = "Description is required";
+    }
+
+    if (updatedFormData.image.length === 0) {
+      newError.image = "There should be atleast one image.";
+    }
+
+    if (updatedFormData.price <= 0) {
+      newError.price = "Price must be greater than 0";
+    }
+
+    if (updatedFormData.discount < 0 || updatedFormData.discount > 100) {
+      newError.discount = "Discount must be between 0-100";
+    }
+
+    if (updatedFormData.colors.length === 0) {
+      newError.colors = "Select atleast one color option";
+    }
+
+    setError(newError);
+    if (Object.keys(newError).length > 0) {
+      Object.values(newError).forEach((e) => {
+        toast.error(e);
+      });
+    }
+    return Object.keys(newError).length === 0;
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const convertedImage = await Promise.all(
+      formData.image.map(async (imageData) => {
+        if (imageData.file) {
+          return imageData.file;
+        }
+        if (imageData.url) {
+          return await urlToObject(imageData.url);
+        }
+      })
+    );
+
+    const updatedFormData = {
+      ...formData,
+      image: convertedImage,
+      categoryId: category,
+    };
+    if (validateForm(updatedFormData)) {
+      if (id) {
+        UpdateMutation.mutate(updatedFormData);
+      } else {
+        AddMutation.mutate(updatedFormData);
+      }
+    }
+  };
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <Container>
       <div className="flex justify-between py-6">
-        <span className="heading-3">Add Products</span>
+        <span className="heading-3">
+          {product ? "Update Products" : "Add Product"}
+        </span>
         <Breadcrumb location={location} />
       </div>
 
@@ -143,7 +222,9 @@ const CreateProduct = () => {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          {/* {error && <p className="text-xs text-red-500 mt-1">Error Message</p>} */}
+          {error.name && (
+            <p className="text-xs text-red-500 mt-1">{error.name}</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -158,9 +239,9 @@ const CreateProduct = () => {
             onChange={handleChange}
             className="w-full px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
           />
-          <p className="text-xs text-gray-400 mt-1">
-            We'll never share your email with anyone else.
-          </p>
+          {error.description && (
+            <p className="text-xs text-red-500 mt-1">{error.description}</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -171,18 +252,26 @@ const CreateProduct = () => {
           <div className="flex flex-col gap-3">
             {formData.image.length > 0 && (
               <div className="flex flex-col gap-2">
-                {formData.image.map((img) => (
+                {formData.image.map((img, index) => (
                   <div
-                    key={img.id}
+                    key={img.id || index}
                     className="flex items-center justify-between border border-[#ECECEC] p-3"
                   >
-                    <span>{img.file?.name}</span>
-                    <img src={getImageUrl(img?.url)} className="h-12 w-10" />
+                    {img.url ? (
+                      <img
+                        src={getImageUrl(img.url)}
+                        className="h-12 w-10"
+                        alt="preview"
+                      />
+                    ) : img.file ? (
+                      <span>{img.file?.name}</span>
+                    ) : null}
+
                     <Trash2
                       color="red"
                       strokeWidth={"1px"}
                       size={"24px"}
-                      onClick={() => handleRemoveFile(img.id)}
+                      onClick={() => handleRemoveFile(index)}
                       className="cursor-pointer"
                     />
                   </div>
@@ -206,8 +295,9 @@ const CreateProduct = () => {
               </button>
             </div>
           </div>
-
-          {/* <p className="text-xs text-red-500 mt-1">Lorem ipsum dolor amit</p> */}
+          {error.image && (
+            <p className="text-xs text-red-500 mt-1">{error.image}</p>
+          )}
         </div>
 
         <div className="flex gap-2">
@@ -223,7 +313,9 @@ const CreateProduct = () => {
               onChange={handleChange}
               className="px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
             />
-            {/* {error&&<p className="text-xs text-red-500 mt-1">Error Message</p>} */}
+            {error.price && (
+              <p className="text-xs text-red-500 mt-1">{error.price}</p>
+            )}
           </div>
 
           <div className="flex flex-col">
@@ -238,6 +330,9 @@ const CreateProduct = () => {
               onChange={handleChange}
               className="max-w-max px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
             />
+            {error.discount && (
+              <p className="text-xs text-red-500 mt-1">{error.discount}</p>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -246,9 +341,11 @@ const CreateProduct = () => {
           </label>
           <Creatable
             setCategory={setCategory}
-            id={id}
             name={product?.category?.name || ""}
           />
+          {error.category && (
+            <p className="text-xs text-red-500 mt-1">{error.category}</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-3">
@@ -272,19 +369,23 @@ const CreateProduct = () => {
               onClick={handleColorAdd}
             />
           </div>
-          <div className="flex w-full justify-between flex-wrap gap-5">
+          {error.colors && (
+            <p className="text-xs text-red-500 mt-1">{error.colors}</p>
+          )}
+          <div className="flex w-full justify-items-start flex-wrap gap-10">
             {formData.colors.map((color, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={color}
-                  className={`px-4 py-2 rounded border border-[#E6E6E6] outline-none focus:border-primary transition focus:outline-none focus:ring-2 focus:ring-primary`}
-                  style={{
-                    background: color,
-                    color: color === "white" ? "black" : "white",
-                  }}
-                  disabled
-                />
+              <div key={index} className="flex items-center gap-5">
+                <div className="flex items-center space-x-1">
+                  <div
+                    className={`h-10 w-10 rounded border border-[#E6E6E6] transition`}
+                    style={{
+                      backgroundColor: color?.color || color,
+                    }}
+                  />
+                  <span className="paragraph uppercase">
+                    {color?.color || color}
+                  </span>
+                </div>
                 <Trash2
                   color="red"
                   strokeWidth={"1px"}

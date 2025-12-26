@@ -5,18 +5,18 @@ const API_BASE = `${import.meta.env.VITE_API_URL}products/`;
 
 export const getImageUrl = (path) => {
   const img = `${import.meta.env.VITE_API_BASE}/${path}`;
-  console.log(img);
   return img;
 };
 
-export const fetchProducts = async (page = 1) => {
+export const fetchProducts = async (page = 1, limit = 10) => {
   const response = await axios.get(API_BASE, {
     params: {
       status: "active",
-      page: page,
+      page,
+      limit,
     },
   });
-  return response.data.data;
+  return response.data;
 };
 
 export const fetchProductById = async (id) => {
@@ -25,21 +25,18 @@ export const fetchProductById = async (id) => {
 };
 
 export const addProduct = async (productData) => {
-  console.log(productData);
   const formData = new FormData();
   formData.append("name", productData.name);
   formData.append("description", productData.description);
   productData.image.forEach((image) => {
     formData.append("image", image.file);
   });
-  // console.log(productData.image);
   formData.append("price", productData.price);
   formData.append("discount", productData.discount);
-  productData.colors.forEach((color) => {
-    formData.append("colors", color);
+  productData.colors.forEach((color, index) => {
+    formData.append(`colors[${index}]`, color);
   });
   formData.append("categoryId", productData.categoryId);
-  // console.log(formData);
   const response = await axios.post(`${API_BASE}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -47,6 +44,25 @@ export const addProduct = async (productData) => {
 };
 
 export const updateProduct = async (id, productData) => {
-  const response = await axios.patch(`${API_BASE}${id}`, productData);
+  const formData = new FormData();
+
+  // formData.append("image", convertedImage);
+  formData.append("name", productData.name);
+  formData.append("description", productData.description);
+  productData.image.forEach((image) => {
+    formData.append(`image`, image);
+  });
+  formData.append("price", productData.price);
+  formData.append("discount", productData.discount);
+  productData.colors.forEach((color, index) => {
+    formData.append(`colors[${index}]`, color);
+  });
+  formData.append("categoryId", productData.categoryId);
+  const response = await axios.patch(`${API_BASE}${id}`, formData);
+  return response.data;
+};
+
+export const deleteProduct = async (id) => {
+  const response = await axios.delete(`${API_BASE}${id}`);
   return response.data;
 };
