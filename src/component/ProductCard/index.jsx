@@ -64,7 +64,7 @@ const ProductCard = ({ products, viewType }) => {
                   {formatPrice(product.price)}
                 </span>
                 <span className="text-[#23856D]">
-                  {formatPrice(product?.priceAfterDiscount.toFixed(2))}
+                  {formatPrice(Number(product?.priceAfterDiscount)?.toFixed(2))}
                 </span>
               </div>
               <div className="flex gap-3 pt-2">

@@ -163,7 +163,7 @@ const ProductDetail = () => {
               {/* price */}
               <div className="heading-3 text-blueBlack">
                 {formatPrice(
-                  (product.priceAfterDiscount ?? product.price).toFixed(2)
+                  Number(product.priceAfterDiscount ?? product.price).toFixed(2)
                 )}
               </div>
 

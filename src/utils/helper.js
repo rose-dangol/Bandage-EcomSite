@@ -26,5 +26,5 @@ const price = new Intl.NumberFormat("en-US", {
 });
 
 export const formatPrice = (value) => {
-  return price.format(Number(value));
+  return price.format(value);
 };
