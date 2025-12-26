@@ -27,7 +27,7 @@ function Creatable({ setCategory, name }) {
       setCategory(data.data.id);
     },
     onError: (error) => {
-      console.log("error:", error.message);
+      console.error("error:", error.message);
     },
   });
 
@@ -40,7 +40,6 @@ function Creatable({ setCategory, name }) {
   );
 
   const handleSelectCategory = (category) => {
-    console.log(category);
     setCategory(category.id);
     setInputValue(category.name);
     setIsOpen(false);

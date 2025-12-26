@@ -36,7 +36,6 @@ const Auth = () => {
       );
     } else {
       login(email, password);
-      console.log(email, password);
       navigate("/");
     }
   };
@@ -91,7 +90,6 @@ const Auth = () => {
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
-                      console.log(password);
                       setPasswordError("");
                     }}
                     onKeyDown={handleKeyPress}

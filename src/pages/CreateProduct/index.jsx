@@ -35,11 +35,8 @@ const CreateProduct = () => {
     refetchOnWindowFocus: false,
   });
 
-  // console.log(product);
-
   useEffect(() => {
     if (product) {
-      console.log(product, "inside use effect");
       setFormData({
         name: product.name || "",
         description: product.description || "",
@@ -71,7 +68,6 @@ const CreateProduct = () => {
       }
     }
   };
-  console.log(error);
   const handleRemoveColor = (index) => {
     setFormData((prev) => ({
       ...prev,
@@ -110,7 +106,6 @@ const CreateProduct = () => {
     },
   });
 
-  console.log(category);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -181,7 +176,6 @@ const CreateProduct = () => {
 
     const convertedImage = await Promise.all(
       formData.image.map(async (imageData) => {
-        console.log("image data", imageData);
         if (imageData.file) {
           return imageData.file;
         }

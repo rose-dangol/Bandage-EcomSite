@@ -5,7 +5,6 @@ const API_BASE = `${import.meta.env.VITE_API_URL}products/`;
 
 export const getImageUrl = (path) => {
   const img = `${import.meta.env.VITE_API_BASE}/${path}`;
-  // console.log(img);
   return img;
 };
 
@@ -26,21 +25,18 @@ export const fetchProductById = async (id) => {
 };
 
 export const addProduct = async (productData) => {
-  console.log(productData);
   const formData = new FormData();
   formData.append("name", productData.name);
   formData.append("description", productData.description);
   productData.image.forEach((image) => {
     formData.append("image", image.file);
   });
-  // console.log(productData.image);
   formData.append("price", productData.price);
   formData.append("discount", productData.discount);
   productData.colors.forEach((color, index) => {
     formData.append(`colors[${index}]`, color);
   });
   formData.append("categoryId", productData.categoryId);
-  // console.log(formData);
   const response = await axios.post(`${API_BASE}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
@@ -49,7 +45,6 @@ export const addProduct = async (productData) => {
 
 export const updateProduct = async (id, productData) => {
   const formData = new FormData();
-  console.log(productData, "testing");
 
   // formData.append("image", convertedImage);
   formData.append("name", productData.name);

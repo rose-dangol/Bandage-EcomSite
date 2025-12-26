@@ -4,7 +4,6 @@ export const getLayoutClass = () => {
 
 export const urlToObject = async (image) => {
   const imageName = image.split("products/");
-  console.log(imageName[1]);
   const imageUrl = `${import.meta.env.VITE_API_BASE}\\${image}`;
   const response = await fetch(imageUrl);
   // here image is url/location of image
@@ -20,11 +19,11 @@ export const validateColorName = (color) => {
   return style.color == color;
 };
 
-const price = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
-
 export const formatPrice = (value) => {
-  return price.format(value);
+  const price = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+  });
+
+  return price.format(Number(value));
 };

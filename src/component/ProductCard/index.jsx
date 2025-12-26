@@ -5,14 +5,10 @@ import { formatPrice } from "../../utils/helper";
 // import { getLayoutClass } from "../../utils/helper";
 
 const ProductCard = ({ products, viewType }) => {
-  console.log(products);
-  console.log(viewType);
   const navigate = useNavigate();
   const handleClick = (id) => {
     navigate(`/shop/products/${id}/`);
   };
-  // console.log(products[0].image[0].url);
-  console.log(products.data);
   return (
     <div>
       <div className="flex flex-col gap-3 mb-5 justify-center items-center text-center">
