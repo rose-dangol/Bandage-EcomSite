@@ -25,6 +25,7 @@ const ProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [showDialog, setShowDialog] = useState(false);
+  // const [isFilled, setIsFilled] = useState(false);
 
   // Fetching product data
   const {
@@ -41,18 +42,6 @@ const ProductDetail = () => {
     mutationFn: (id) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
   });
-
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? product.image.length - 1 : prev - 1
-    );
-  };
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === product.image.length - 1 ? 0 : prev + 1
-    );
-  };
 
   if (isLoading)
     return (
@@ -71,9 +60,20 @@ const ProductDetail = () => {
         No Product found
       </div>
     );
+  const imageUrls = product.image;
+  const currentImage = imageUrls?.[currentImageIndex];
 
-  const currentImage = product.image?.[currentImageIndex];
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? imageUrls.length - 1 : prev - 1
+    );
+  };
 
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === imageUrls.length - 1 ? 0 : prev + 1
+    );
+  };
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
@@ -87,7 +87,7 @@ const ProductDetail = () => {
             <div className="relative overflow-hidden w-full h-[500px]">
               {currentImage ? (
                 <img
-                  src={getImageUrl(currentImage.url)}
+                  src={getImageUrl(currentImage)}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
@@ -96,7 +96,6 @@ const ProductDetail = () => {
                   No image available
                 </div>
               )}
-
               {product.image?.length > 1 && (
                 <>
                   <ChevronLeft
@@ -114,12 +113,11 @@ const ProductDetail = () => {
                 </>
               )}
             </div>
-
-            {product.image?.length > 1 && (
+            {product.image.length > 1 && (
               <div className="flex gap-2">
-                {product.image.map((image, idx) => (
+                {product.image.map((url, idx) => (
                   <div
-                    key={image.id}
+                    key={idx}
                     onClick={() => setCurrentImageIndex(idx)}
                     className={`w-20 h-20 rounded-lg overflow-hidden border ${
                       currentImageIndex === idx
@@ -128,7 +126,7 @@ const ProductDetail = () => {
                     }`}
                   >
                     <img
-                      src={getImageUrl(image.url)}
+                      src={getImageUrl(url)}
                       alt={`Thumbnail ${idx}`}
                       className="w-full h-full object-cover"
                     />

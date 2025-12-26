@@ -13,28 +13,33 @@ import { useState } from "react";
 
 const AllProducts = () => {
   const [viewType, setViewType] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+
   const {
     data: products,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["products"],
-    queryFn: fetchProducts,
+    queryKey: ["products", currentPage],
+    queryFn: () => fetchProducts(currentPage),
     refetchOnWindowFocus: false,
   });
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
-  if (!products) return <div>No products found</div>;
+  if (!products || !products.data) return <div>No products found</div>;
 
-  // console.log(products[1].image[0]);
   return (
-    <div className="w=full">
+    <div className="w-full">
       <Container>
         <ShopCard />
         <div className="py-6 flex justify-between items-center lg:flex-row flex-col gap-6">
           <span className="heading-6 text-grayText">
-            Showing all 12 results
+            Showing {products.meta.limit} of {products.meta.total} results
           </span>
           <div className="flex gap-[15px] items-center">
             <span className="heading-6 text-grayText">Views:</span>
@@ -57,7 +62,11 @@ const AllProducts = () => {
           </div>
         </div>
         <ProductCard products={products} viewType={viewType} />
-        <Pagination />
+        <Pagination
+          meta={products.meta}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
         <BrandLogos />
       </Container>
     </div>

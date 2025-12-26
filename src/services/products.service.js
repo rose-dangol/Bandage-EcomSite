@@ -9,14 +9,15 @@ export const getImageUrl = (path) => {
   return img;
 };
 
-export const fetchProducts = async () => {
+export const fetchProducts = async (page = 1, limit = 10) => {
   const response = await axios.get(API_BASE, {
     params: {
       status: "active",
-      // page: page,
+      page,
+      limit,
     },
   });
-  return response.data.data;
+  return response.data;
 };
 
 export const fetchProductById = async (id) => {

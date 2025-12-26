@@ -10,6 +10,8 @@ const ProductCard = ({ products, viewType }) => {
   const handleClick = (id) => {
     navigate(`/shop/products/${id}/`);
   };
+  // console.log(products[0].image[0].url);
+  console.log(products.data);
   return (
     <div>
       <div className="flex flex-col gap-3 mb-5 justify-center items-center text-center">
@@ -30,7 +32,7 @@ const ProductCard = ({ products, viewType }) => {
             : "flex flex-col"
         }`}
       >
-        {products.map((product) => (
+        {products.data?.map((product) => (
           <div
             className={`flex ${
               viewType ? "flex-col" : "flex-row"
@@ -41,7 +43,7 @@ const ProductCard = ({ products, viewType }) => {
             {product.image?.[0] && (
               <div className="h-[300px] w-full">
                 <img
-                  src={getImageUrl(product.image[0].url)}
+                  src={getImageUrl(product.image[0])}
                   className="h-full w-full object-cover"
                   alt="product-image"
                 />
@@ -61,7 +63,7 @@ const ProductCard = ({ products, viewType }) => {
                   ${product?.price}
                 </span>
                 <span className="text-[#23856D]">
-                  ${product?.priceAfterDiscount}
+                  ${Number(product?.priceAfterDiscount).toFixed(2)}
                 </span>
               </div>
               <div className="flex gap-3 pt-2">

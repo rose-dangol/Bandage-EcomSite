@@ -177,10 +177,11 @@ const CreateProduct = () => {
 
     const convertedImage = await Promise.all(
       formData.image.map(async (imageData) => {
+        console.log("image data", imageData.url?.[0]);
         if (imageData.file) {
           return imageData.file;
         }
-        return await urlToObject(imageData.url);
+        return await urlToObject(imageData.url?.[0]);
       })
     );
 
@@ -189,8 +190,6 @@ const CreateProduct = () => {
       image: convertedImage,
       categoryId: category,
     };
-
-    // Fixed: validateForm should be called first
     if (validateForm(updatedFormData)) {
       if (id) {
         UpdateMutation.mutate(updatedFormData);
@@ -199,7 +198,6 @@ const CreateProduct = () => {
       }
     }
   };
-
   if (isLoading) return <h1>Loading...</h1>;
 
   return (
@@ -254,13 +252,13 @@ const CreateProduct = () => {
           <div className="flex flex-col gap-3">
             {formData.image.length > 0 && (
               <div className="flex flex-col gap-2">
-                {formData.image.map((img) => (
+                {formData.image.map((img, index) => (
                   <div
-                    key={img.id}
+                    key={index}
                     className="flex items-center justify-between border border-[#ECECEC] p-3"
                   >
-                    {img?.url ? (
-                      <img src={getImageUrl(img?.url)} className="h-12 w-10" />
+                    {img ? (
+                      <img src={getImageUrl(img)} className="h-12 w-10" />
                     ) : (
                       <span>{img.file?.name}</span>
                     )}
@@ -269,7 +267,7 @@ const CreateProduct = () => {
                       color="red"
                       strokeWidth={"1px"}
                       size={"24px"}
-                      onClick={() => handleRemoveFile(img.id)}
+                      onClick={() => handleRemoveFile(index)}
                       className="cursor-pointer"
                     />
                   </div>
