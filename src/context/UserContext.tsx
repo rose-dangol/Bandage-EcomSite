@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 
 import { createContext, useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
 import { useLocalStorage } from "../hooks/useLocalStorage";
+import { ContainerProps } from "../component/Container";
 
 // const initialValue = () => {
 //   const loggedUser = getLocalStorage("user");
@@ -17,7 +17,7 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 
 export const UserContext = createContext(null);
 
-export const UserProvider = ({ children }) => {
+export const UserProvider = ({ children }:ContainerProps) => {
   const { setLocalStorage, getLocalStorage } = useLocalStorage();
   const [user, setUser] = useState(() => {
     const loggedUser = getLocalStorage("user");
@@ -29,7 +29,7 @@ export const UserProvider = ({ children }) => {
           isLoggedIn: false,
         };
   });
-  const login = (email, password) => {
+  const login = (email:string, password: string) => {
     const userData = {
       ...user,
       email: email,

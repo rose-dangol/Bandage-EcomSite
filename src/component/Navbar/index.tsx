@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   TextAlignJustify,
@@ -10,13 +10,11 @@ import {
   LogOut,
 } from "lucide-react";
 import { useUserContext } from "../../context/UserContext";
-import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [mobileView, setMobileView] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const loggedUser = JSON.parse(localStorage.getItem("user"));
-  const [search, setSearch] = useState(false);
 
   const { logout } = useUserContext();
 
@@ -49,17 +47,17 @@ const Navbar = () => {
                   >
                     All
                   </Link>
-                  <Link className="block px-4 py-2 hover:bg-gray-50">
+                  <Link to={''} className="block px-4 py-2 hover:bg-gray-50">
                     Women
                   </Link>
-                  <Link className="block px-4 py-2 hover:bg-gray-50">Men</Link>
+                  <Link to={''} className="block px-4 py-2 hover:bg-gray-50">Men</Link>
                 </div>
               )}
             </div>
             <Link to={"/about"}>About</Link>
-            <Link>Blog</Link>
-            <Link>Contact</Link>
-            <Link>Pages</Link>
+            <Link to={''}>Blog</Link>
+            <Link to={''}>Contact</Link>
+            <Link to={''}>Pages</Link>
           </div>
         </div>
 
@@ -111,10 +109,10 @@ const Navbar = () => {
       </div>
       {mobileView && (
         <div className="mobile-menu flex flex-col gap-3 justify-center items-center text-grayText p-7">
-          <Link>Home</Link>
-          <Link>Product</Link>
-          <Link>Pricing</Link>
-          <Link>Contact</Link>
+          <Link to={''}>Home</Link>
+          <Link to={''}>Product</Link>
+          <Link to={''}>Pricing</Link>
+          <Link to={''}>Contact</Link>
         </div>
       )}
     </div>

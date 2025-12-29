@@ -1,9 +1,9 @@
 import { useRef, useEffect } from "react";
 
-export const useClickAway = (callback) => {
+export const useClickAway = (callback: ()=> void) => {
   const containerRef = useRef(null);
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: MouseEvent) => {
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target)

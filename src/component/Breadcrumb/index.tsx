@@ -1,9 +1,8 @@
 import { ChevronRight } from "lucide-react";
-import React from "react";
 import { Link } from "react-router-dom";
 
-const Breadcrumb = ({ location }) => {
-  const pathnames = location.pathname.split("/").filter((x) => x);
+const Breadcrumb = ({ location:{} }) => {
+  const pathnames: string[] = location.pathname.split("/").filter((x:string) => x);
   let breadcrumbPath = "";
 
   return (

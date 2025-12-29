@@ -2,7 +2,7 @@ export const getLayoutClass = () => {
   return "section-space";
 };
 
-export const urlToObject = async (image) => {
+export const urlToObject = async (image: string): Promise<File> => {
   const imageName = image.split("products/");
   const imageUrl = `${import.meta.env.VITE_API_BASE}\\${image}`;
   const response = await fetch(imageUrl);
@@ -12,18 +12,18 @@ export const urlToObject = async (image) => {
   return file;
 };
 
-export const validateColorName = (color) => {
+export const validateColorName = (color: string) => {
   var style = new Option().style;
   style.color = color;
   // Check if the computed color is the same as the input color
   return style.color == color;
 };
 
-export const formatPrice = (value) => {
+export const formatCurrency = (value: number, currency = "USD") => {
   const price = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency,
   });
 
-  return price.format(Number(value));
+  return price.format(value);
 };

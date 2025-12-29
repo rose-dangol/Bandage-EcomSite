@@ -17,7 +17,7 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumb, Container, DialogBox } from "../../component";
 import { useState } from "react";
-import { formatPrice } from "../../utils/helper";
+import { formatCurrency } from "../../utils/helper";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -40,18 +40,20 @@ const ProductDetail = () => {
   });
 
   const DeleteMutation = useMutation({
-    mutationFn: (id) => deleteProduct(id),
+    mutationFn: (id: number) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
   });
-
-  // const price = new Intl.NumberFormat("en-US", {
-  //   style: "currency",
-  //   currency: "USD",
-  // });
 
   if (isLoading)
     return (
       <div className="flex items-center justify-center py-20">Loading...</div>
+    );
+
+  if (!product)
+    return (
+      <div className="flex items-center justify-center py-20">
+        No Product found
+      </div>
     );
 
   if (error)
@@ -60,12 +62,7 @@ const ProductDetail = () => {
         Error: {error.message}
       </div>
     );
-  if (!product)
-    return (
-      <div className="flex items-center justify-center py-20">
-        No Product found
-      </div>
-    );
+
   const imageUrls = product.image;
   const currentImage = imageUrls?.[currentImageIndex];
 
@@ -80,6 +77,7 @@ const ProductDetail = () => {
       prev === imageUrls.length - 1 ? 0 : prev + 1
     );
   };
+
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
@@ -90,7 +88,7 @@ const ProductDetail = () => {
           {/* images */}
           <div className="flex flex-col gap-4 w-1/2">
             {/* main image */}
-            <div className="relative overflow-hidden w-full h-[500px]">
+            <div className="relative overflow-hidden w-full h-125">
               {currentImage ? (
                 <img
                   src={getImageUrl(currentImage)}
@@ -121,7 +119,7 @@ const ProductDetail = () => {
             </div>
             {product.image.length > 1 && (
               <div className="flex gap-2">
-                {product.image.map((url, idx) => (
+                {product.image.map((url: string, idx: number) => (
                   <div
                     key={idx}
                     onClick={() => setCurrentImageIndex(idx)}
@@ -162,14 +160,16 @@ const ProductDetail = () => {
 
               {/* price */}
               <div className="heading-3 text-blueBlack">
-                {formatPrice(
-                  Number(product.priceAfterDiscount ?? product.price).toFixed(2)
+                {formatCurrency(
+                  Number(
+                    (product.priceAfterDiscount ?? product.price).toFixed(2)
+                  )
                 )}
               </div>
 
               {product.discount > 0 && (
                 <div className="paragraph text-mutedText line-through">
-                  {formatPrice(product.price.toFixed(2))}
+                  {formatCurrency(product.price)}
                 </div>
               )}
 
@@ -202,7 +202,7 @@ const ProductDetail = () => {
               )}
               {product.colors?.length > 0 && (
                 <div className="flex gap-3">
-                  {product.colors.map((color, index) => (
+                  {product.colors.map((color: string, index: number) => (
                     <button
                       key={index}
                       onClick={() => setSelectedColor(color)}
@@ -261,7 +261,7 @@ const ProductDetail = () => {
                 </button>
                 <button
                   onClick={() => {
-                    DeleteMutation.mutate(id);
+                    DeleteMutation.mutate(Number(id));
                     setShowDialog(false);
                   }}
                   className="px-4 py-2 bg-red-500 text-white rounded heading-6 cursor-pointer hover:bg-red-600 transition"

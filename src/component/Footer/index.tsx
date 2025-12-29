@@ -1,5 +1,4 @@
 import { Facebook, Instagram, Twitter } from "lucide-react";
-import Container from "../Container";
 import { Link } from "react-router-dom";
 
 const FooterLinks = {
@@ -50,7 +49,7 @@ export default function Footer() {
               <span className="heading-5 text-blueBlack">{section.title}</span>
               <div className="flex flex-col gap-3">
                 {section.links.map((link, index) => (
-                  <Link
+                  <Link to={''}
                     key={index}
                     className="text-grayText links text-left hover:text-primary transition-colors"
                   >

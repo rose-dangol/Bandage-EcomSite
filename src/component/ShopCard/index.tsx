@@ -1,5 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import {useLocation } from "react-router-dom";
 import Breadcrumb from "../Breadcrumb";
 const ShopCard = () => {
   const location = useLocation();

@@ -1,12 +1,30 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getImageUrl } from "../../services/products.service";
-import { formatPrice } from "../../utils/helper";
-// import { getLayoutClass } from "../../utils/helper";
+import { formatCurrency } from "../../utils/helper";
 
-const ProductCard = ({ products, viewType }) => {
+type ProductCardType = {
+  products: {
+    category: {
+      id: number;
+      name: string;
+      image?: null;
+    };
+    colors: [];
+    description: string;
+    discount: number;
+    id: number;
+    image: string[];
+    name: string;
+    price: number;
+    priceAfterDiscount: number;
+    status: string;
+  }[];
+  viewType: boolean;
+};
+
+const ProductCard = ({ products, viewType }: ProductCardType) => {
   const navigate = useNavigate();
-  const handleClick = (id) => {
+  const handleClick = (id: number) => {
     navigate(`/shop/products/${id}/`);
   };
   return (
@@ -29,7 +47,7 @@ const ProductCard = ({ products, viewType }) => {
             : "flex flex-col"
         }`}
       >
-        {products.data?.map((product) => (
+        {products?.map((product) => (
           <div
             className={`flex ${
               viewType ? "flex-col" : "flex-row"
@@ -38,7 +56,7 @@ const ProductCard = ({ products, viewType }) => {
             onClick={() => handleClick(product?.id)}
           >
             {product.image?.[0] && (
-              <div className="h-[300px] w-full">
+              <div className="h-75 w-full">
                 <img
                   src={getImageUrl(product.image[0])}
                   className="h-full w-full object-cover"
@@ -46,7 +64,7 @@ const ProductCard = ({ products, viewType }) => {
                 />
               </div>
             )}
-            <div className="flex flex-col p-[25px] pb-[35px] items-center justify-center gap-2.5 text-[#252B42] ">
+            <div className="flex flex-col p-6.25 pb-8.75 items-center justify-center gap-2.5 text-[#252B42] ">
               <span className="heading-5 text-blueBlack text-center">
                 {product?.name}
               </span>
@@ -57,14 +75,14 @@ const ProductCard = ({ products, viewType }) => {
               </div>
               <div className="heading-5">
                 <span className="text-mutedText line-through mr-2">
-                  {formatPrice(product.price)}
+                  {formatCurrency(product.price)}
                 </span>
                 <span className="text-[#23856D]">
-                  {formatPrice(Number(product?.priceAfterDiscount)?.toFixed(2))}
+                  {formatCurrency(Number(product?.priceAfterDiscount))}{" "}
                 </span>
               </div>
               <div className="flex gap-3 pt-2">
-                {product?.availableColors?.map((color) => (
+                {product?.colors?.map((color: string) => (
                   <div
                     className={`w-5 h-5 rounded-full bg-${color}-500 cursor-pointer`}
                     key={color}

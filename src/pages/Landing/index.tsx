@@ -1,4 +1,3 @@
-import { Layout } from "lucide-react";
 import {
   BrandLogos,
   ProductCard,
@@ -9,6 +8,7 @@ import { getLayoutClass } from "../../utils/helper";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../../services/products.service";
+
 const Landing = () => {
   const navigate = useNavigate();
   const {
@@ -17,12 +17,13 @@ const Landing = () => {
     error,
   } = useQuery({
     queryKey: ["products"],
-    queryFn: fetchProducts,
+    queryFn: ()=>fetchProducts,
     refetchOnWindowFocus: false,
   });
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!products) return <div>No products found</div>;
+  
   return (
     <div className="w-full cursor-default">
       {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}
@@ -30,7 +31,7 @@ const Landing = () => {
         <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] md:w-19/20 w-full items-center flex flex-col gap-5 md:flex-row md:justify-end min-h-96 md:h-145 mx-auto">
           {/* banner texts*/}
           <div className="flex flex-col justify-center items-center md:justify-around md:items-start pt-10 gap-4 md:gap-6 md:w-1/2 md:pl-25 px-4 md:px-0">
-            <Link className="heading-5 uppercase text-secondary hover:text-primary">
+            <Link to={''} className="heading-5 uppercase text-secondary hover:text-primary">
               Summer 2025
             </Link>
             <span className="md:heading-1 heading-2 text-blueBlack md:text-left text-center uppercase">
@@ -81,7 +82,7 @@ const Landing = () => {
         <BrandLogos />
         {/*top products of the week section */}
         <div className={getLayoutClass()}>
-          <div className="flex flex-col md:flex-row gap-4 md:h-[570px]">
+          <div className="flex flex-col md:flex-row gap-4 md:h-142.5">
             {/* left */}
             <div className="md:w-3/5 h-full relative">
               <img
@@ -92,7 +93,7 @@ const Landing = () => {
               <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
                 <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full w-3/5">
                   <span className="heading-3">Top Product of the Week</span>
-                  <Link className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
+                  <Link to={''} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
                     Explore items
                   </Link>
                 </div>
@@ -110,7 +111,7 @@ const Landing = () => {
                 <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link to={''} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
                       Explore items
                     </Link>
                   </div>
@@ -125,7 +126,7 @@ const Landing = () => {
                 <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link to={''} className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
                       Explore items
                     </Link>
                   </div>
@@ -203,7 +204,7 @@ const Landing = () => {
           <div className="grid md:grid-cols-3 grid-cols-1 gap-5">
             <Link
               to={"/about#easy-wins"}
-              className="flex flex-col items-center text-center px-10 py-[35px]"
+              className="flex flex-col items-center text-center px-10 py-8.75"
             >
               <div className="mb-6 p-4">
                 <img
@@ -220,7 +221,7 @@ const Landing = () => {
 
             <Link
               to={"/about#concrete"}
-              className="flex flex-col items-center text-center px-10 py-[35px]"
+              className="flex flex-col items-center text-center px-10 py-8.75"
             >
               <div className="mb-6 p-4">
                 <img src="/images/concrete.svg" alt="concrete" loading="lazy" />
@@ -234,7 +235,7 @@ const Landing = () => {
 
             <Link
               to={"/about#hack-growth"}
-              className="flex flex-col items-center text-center px-10 py-[35px]"
+              className="flex flex-col items-center text-center px-10 py-8.75"
             >
               <div className="mb-6 p-4">
                 <img src="/images/growth.svg" alt="hac-growth" loading="lazy" />

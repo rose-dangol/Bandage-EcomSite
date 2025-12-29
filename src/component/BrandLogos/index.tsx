@@ -1,10 +1,3 @@
-import React from "react";
-import LyftLogo from "/BrandLogo/Lyft_logo.svg";
-import HooliLogo from "/BrandLogo/hooli-logo.svg";
-import AwsLogo from "/BrandLogo/aws-logo.svg";
-import RedditLogo from "/BrandLogo/reddit-logo.svg";
-import ZaraLogo from "/BrandLogo/zara-logo.svg";
-import AppleLogo from "/BrandLogo/apple.svg";
 import { getLayoutClass } from "../../utils/helper";
 import { Link } from "react-router-dom";
 
@@ -14,7 +7,7 @@ const BrandLogos = () => {
       <div className="flex flex-col md:flex-row justify-center lg:gap-30 gap-5 items-center">
         <Link to={""}>
           <img
-            src={LyftLogo}
+            src='/BrandLogo/Lyft_logo.svg'
             alt="Lyft Logo"
             className="w-20 h-20"
             loading="lazy"
@@ -22,7 +15,7 @@ const BrandLogos = () => {
         </Link>
         <Link to={""}>
           <img
-            src={HooliLogo}
+            src="/BrandLogo/hooli-logo.svg"
             alt="Hooli Logo"
             className="w-20 h-20"
             loading="lazy"
@@ -30,7 +23,7 @@ const BrandLogos = () => {
         </Link>
         <Link to={""}>
           <img
-            src={AwsLogo}
+            src="/BrandLogo/aws-logo.svg"
             alt="aws Logo"
             className="w-20 h-20"
             loading="lazy"
@@ -38,7 +31,7 @@ const BrandLogos = () => {
         </Link>
         <Link to={""}>
           <img
-            src={RedditLogo}
+            src="/BrandLogo/reddit-logo.svg"
             alt="reddit Logo"
             className="w-20 h-20"
             loading="lazy"
@@ -46,7 +39,7 @@ const BrandLogos = () => {
         </Link>
         <Link to={""}>
           <img
-            src={ZaraLogo}
+            src="/BrandLogo/zara-logo.svg"
             alt="zara Logo"
             className="w-20 h-20"
             loading="lazy"
@@ -54,7 +47,7 @@ const BrandLogos = () => {
         </Link>
         <Link to={""}>
           <img
-            src={AppleLogo}
+            src="/BrandLogo/apple.svg"
             alt="apple Logo"
             className="w-20 h-20"
             loading="lazy"

@@ -4,8 +4,8 @@ import {
   Pagination,
   ProductCard,
   ShopCard,
-  TopDetail,
 } from "../../component";
+
 import { LayoutGrid, ListChecks } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../../services/products.service";
@@ -20,15 +20,15 @@ const AllProducts = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["products", currentPage],
-    queryFn: () => fetchProducts(currentPage),
+    queryKey: ["products", currentPage, 10],
+    queryFn: () => fetchProducts(currentPage, 10),
     refetchOnWindowFocus: false,
   });
 
-  const handlePageChange = (page) => {
+  const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-
+  console.log(products);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!products || !products.data) return <div>No products found</div>;
@@ -41,7 +41,7 @@ const AllProducts = () => {
           <span className="heading-6 text-grayText">
             Showing {products.meta.limit} of {products.meta.total} results
           </span>
-          <div className="flex gap-[15px] items-center">
+          <div className="flex gap-3.75 items-center">
             <span className="heading-6 text-grayText">Views:</span>
             <div className="border-[#ececec] border-2 p-2 rounded">
               <LayoutGrid fill="blueBlack" onClick={() => setViewType(true)} />
@@ -61,7 +61,7 @@ const AllProducts = () => {
             </button>
           </div>
         </div>
-        <ProductCard products={products} viewType={viewType} />
+        <ProductCard products={products.data} viewType={viewType} />
         <Pagination
           meta={products.meta}
           currentPage={currentPage}

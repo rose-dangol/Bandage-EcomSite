@@ -1,14 +1,11 @@
-import React from "react";
 import {
   Heart,
   Eye,
   ShoppingCart,
   Download,
-  Star,
   ChevronRight,
 } from "lucide-react";
 import { getLayoutClass } from "../../utils/helper";
-import Container from "../Container";
 
 const PRODUCT_DATA = [
   {

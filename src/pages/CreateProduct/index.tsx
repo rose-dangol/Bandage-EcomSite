@@ -5,6 +5,7 @@ import {
   getImageUrl,
   updateProduct,
 } from "../../services/products.service";
+
 import { useEffect, useState } from "react";
 import { Breadcrumb, Container, Creatable } from "../../component";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -12,14 +13,39 @@ import { Trash2, CirclePlus } from "lucide-react";
 import toast from "react-hot-toast";
 import { urlToObject, validateColorName } from "../../utils/helper";
 
+interface FormDataType {
+  name: string;
+  description: string;
+  image: (File | { url: string; id: number })[];
+  price: string;
+  discount: string;
+  colors: string[];
+}
+
+interface UpdatedFormDataType extends FormDataType {
+  image: File[];
+  categoryId: string;
+}
+
+type ErrorType = {
+  name?: string;
+  description?: string;
+  price?: string;
+  discount?: string;
+  color?: string;
+  category?: string;
+  image?: string;
+  try? :number
+};
 const CreateProduct = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [error, setError] = useState({});
-  const [colorInput, setColorInput] = useState([]);
+  const [error, setError] = useState<ErrorType>({});
+  const [colorInput, setColorInput] = useState<string>("");
+  const queryClient = useQueryClient();
   const [category, setCategory] = useState();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     name: "",
     description: "",
     image: [],
@@ -36,12 +62,13 @@ const CreateProduct = () => {
   });
 
   useEffect(() => {
+    console.log(product);
     if (product) {
       setFormData({
         name: product.name || "",
         description: product.description || "",
         image:
-          product.image?.map((url, idx) => ({
+          product.image?.map((url: string, idx: number) => ({
             url,
             id: idx,
           })) || [],
@@ -53,22 +80,23 @@ const CreateProduct = () => {
     }
   }, [product]);
 
-  const queryClient = useQueryClient();
-
   const handleColorAdd = () => {
-    if (colorInput) {
-      if (validateColorName(colorInput)) {
-        setFormData((prev) => ({
-          ...prev,
-          colors: [...prev.colors, colorInput],
-        }));
-        setColorInput([]);
-      } else {
-        setError({ color: "Color must be valid" });
-      }
+    if (!colorInput) return;
+    if (formData.colors.includes(colorInput)) {
+      toast("This color exists already!", {
+        icon: "🚨",
+      });
+    } else if (validateColorName(colorInput)) {
+      setFormData((prev) => ({
+        ...prev,
+        colors: [...prev.colors, colorInput],
+      }));
+      setColorInput("");
+    } else {
+      setError({ color: "Color must be valid" });
     }
   };
-  const handleRemoveColor = (index) => {
+  const handleRemoveColor = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       colors: prev.colors.filter((_, i) => i !== index),
@@ -76,7 +104,7 @@ const CreateProduct = () => {
   };
 
   const AddMutation = useMutation({
-    mutationFn: () => addProduct({ ...formData, categoryId: category }),
+    mutationFn: (data: UpdatedFormDataType) => addProduct(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       setFormData({
@@ -86,7 +114,6 @@ const CreateProduct = () => {
         price: "",
         discount: "",
         colors: [],
-        // categoryId: "",
       });
       toast.success("Product added successfully!");
     },
@@ -96,7 +123,7 @@ const CreateProduct = () => {
   });
 
   const UpdateMutation = useMutation({
-    mutationFn: (data) => updateProduct(id, data),
+    mutationFn: (data: UpdatedFormDataType) => updateProduct(id, data),
     onSuccess: () => {
       toast.success("Product updated successfully!");
       navigate(`/shop/products/${product.id}`);
@@ -106,7 +133,11 @@ const CreateProduct = () => {
     },
   });
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -114,29 +145,47 @@ const CreateProduct = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      const newImage = Array.from(files).map((file) => ({
-        file,
-        id: Date.now() + Math.random(),
-      }));
-      setFormData((prev) => ({
-        ...prev,
-        image: [...prev.image, ...newImage],
-      }));
+      const newImage = Array.from(files).map((file) => file);
+
+      const updatedPayload = {
+        ...formData,
+        image: [...formData.image, ...newImage],
+      };
+      setFormData(updatedPayload);
     }
   };
 
-  const handleRemoveFile = (index) => {
+  const handleRemoveFile = (index: number) => {
     setFormData((prev) => ({
       ...prev,
       image: prev.image.filter((_, i) => i !== index),
     }));
   };
 
-  const validateForm = (updatedFormData) => {
-    const newError = {};
+  const validateForm = (updatedFormData: UpdatedFormDataType) => {
+    // const newError: Record<string, string> = {}
+    const newError: {
+      [key: string]: string;
+    } = {};
+
+    // const newError:{
+    //   name: string,
+    //   description: string,
+    //   image: string,
+    //   price: string,
+    //   discount: string,
+    //   colors: string,
+    // }= {
+    //   name: "" ,
+    //   description: "",
+    //   image: "",
+    //   price: "",
+    //   discount: "",
+    //   colors: "",
+    // };
 
     if (!updatedFormData.name) {
       newError.name = "Name is required";
@@ -150,19 +199,22 @@ const CreateProduct = () => {
       newError.image = "There should be atleast one image.";
     }
 
-    if (updatedFormData.price <= 0) {
+    if (Number(updatedFormData.price) <= 0) {
       newError.price = "Price must be greater than 0";
     }
 
-    if (updatedFormData.discount < 0 || updatedFormData.discount > 100) {
+    if (
+      Number(updatedFormData.discount) < 0 ||
+      Number(updatedFormData.discount) > 100
+    ) {
       newError.discount = "Discount must be between 0-100";
     }
 
     if (updatedFormData.colors.length === 0) {
-      newError.colors = "Select atleast one color option";
+      newError.color = "Select atleast one color option";
     }
-
     setError(newError);
+
     if (Object.keys(newError).length > 0) {
       Object.values(newError).forEach((e) => {
         toast.error(e);
@@ -171,31 +223,44 @@ const CreateProduct = () => {
     return Object.keys(newError).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    try {
+      const convertedImage: File[] = await Promise.all(
+        formData.image.map(
+          async (
+            imageData:
+              | {
+                  url: string;
+                }
+              | File
+          ) => {
+            if (
+              typeof imageData === "object" &&
+              Object.keys(imageData).includes("url")
+            ) {
+              return await urlToObject((imageData as { url: string }).url);
+            }
+            return imageData as File;
+          }
+        )
+      );
 
-    const convertedImage = await Promise.all(
-      formData.image.map(async (imageData) => {
-        if (imageData.file) {
-          return imageData.file;
-        }
-        if (imageData.url) {
-          return await urlToObject(imageData.url);
-        }
-      })
-    );
+      const updatedFormData: UpdatedFormDataType = {
+        ...formData,
+        image: convertedImage,
+        categoryId: category,
+      };
 
-    const updatedFormData = {
-      ...formData,
-      image: convertedImage,
-      categoryId: category,
-    };
-    if (validateForm(updatedFormData)) {
-      if (id) {
-        UpdateMutation.mutate(updatedFormData);
-      } else {
-        AddMutation.mutate(updatedFormData);
+      if (validateForm(updatedFormData)) {
+        if (id) {
+          UpdateMutation.mutate(updatedFormData);
+        } else {
+          AddMutation.mutate(updatedFormData);
+        }
       }
+    } catch (err) {
+      console.log(err);
     }
   };
   if (isLoading) return <h1>Loading...</h1>;
@@ -232,7 +297,7 @@ const CreateProduct = () => {
             Description
           </label>
           <textarea
-            rows="4"
+            rows={Number("4")}
             placeholder="Your Message"
             name="description"
             value={formData.description}
@@ -254,18 +319,18 @@ const CreateProduct = () => {
               <div className="flex flex-col gap-2">
                 {formData.image.map((img, index) => (
                   <div
-                    key={img.id || index}
+                    key={index}
                     className="flex items-center justify-between border border-[#ECECEC] p-3"
                   >
-                    {img.url ? (
+                    {(img as { url: string }).url ? (
                       <img
-                        src={getImageUrl(img.url)}
+                        src={getImageUrl((img as { url: string }).url)}
                         className="h-12 w-10"
                         alt="preview"
                       />
-                    ) : img.file ? (
-                      <span>{img.file?.name}</span>
-                    ) : null}
+                    ) : (
+                      <span>{(img as File).name}</span>
+                    )}
 
                     <Trash2
                       color="red"
@@ -369,8 +434,8 @@ const CreateProduct = () => {
               onClick={handleColorAdd}
             />
           </div>
-          {error.colors && (
-            <p className="text-xs text-red-500 mt-1">{error.colors}</p>
+          {error.color && (
+            <p className="text-xs text-red-500 mt-1">{error.color}</p>
           )}
           <div className="flex w-full justify-items-start flex-wrap gap-10">
             {formData.colors.map((color, index) => (
@@ -379,12 +444,10 @@ const CreateProduct = () => {
                   <div
                     className={`h-10 w-10 rounded border border-[#E6E6E6] transition`}
                     style={{
-                      backgroundColor: color?.color || color,
+                      backgroundColor: color,
                     }}
                   />
-                  <span className="paragraph uppercase">
-                    {color?.color || color}
-                  </span>
+                  <span className="paragraph uppercase">{color}</span>
                 </div>
                 <Trash2
                   color="red"

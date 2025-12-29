@@ -9,7 +9,11 @@
     "checkJs": false,
 
     "strict": false,
-    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
 
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -17,5 +21,6 @@
 
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

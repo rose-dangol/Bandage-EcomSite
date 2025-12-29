@@ -1,9 +1,14 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addCategory, getCategories } from "../../services/category.service";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useClickAway } from "../../hooks/useClickAway";
 
-function Creatable({ setCategory, name }) {
+type CreatableProps={
+  setCategory :React.Dispatch<React.SetStateAction<number>>,
+  name: string
+}
+
+function Creatable({ setCategory , name }: CreatableProps) {
   const [inputValue, setInputValue] = useState(name);
   const [categoryList, setCategoryList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +25,7 @@ function Creatable({ setCategory, name }) {
   }, [categories]);
 
   const { mutate } = useMutation({
-    mutationFn: async (inputValue) => await addCategory(inputValue),
+    mutationFn: async (inputValue:string) => await addCategory(inputValue),
     onSuccess: (data) => {
       // queryClient.invalidateQueries({ queryKey: ["category"] });
       setCategoryList((prev) => [...prev, data.data]);
@@ -39,13 +44,16 @@ function Creatable({ setCategory, name }) {
     category.name.toLowerCase().includes(inputValue.toLowerCase())
   );
 
-  const handleSelectCategory = (category) => {
+  const handleSelectCategory = (category:{
+    id:number,
+    name: string,
+  }) => {
     setCategory(category.id);
     setInputValue(category.name);
     setIsOpen(false);
   };
 
-  const handleAddCategory = (inputValue) => {
+  const handleAddCategory = (inputValue:string) => {
     mutate(inputValue);
     setIsOpen(false);
   };

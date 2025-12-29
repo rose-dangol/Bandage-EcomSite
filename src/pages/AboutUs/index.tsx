@@ -1,5 +1,4 @@
-import React from "react";
-import { Container, Navbar } from "../../component";
+import { Container } from "../../component";
 import { getLayoutClass } from "../../utils/helper";
 
 const AboutUs = () => {
@@ -44,7 +43,7 @@ const AboutUs = () => {
       <div className="flex">
         <div
           id="easy-wins"
-          className="flex flex-col items-center text-center px-10 py-[35px]"
+          className="flex flex-col items-center text-center px-10 py-8.75"
         >
           <div className="mb-6 p-4">
             <img src="/images/easy-wins.png" alt="easy-wins" loading="lazy" />
@@ -57,7 +56,7 @@ const AboutUs = () => {
 
         <div
           id="concrete"
-          className="flex flex-col items-center text-center px-10 py-[35px]"
+          className="flex flex-col items-center text-center px-10 py-8.75"
         >
           <div className="mb-6 p-4">
             <img src="/images/concrete.svg" alt="concrete" loading="lazy" />
@@ -71,7 +70,7 @@ const AboutUs = () => {
 
         <div
           id="hack-growth"
-          className="flex flex-col items-center text-center px-10 py-[35px]"
+          className="flex flex-col items-center text-center px-10 py-8.75"
         >
           <div className="mb-6 p-4">
             <img src="/images/growth.svg" alt="hack-growth" loading="lazy" />

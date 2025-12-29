@@ -6,14 +6,14 @@ export const getCategories = async () => {
   return response.data.data;
 };
 
-export const addCategory = async (categoryData) => {
+export const addCategory = async (categoryData:string) => {
   const formData = new FormData();
   formData.append("name", categoryData);
   const response = await axios.post(`${API_BASE}categories/`, formData);
   return response.data;
 };
 
-export const getCategoryById = async (id) => {
+export const getCategoryById = async (id:number) => {
   const response = await axios.get(`${API_BASE}categories/${id}`);
   return response.data.data;
 };
