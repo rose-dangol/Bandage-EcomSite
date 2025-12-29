@@ -1,8 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { createContext, useContext, useState } from "react";
+import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
-import { ContainerProps } from "../component/Container";
 
 // const initialValue = () => {
 //   const loggedUser = getLocalStorage("user");
@@ -17,7 +16,7 @@ import { ContainerProps } from "../component/Container";
 
 export const UserContext = createContext(null);
 
-export const UserProvider = ({ children }:ContainerProps) => {
+export const UserProvider = ({ children }:PropsWithChildren) => {
   const { setLocalStorage, getLocalStorage } = useLocalStorage();
   const [user, setUser] = useState(() => {
     const loggedUser = getLocalStorage("user");

@@ -1,6 +1,6 @@
-import { ContainerProps } from "../Container";
+import { PropsWithChildren } from "react";
 
-interface DialogBoxType extends ContainerProps {
+interface DialogBoxType extends PropsWithChildren {
   title: string,
   subText: string,
 }

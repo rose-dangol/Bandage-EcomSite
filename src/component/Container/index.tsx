@@ -1,10 +1,7 @@
-import { ReactNode } from "react";
+import { PropsWithChildren } from "react";
 
-export interface ContainerProps {
-  children: ReactNode;
-}
 
-const Container = ({ children }:ContainerProps) => {
+const Container = ({ children }:PropsWithChildren) => {
   return <div className="w-[80vw] mx-auto">{children}</div>;
 };
 
