@@ -1,8 +1,8 @@
-import axios from "axios";
-
-const API_BASE = `${import.meta.env.VITE_API_URL}cart/`;
+import api from "../axios/apiClient";
 
 export const fetchCart = async () => {
-  const response = await axios.get(API_BASE);
-  return response.data;
+  const response = await api.get('cart/');
+  console.log("inside the api", response)
+  return response.data.data
 };
+

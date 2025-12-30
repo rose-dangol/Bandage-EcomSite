@@ -1,41 +1,61 @@
 import { useState } from "react";
-import { useUserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Navbar } from "../../component";
+import { useMutation, } from "@tanstack/react-query";
+import { userLogin } from "../../services/user.service";
+import { isEmailValid, isPasswordValid } from "../../utils/helper";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
+
+type UserDataType = {
+  email: string,
+  password: string
+}
 
 const Auth = () => {
   const navigate = useNavigate();
   const [formstate, setFormState] = useState("Login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const {setLocalStorage} = useLocalStorage();
 
-  const { login } = useUserContext();
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleLogin();
     }
   };
+
+  const LoginMutation = useMutation({
+    mutationFn: ({email, password}: UserDataType)=>userLogin(email,password),
+    onSuccess: (data)=>{
+      setLocalStorage("authToken", data?.access),
+      setLocalStorage("userData", username),
+      navigate("/")},
+  });
+
   const handleLogin = () => {
-    const emailRegex = /^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const passwordRegex =
-      /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\w\d\s:])([^\s]){8,16}$/;
+    if(username === ""){
+      setUsernameError("This field must be filled.")
+    }
     if (email === "") {
       setEmailError("This field must be filled.");
     }
     if (password === "") {
       setPasswordError("This field must be filled.");
-    } else if (!emailRegex.test(email)) {
+    } else if (!isEmailValid(email)) {
       setEmailError("Invalid email.");
-    } else if (!passwordRegex.test(password)) {
+    } else if (!isPasswordValid(password)) {
       setPasswordError(
         "Password must be 8-16 chars with uppercase, lowercase, number, and special char."
       );
     } else {
-      login(email, password);
+      const data: UserDataType = {email,password}
+      LoginMutation.mutate(data)
       navigate("/");
     }
   };
@@ -52,6 +72,22 @@ const Auth = () => {
             {formstate == "Login" ? (
               <div className="flex flex-col gap-6 pt-5">
                 <h1 className="heading-1">Login</h1>
+                <div className="flex flex-col gap-2">
+                  <label className="block text-sm font-medium">Username</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your username"
+                    className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
+                    value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      setUsernameError("");
+                    }}
+                  />
+                  {usernameError && (
+                    <span className="text-red-500 text-sm">{usernameError}</span>
+                  )}
+                </div>
                 <div className="flex flex-col gap-2">
                   <label className="block text-sm font-medium">Email</label>
                   <input
@@ -94,6 +130,7 @@ const Auth = () => {
                     }}
                     onKeyDown={handleKeyPress}
                   />
+
                   {/* <Eye /> */}
                   {showPassword ? (
                     <EyeOff

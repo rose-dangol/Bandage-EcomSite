@@ -91,7 +91,7 @@ const ProductDetail = () => {
             <div className="relative overflow-hidden w-full h-125">
               {currentImage ? (
                 <img
-                  src={getImageUrl(currentImage)}
+                  src={(currentImage)}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
@@ -130,7 +130,7 @@ const ProductDetail = () => {
                     }`}
                   >
                     <img
-                      src={getImageUrl(url)}
+                      src={(url)}
                       alt={`Thumbnail ${idx}`}
                       className="w-full h-full object-cover"
                     />
@@ -143,7 +143,7 @@ const ProductDetail = () => {
           {/* product data */}
           <div className="flex flex-col pt-3 w-1/2 gap-7">
             <div className="flex flex-col gap-2">
-              <span className="heading-4 text-blueBlack">{product.name}</span>
+              <span className="heading-4 text-blueBlack capitalize">{product.name}</span>
 
               {/* review */}
               <div className="flex items-center gap-3 mb-4 heading-6">
@@ -195,7 +195,7 @@ const ProductDetail = () => {
               {product.category && (
                 <div className="heading-6">
                   <span className="text-grayText">Category: </span>
-                  <span className="text-blueBlack">
+                  <span className="text-blueBlack capitalize">
                     {product.category.name}
                   </span>
                 </div>

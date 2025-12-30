@@ -3,17 +3,6 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
-// const initialValue = () => {
-//   const loggedUser = getLocalStorage("user");
-//   return loggedUser?.isLoggedIn
-//     ? loggedUser
-//     : {
-//         email: "",
-//         password: "",
-//         isLoggedIn: false,
-//       };
-// };
-
 export const UserContext = createContext(null);
 
 export const UserProvider = ({ children }:PropsWithChildren) => {
@@ -44,9 +33,12 @@ export const UserProvider = ({ children }:PropsWithChildren) => {
       email: "",
       password: "",
       isLoggedIn: false,
+
     };
     setUser(clearUser);
-    setLocalStorage("user", JSON.stringify(clearUser));
+    // setLocalStorage("user", JSON.stringify(clearUser));
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('userData')
   };
   const value = {
     user,

@@ -17,7 +17,7 @@ const Landing = () => {
     error,
   } = useQuery({
     queryKey: ["products"],
-    queryFn: ()=>fetchProducts,
+    queryFn: ()=>fetchProducts(),
     refetchOnWindowFocus: false,
   });
   if (isLoading) return <div>Loading...</div>;
@@ -138,7 +138,7 @@ const Landing = () => {
 
         {/* featured products */}
         <div className={`mx-auto ${getLayoutClass()}`}>
-          <ProductCard products={products} viewType={true} />
+          <ProductCard products={products.data} viewType={true} />
           <button
             className="mx-auto btn-transitions uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
             onClick={() => {

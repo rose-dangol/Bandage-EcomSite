@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { getImageUrl } from "../../services/products.service";
 import { formatCurrency } from "../../utils/helper";
 
 type ProductCardType = {
@@ -58,14 +57,14 @@ const ProductCard = ({ products, viewType }: ProductCardType) => {
             {product.image?.[0] && (
               <div className="h-75 w-full">
                 <img
-                  src={getImageUrl(product.image[0])}
+                  src={product.image[0]}
                   className="h-full w-full object-cover"
                   alt="product-image"
                 />
               </div>
             )}
             <div className="flex flex-col p-6.25 pb-8.75 items-center justify-center gap-2.5 text-[#252B42] ">
-              <span className="heading-5 text-blueBlack text-center">
+              <span className="heading-5 text-blueBlack text-center capitalize">
                 {product?.name}
               </span>
               <div className="w-full text-center truncate">

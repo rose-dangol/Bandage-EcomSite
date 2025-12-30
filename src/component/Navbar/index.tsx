@@ -10,11 +10,15 @@ import {
   LogOut,
 } from "lucide-react";
 import { useUserContext } from "../../context/UserContext";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 const Navbar = () => {
   const [mobileView, setMobileView] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const loggedUser = JSON.parse(localStorage.getItem("user"));
+  const {getLocalStorage} = useLocalStorage()
+
+  const authToken = JSON.parse(localStorage.getItem('authToken'));
+  const userData = getLocalStorage('userData')
 
   const { logout } = useUserContext();
 
@@ -64,9 +68,9 @@ const Navbar = () => {
         {/* right side */}
         <div className="flex gap-5 links text-primary">
           <div className="hidden md:flex items-center gap-1.5">
-            {loggedUser?.isLoggedIn ? (
+            {authToken? (
               <span className="text-[#252B42] text-lg">
-                {loggedUser?.email}
+                {userData}
               </span>
             ) : (
               <>
@@ -87,7 +91,7 @@ const Navbar = () => {
             <span className="cursor-pointer">
               <Heart size={"20px"} />
             </span>
-            {loggedUser?.isLoggedIn ? (
+            {authToken? (
               <span>
                 <LogOut
                   size={"20px"}

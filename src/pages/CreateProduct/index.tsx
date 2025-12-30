@@ -54,7 +54,7 @@ const CreateProduct = () => {
     colors: [],
   });
 
-  const { data: product, isLoading } = useQuery({
+  const { data: product, isLoading: isProductsLoading } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
     enabled: !!id,
@@ -122,7 +122,7 @@ const CreateProduct = () => {
     },
   });
 
-  const UpdateMutation = useMutation({
+  const {mutate: UpdateMutation, isPending } = useMutation({
     mutationFn: (data: UpdatedFormDataType) => updateProduct(id, data),
     onSuccess: () => {
       toast.success("Product updated successfully!");
@@ -132,7 +132,6 @@ const CreateProduct = () => {
       toast.error(`Error: ${error.message}`);
     },
   });
-
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -254,7 +253,8 @@ const CreateProduct = () => {
 
       if (validateForm(updatedFormData)) {
         if (id) {
-          UpdateMutation.mutate(updatedFormData);
+          console.log(updatedFormData)
+          UpdateMutation(updatedFormData);
         } else {
           AddMutation.mutate(updatedFormData);
         }
@@ -263,7 +263,7 @@ const CreateProduct = () => {
       console.log(err);
     }
   };
-  if (isLoading) return <h1>Loading...</h1>;
+  if (isProductsLoading) return <h1>Loading...</h1>;
 
   return (
     <Container>
@@ -297,7 +297,7 @@ const CreateProduct = () => {
             Description
           </label>
           <textarea
-            rows={Number("4")}
+            rows={4}
             placeholder="Your Message"
             name="description"
             value={formData.description}
@@ -324,7 +324,7 @@ const CreateProduct = () => {
                   >
                     {(img as { url: string }).url ? (
                       <img
-                        src={getImageUrl((img as { url: string }).url)}
+                        src={((img as { url: string }).url)}
                         className="h-12 w-10"
                         alt="preview"
                       />
@@ -461,10 +461,12 @@ const CreateProduct = () => {
         </div>
 
         <button
-          className="flex-1 bg-primary text-white btn-text px-3 py-2 rounded hover:bg-secondary btn-transitions"
+          className="flex-1 bg-primary text-white btn-text px-3 py-2 rounded hover:bg-secondary btn-transitions cursor-pointer"
           onClick={handleSubmit}
+          disabled = {isPending?true:false}
         >
-          Save
+          {isPending? 'Saving':
+          'Save'}
         </button>
       </div>
     </Container>
