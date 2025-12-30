@@ -7,7 +7,6 @@ import {
   AllProducts,
   Layout,
   ProductDetail,
-  Cart,
 } from "../pages";
 import PublicRoutes from "./publicRoutes";
 import CreateProduct from "../pages/CreateProduct";
@@ -25,7 +24,6 @@ const AppRoutes = () => {
           <Route path="/shop" element={<AllProducts />} />
           <Route path="/shop/products/:id/" element={<ProductDetail />} />
           <Route path="/updateProduct/:id?" element={<CreateProduct />} />
-          <Route path="/cart/" element={<Cart />} />
         </Route>
       </Route>
     </Routes>

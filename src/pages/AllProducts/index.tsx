@@ -28,7 +28,6 @@ const AllProducts = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
-  console.log(products);
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!products || !products.data) return <div>No products found</div>;

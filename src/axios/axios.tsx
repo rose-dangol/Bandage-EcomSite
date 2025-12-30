@@ -1,9 +1,6 @@
 import axios from "axios";
 
-const axiosInstance = (
-  baseURL: string,
-  contentType = "application/json;charset=utf-8"
-) => {
+const axiosInstance = (baseURL: string, contentType = "application/json") => {
   const instance = axios.create({
     baseURL,
     timeout: 60000,
@@ -14,8 +11,6 @@ const axiosInstance = (
   });
   instance.interceptors.request.use(
     (config) => {
-      // console.log("request is being sent");
-      
       const token = JSON.parse(localStorage.getItem("authToken"));
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;

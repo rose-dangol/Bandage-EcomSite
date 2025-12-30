@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addProduct,
   fetchProductById,
-  getImageUrl,
   updateProduct,
 } from "../../services/products.service";
 
@@ -35,7 +34,7 @@ type ErrorType = {
   color?: string;
   category?: string;
   image?: string;
-  try? :number
+  try?: number;
 };
 const CreateProduct = () => {
   const location = useLocation();
@@ -62,7 +61,6 @@ const CreateProduct = () => {
   });
 
   useEffect(() => {
-    console.log(product);
     if (product) {
       setFormData({
         name: product.name || "",
@@ -122,7 +120,7 @@ const CreateProduct = () => {
     },
   });
 
-  const {mutate: UpdateMutation, isPending } = useMutation({
+  const { mutate: UpdateMutation, isPending } = useMutation({
     mutationFn: (data: UpdatedFormDataType) => updateProduct(id, data),
     onSuccess: () => {
       toast.success("Product updated successfully!");
@@ -253,7 +251,6 @@ const CreateProduct = () => {
 
       if (validateForm(updatedFormData)) {
         if (id) {
-          console.log(updatedFormData)
           UpdateMutation(updatedFormData);
         } else {
           AddMutation.mutate(updatedFormData);
@@ -324,7 +321,7 @@ const CreateProduct = () => {
                   >
                     {(img as { url: string }).url ? (
                       <img
-                        src={((img as { url: string }).url)}
+                        src={(img as { url: string }).url}
                         className="h-12 w-10"
                         alt="preview"
                       />
@@ -463,10 +460,9 @@ const CreateProduct = () => {
         <button
           className="flex-1 bg-primary text-white btn-text px-3 py-2 rounded hover:bg-secondary btn-transitions cursor-pointer"
           onClick={handleSubmit}
-          disabled = {isPending?true:false}
+          disabled={isPending ? true : false}
         >
-          {isPending? 'Saving':
-          'Save'}
+          {isPending ? "Saving" : "Save"}
         </button>
       </div>
     </Container>

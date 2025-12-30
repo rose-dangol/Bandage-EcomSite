@@ -14,7 +14,7 @@ type UserDataType = {
 
 const Auth = () => {
   const navigate = useNavigate();
-  const [formstate, setFormState] = useState("Login");
+  const [formstate, setFormState] = useState<"Login"|"Signup">("Login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -160,7 +160,7 @@ const Auth = () => {
                   I don't have an account?
                   <span
                     className="text-red-500 font-medium cursor-pointer"
-                    onClick={() => setFormState("signup")}
+                    onClick={() => setFormState("Signup")}
                   >
                     {" "}
                     Sign up

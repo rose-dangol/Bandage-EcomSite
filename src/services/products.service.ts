@@ -33,7 +33,6 @@ export const addProduct = async (productData: {
   colors: string[];
   categoryId: string;
 }) => {
-  console.log(productData);
   try {
     const formData = new FormData();
     formData.append("name", productData.name);
@@ -51,22 +50,23 @@ export const addProduct = async (productData: {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
-  } catch(err) {
-    console.log(err)
+  } catch (err) {
+    console.log(err);
   }
 };
 
-export const updateProduct = async (id:string, productData:{
-  name:string,
-  description: string,
-  image: File[],
-  price: string,
-  discount: string,
-  colors: string[],
-  categoryId: string,
-
-}) => {
-  console.log(productData, 'testing')
+export const updateProduct = async (
+  id: string,
+  productData: {
+    name: string;
+    description: string;
+    image: File[];
+    price: string;
+    discount: string;
+    colors: string[];
+    categoryId: string;
+  }
+) => {
   const formData = new FormData();
 
   // formData.append("image", convertedImage);
