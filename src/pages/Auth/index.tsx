@@ -2,19 +2,23 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Navbar } from "../../component";
-import { useMutation, } from "@tanstack/react-query";
-import { userLogin } from "../../services/user.service";
+import { useMutation } from "@tanstack/react-query";
+import { userLogin, userSignup } from "../../services/user.service";
 import { isEmailValid, isPasswordValid } from "../../utils/helper";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 type UserDataType = {
-  email: string,
-  password: string
-}
+  email: string;
+  password: string;
+};
+
+type SignupDataType = UserDataType & {
+  username: string;
+};
 
 const Auth = () => {
   const navigate = useNavigate();
-  const [formstate, setFormState] = useState<"Login"|"Signup">("Login");
+  const [formstate, setFormState] = useState<"Login" | "Signup">("Login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -22,7 +26,7 @@ const Auth = () => {
   const [emailError, setEmailError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const {setLocalStorage} = useLocalStorage();
+  const { setLocalStorage } = useLocalStorage();
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -30,35 +34,96 @@ const Auth = () => {
     }
   };
 
+  // Login Mutation
   const LoginMutation = useMutation({
-    mutationFn: ({email, password}: UserDataType)=>userLogin(email,password),
-    onSuccess: (data)=>{
-      setLocalStorage("authToken", data?.access),
-      setLocalStorage("userData", username),
-      navigate("/")},
+    mutationFn: ({ email, password }: UserDataType) => userLogin(email, password),
+    onSuccess: (data) => {
+      setLocalStorage("authToken", data?.access);
+      setLocalStorage("userData", email);
+      navigate("/");
+    },
+    onError: (error: any) => {
+      setEmailError(error.response?.data?.message || "Login failed");
+    },
+  });
+
+  // Signup Mutation
+  const SignupMutation = useMutation({
+    mutationFn: ({ email, password, username }: SignupDataType) =>
+      userSignup(email, password, username),
+    onSuccess: (data) => {
+      setLocalStorage("authToken", data?.access);
+      setLocalStorage("userData", email);
+      navigate("/");
+    },
+    onError: (error: any) => {
+      setEmailError(error.response?.data?.message || "Signup failed");
+    },
   });
 
   const handleLogin = () => {
-    if(username === ""){
-      setUsernameError("This field must be filled.")
+    setUsernameError("");
+    setEmailError("");
+    setPasswordError("");
+
+    if (username === "") {
+      setUsernameError("This field must be filled.");
+      return;
     }
     if (email === "") {
       setEmailError("This field must be filled.");
+      return;
     }
     if (password === "") {
       setPasswordError("This field must be filled.");
-    } else if (!isEmailValid(email)) {
+      return;
+    }
+    if (!isEmailValid(email)) {
       setEmailError("Invalid email.");
-    } else if (!isPasswordValid(password)) {
+      return;
+    }
+    if (!isPasswordValid(password)) {
       setPasswordError(
         "Password must be 8-16 chars with uppercase, lowercase, number, and special char."
       );
-    } else {
-      const data: UserDataType = {email,password}
-      LoginMutation.mutate(data)
-      navigate("/");
+      return;
     }
+
+    LoginMutation.mutate({ email, password });
   };
+
+  const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setUsernameError("");
+    setEmailError("");
+    setPasswordError("");
+
+    if (username === "") {
+      setUsernameError("This field must be filled.");
+      return;
+    }
+    if (email === "") {
+      setEmailError("This field must be filled.");
+      return;
+    }
+    if (password === "") {
+      setPasswordError("This field must be filled.");
+      return;
+    }
+    if (!isEmailValid(email)) {
+      setEmailError("Invalid email.");
+      return;
+    }
+    if (!isPasswordValid(password)) {
+      setPasswordError(
+        "Password must be 8-16 chars with uppercase, lowercase, number, and special char."
+      );
+      return;
+    }
+
+    SignupMutation.mutate({ email, password, username });
+  };
+
   return (
     <>
       <Navbar />
@@ -106,7 +171,7 @@ const Auth = () => {
                 </div>
 
                 <div className="flex flex-col gap-2 relative">
-                  <div className="flex justify-between items-center \">
+                  <div className="flex justify-between items-center">
                     <label className="block text-sm font-medium">
                       Password
                     </label>
@@ -131,15 +196,14 @@ const Auth = () => {
                     onKeyDown={handleKeyPress}
                   />
 
-                  {/* <Eye /> */}
                   {showPassword ? (
                     <EyeOff
-                      className="absolute right-4 top-10 z-30"
+                      className="absolute right-4 top-10 z-30 cursor-pointer"
                       onClick={() => setShowPassword(!showPassword)}
                     />
                   ) : (
                     <Eye
-                      className="absolute right-4 top-10 z-30"
+                      className="absolute right-4 top-10 z-30 cursor-pointer"
                       onClick={() => setShowPassword(!showPassword)}
                     />
                   )}
@@ -150,11 +214,12 @@ const Auth = () => {
                   )}
                 </div>
                 <button
-                  type="submit"
-                  className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded btn-transitions hover:bg-secondary"
+                  type="button"
+                  className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded btn-transitions hover:bg-secondary disabled:opacity-50"
                   onClick={handleLogin}
+                  disabled={LoginMutation.isPending}
                 >
-                  Log In
+                  {LoginMutation.isPending ? "Logging in..." : "Log In"}
                 </button>
                 <span className="text-center text-sm text-grayText inline">
                   I don't have an account?
@@ -168,15 +233,40 @@ const Auth = () => {
                 </span>
               </div>
             ) : (
-              <form className="flex flex-col gap-6 pt-5">
+              <form className="flex flex-col gap-6 pt-5" onSubmit={handleSignup}>
                 <h1 className="heading-1">Sign Up</h1>
+                <div className="flex flex-col gap-2">
+                  <label className="block text-sm font-medium">Username</label>
+                  <input
+                    type="text"
+                    placeholder="Enter your username"
+                    className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
+                    value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      setUsernameError("");
+                    }}
+                  />
+                  {usernameError && (
+                    <span className="text-red-500 text-sm">{usernameError}</span>
+                  )}
+                </div>
+
                 <div className="flex flex-col gap-2">
                   <label className="block text-sm font-medium">Email</label>
                   <input
                     type="email"
                     placeholder="Enter your email"
                     className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setEmailError("");
+                    }}
                   />
+                  {emailError && (
+                    <span className="text-red-500 text-sm">{emailError}</span>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -185,13 +275,25 @@ const Auth = () => {
                     type="password"
                     placeholder="Enter Password"
                     className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordError("");
+                    }}
                   />
+                  {passwordError && (
+                    <span className="text-sm text-red-500">
+                      {passwordError}
+                    </span>
+                  )}
                 </div>
+
                 <button
                   type="submit"
-                  className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded btn-transitions hover:bg-secondary"
+                  className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded btn-transitions hover:bg-secondary disabled:opacity-50"
+                  disabled={SignupMutation.isPending}
                 >
-                  Sign Up
+                  {SignupMutation.isPending ? "Signing up..." : "Sign Up"}
                 </button>
                 <span className="text-center text-sm text-grayText inline">
                   Already have an account?

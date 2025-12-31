@@ -11,8 +11,9 @@ const axiosInstance = (baseURL: string, contentType = "application/json") => {
   });
   instance.interceptors.request.use(
     (config) => {
-      const token = JSON.parse(localStorage.getItem("authToken"));
+      let token = localStorage.getItem("authToken");
       if (token) {
+        token = token.replace(/^"|"$/g, ""); //cause token ma " " aiirako thiyo
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;

@@ -2,7 +2,6 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   deleteProduct,
   fetchProductById,
-  getImageUrl,
 } from "../../services/products.service";
 import {
   Heart,
@@ -18,6 +17,18 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumb, Container, DialogBox } from "../../component";
 import { useState } from "react";
 import { formatCurrency } from "../../utils/helper";
+import toast from "react-hot-toast";
+import {
+  AddToCart,
+  fetchCart,
+  updateCartQuantity,
+} from "../../services/cart.service";
+import { UpdateCartDataType } from "../Cart";
+
+type CartDataType = {
+  id?: number;
+  quantity?: number;
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -26,7 +37,9 @@ const ProductDetail = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [showDialog, setShowDialog] = useState(false);
-  // const [isFilled, setIsFilled] = useState(false);
+  const [selectDialog, setSelectDialog] = useState(false);
+  const [isFilled, setIsFilled] = useState(false);
+  const [quantity, setQuantity] = useState(0);
 
   // Fetching product data
   const {
@@ -42,6 +55,22 @@ const ProductDetail = () => {
   const DeleteMutation = useMutation({
     mutationFn: (id: number) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
+  });
+  const { data: cartItems = [] } = useQuery({
+    queryKey: ["cartItem"],
+    queryFn: () => fetchCart(),
+    refetchOnWindowFocus: false,
+  });
+
+  const addCart = useMutation({
+    mutationFn: ({ id, quantity }: CartDataType) => AddToCart(id, quantity),
+    onSuccess: () => {
+      toast.success("Item added to cart sucessfully!");
+    },
+  });
+  const UpdateCart = useMutation({
+    mutationFn: ({ id, newQuantity }: UpdateCartDataType) =>
+      updateCartQuantity(id, newQuantity),
   });
 
   if (isLoading)
@@ -78,6 +107,23 @@ const ProductDetail = () => {
     );
   };
 
+  const handleAddToCart = (id: number, quantity: number) => {
+    if (quantity === 0) {
+      toast.error("Cart should have atleast one item");
+    } else {
+      const data: CartDataType = { id, quantity };
+      const productExist = cartItems.find((item) => item.productId == id)?.id;
+      if (productExist) {
+        UpdateCart.mutate({id: productExist, newQuantity:quantity});
+      } else {
+        addCart.mutate(data);
+      }
+    }
+  };
+  const handleWishlist = () => {
+    setIsFilled(!isFilled);
+  };
+
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
@@ -91,7 +137,7 @@ const ProductDetail = () => {
             <div className="relative overflow-hidden w-full h-125">
               {currentImage ? (
                 <img
-                  src={(currentImage)}
+                  src={currentImage}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
@@ -130,7 +176,7 @@ const ProductDetail = () => {
                     }`}
                   >
                     <img
-                      src={(url)}
+                      src={url}
                       alt={`Thumbnail ${idx}`}
                       className="w-full h-full object-cover"
                     />
@@ -143,7 +189,9 @@ const ProductDetail = () => {
           {/* product data */}
           <div className="flex flex-col pt-3 w-1/2 gap-7">
             <div className="flex flex-col gap-2">
-              <span className="heading-4 text-blueBlack capitalize">{product.name}</span>
+              <span className="heading-4 text-blueBlack capitalize">
+                {product.name}
+              </span>
 
               {/* review */}
               <div className="flex items-center gap-3 mb-4 heading-6">
@@ -221,11 +269,20 @@ const ProductDetail = () => {
               )}
             </div>
             <div className="flex gap-3 pt-6 border-t border-gray-200">
-              <button className="max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition">
+              <button
+                className="max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition cursor-pointer"
+                onClick={() => setSelectDialog(true)}
+              >
                 Select Options
               </button>
               <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
-                <Heart size={20} className="text-gray-600" />
+                <Heart
+                  size={20}
+                  fill={isFilled ? "red" : "white"}
+                  stroke={isFilled ? "red" : "gray"}
+                  className="text-gray-600 cursor-pointer hover:scale-110 transition"
+                  onClick={() => handleWishlist()}
+                />
               </div>
               <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
                 <ShoppingCart size={20} className="text-gray-600" />
@@ -234,6 +291,63 @@ const ProductDetail = () => {
                 <Eye size={20} className="text-gray-600" />
               </div>
             </div>
+            {selectDialog && (
+              <DialogBox title={"Select Option"} subText="">
+                <div className="flex items-center justify-around mb-8">
+                  {product.colors?.length > 0 && (
+                    <div className="flex gap-3">
+                      {product.colors.map((color: string, index: number) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedColor(color)}
+                          className={`w-7 h-7 rounded-full border-2 transition ${
+                            selectedColor === color
+                              ? "border-gray-900"
+                              : "border-gray-300 hover:border-gray-600"
+                          }`}
+                          style={{
+                            backgroundColor: color,
+                          }}
+                          title={color}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 border border-gray-300 rounded w-fit p-1">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-1">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={() => setSelectDialog(false)}
+                    className="px-4 py-2 border border-gray-300 rounded text-blueBlack heading-6 cursor-pointer hover:bg-gray-50 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleAddToCart(id, quantity);
+                      setSelectDialog(false);
+                    }}
+                    className="px-4 py-2 bg-green-800 text-white rounded heading-6 cursor-pointer hover:bg-green-600 transition"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </DialogBox>
+            )}
           </div>
 
           {/* action */}

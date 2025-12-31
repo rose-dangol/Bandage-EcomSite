@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [tailwindcss(), react()],
   server: {
     host: true,
-    allowedHosts: ["bandage-ecomsite.onrender.com"],
+    allowedHosts: [
+      "bandage-ecomsite.onrender.com",
+      "dryadic-kathlene-filtrable.ngrok-free.dev",
+    ],
   },
 });

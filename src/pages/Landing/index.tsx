@@ -20,9 +20,9 @@ const Landing = () => {
     queryFn: ()=>fetchProducts(),
     refetchOnWindowFocus: false,
   });
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!products) return <div>No products found</div>;
+  if (isLoading) return <div className="text-center cursor-progress heading-6">Loading...</div>;
+  if (error) return <div className="text-center cursor-progress heading-6 text-red-700">Error: {error.message}</div>;
+  if (!products) return <div className="text-center cursor-progress heading-6 text-red-600">No products found</div>;
   
   return (
     <div className="w-full cursor-default">

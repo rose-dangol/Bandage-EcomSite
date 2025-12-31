@@ -39,6 +39,7 @@ export const UserProvider = ({ children }:PropsWithChildren) => {
     // setLocalStorage("user", JSON.stringify(clearUser));
     localStorage.removeItem('authToken')
     localStorage.removeItem('userData')
+    window.location.reload();
   };
   const value = {
     user,
