@@ -85,6 +85,9 @@ const ProductDetail = () => {
   const UpdateCart = useMutation({
     mutationFn: ({ id, newQuantity }: UpdateCartDataType) =>
       updateCartQuantity(id, newQuantity),
+    onSuccess: () => {
+      toast.success("Item added to cart sucessfully!");
+    },
   });
 
   if (isLoading)

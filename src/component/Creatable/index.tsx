@@ -3,12 +3,12 @@ import { addCategory, getCategories } from "../../services/category.service";
 import React, { useState, useEffect } from "react";
 import { useClickAway } from "../../hooks/useClickAway";
 
-type CreatableProps={
-  setCategory :React.Dispatch<React.SetStateAction<number>>,
-  name: string
-}
+type CreatableProps = {
+  setCategory: React.Dispatch<React.SetStateAction<number>>;
+  name: string;
+};
 
-function Creatable({ setCategory , name }: CreatableProps) {
+function Creatable({ setCategory, name }: CreatableProps) {
   const [inputValue, setInputValue] = useState(name);
   const [categoryList, setCategoryList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,7 @@ function Creatable({ setCategory , name }: CreatableProps) {
   }, [categories]);
 
   const { mutate } = useMutation({
-    mutationFn: async (inputValue:string) => await addCategory(inputValue),
+    mutationFn: async (inputValue: string) => await addCategory(inputValue),
     onSuccess: (data) => {
       // queryClient.invalidateQueries({ queryKey: ["category"] });
       setCategoryList((prev) => [...prev, data.data]);
@@ -44,16 +44,13 @@ function Creatable({ setCategory , name }: CreatableProps) {
     category.name.toLowerCase().includes(inputValue.toLowerCase())
   );
 
-  const handleSelectCategory = (category:{
-    id:number,
-    name: string,
-  }) => {
+  const handleSelectCategory = (category: { id: number; name: string }) => {
     setCategory(category.id);
     setInputValue(category.name);
     setIsOpen(false);
   };
 
-  const handleAddCategory = (inputValue:string) => {
+  const handleAddCategory = (inputValue: string) => {
     mutate(inputValue);
     setIsOpen(false);
   };
@@ -87,14 +84,13 @@ function Creatable({ setCategory , name }: CreatableProps) {
               </div>
             )}
           {(inputValue === "" || isCategoryIncluded) &&
-            categoryList
-              .filter((ca) => ca.name.includes(inputValue))
-              .map((c) => {
+              // .filter((ca) => ca.name.includes(inputValue))
+            categoryList?.map((c) => {
                 return (
                   <div
                     key={c.id}
-                    className="p-2 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSelectCategory(c)}
+                    className={`p-2 cursor-pointer hover:bg-gray-100 ${c?.name?.toLowerCase()?.includes(inputValue?.toLowerCase())?"text-white bg-primary hover:text-blueBlack":"bg-white"}`}
+                    onClick={() => {handleSelectCategory(c); console.log(c)}}
                   >
                     {c.name}
                   </div>

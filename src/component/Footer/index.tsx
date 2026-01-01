@@ -77,8 +77,8 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="bg-[#F9F9F9] border-t border-gray-200 w-full py-6">
-        <span className="font-bold p-10 text-sm text-grayText">
+      <div className="bg-[#F9F9F9] border-t flex border-gray-200 w-full py-6">
+        <span className="font-bold px-10 text-sm text-grayText">
           Made With Love By Finland. All Rights Reserved.
         </span>
       </div>

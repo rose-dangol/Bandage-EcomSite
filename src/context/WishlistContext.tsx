@@ -31,14 +31,13 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
     mutationFn: (productId: number) => addToWishlist(productId),
     onSuccess: (data) => {
       toast.success(data.message + "❤️");
-      window.location.reload();
     },
     onError: (error) => {
       toast.error(error.message);
     },
   });
   useEffect(() => {
-    if (wishlistItem) {
+    if (wishlistItem?.length>0) {
       setWishlist(wishlistItem);
       setWishlistCount(wishlistItem?.length);
     }

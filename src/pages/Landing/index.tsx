@@ -8,9 +8,11 @@ import { getLayoutClass } from "../../utils/helper";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../../services/products.service";
+import { useState } from "react";
 
 const Landing = () => {
   const navigate = useNavigate();
+    const [visibleCount, setVisibleCount] = useState<number>(4)
   const {
     data: products,
     isLoading,
@@ -84,14 +86,14 @@ const Landing = () => {
         <div className={getLayoutClass()}>
           <div className="flex flex-col md:flex-row gap-4 md:h-142.5">
             {/* left */}
-            <div className="md:w-3/5 h-full relative">
+            <div className="md:w-3/5 h-139 md:h-full relative">
               <img
                 src="/images/top-week1.png"
                 alt="Top product"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
-                <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full w-3/5">
+              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-7/10 md:h-2/5 h-1/2">
+                <div className="text-white flex flex-col md:p-5 gap-3 items-start justify-center h-full md:w-3/5 w-full">
                   <span className="heading-3">Top Product of the Week</span>
                   <Link to={'/shop'} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
                     Explore items
@@ -108,10 +110,10 @@ const Landing = () => {
                   alt="Product 2"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
+                <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-3/4 md:h-3/5 h-7/10">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link to={'/shop'} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link to={'/shop'} className="btn-text border-2 border-amber-50 rounded md:px-5 px-2 py-4 md:w-3/4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
                       Explore items
                     </Link>
                   </div>
@@ -123,10 +125,10 @@ const Landing = () => {
                   alt="Product 3"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
+                <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-3/4 md:h-3/5 h-7/10">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link to={'/shop'} className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link to={'/shop'} className="btn-text border-2 rounded border-amber-50 md:px-5 px-2 py-4 md:w-3/4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
                       Explore items
                     </Link>
                   </div>
@@ -138,11 +140,12 @@ const Landing = () => {
 
         {/* featured products */}
         <div className={`mx-auto ${getLayoutClass()}`}>
-          <ProductCard products={products.data} viewType={true} />
+          <ProductCard products={products.data} visibleCount={visibleCount} viewType={true} />
           <button
             className="mx-auto btn-transitions uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
             onClick={() => {
-              navigate("/shop");
+              setVisibleCount(prev=>prev+4)
+              // navigate("/shop");
             }}
           >
             Load more products

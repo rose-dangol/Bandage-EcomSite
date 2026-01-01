@@ -21,7 +21,7 @@ type ProductCardType = {
   viewType: boolean;
 };
 
-const ProductCard = ({ products, viewType }: ProductCardType) => {
+const ProductCard = ({ products, viewType, visibleCount}: ProductCardType) => {
   const navigate = useNavigate();
   const handleClick = (id: number) => {
     navigate(`/shop/products/${id}/`);
@@ -42,14 +42,14 @@ const ProductCard = ({ products, viewType }: ProductCardType) => {
       <div
         className={`mx-auto p-5 md:px-20 ${
           viewType
-            ? "grid grid-cols-1 xl:grid-cols-4 gap-4 lg:gap-x-5"
-            : "flex flex-col"
+            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-x-5"
+            : "flex flex-wrap justify-evenly gap-3"
         }`}
       >
-        {products?.map((product) => (
+        {products?.slice(0,visibleCount)?.map((product) => (
           <div
             className={`flex ${
-              viewType ? "flex-col" : "flex-row"
+              viewType ? "flex-col" : "flex-row w-[40%]"
             } gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:scale-105`}
             key={product?.id}
             onClick={() => handleClick(product?.id)}
@@ -62,7 +62,7 @@ const ProductCard = ({ products, viewType }: ProductCardType) => {
                 <img
                   src={product.image[0]}
                   className={`h-full w-full ${
-                    viewType ? "object-cover" : "object-scale-down"
+                    viewType ? "object-cover" : "object-cover"
                   } `}
                   alt="product-image"
                 />
@@ -88,7 +88,7 @@ const ProductCard = ({ products, viewType }: ProductCardType) => {
               <div className="flex gap-3 pt-2">
                 {product?.colors?.map((color: string) => (
                   <div
-                    className={`w-5 h-5 rounded-full bg-${color}-500 cursor-pointer`}
+                    className={`w-5 h-5 rounded-full bg-${color}-500 border border-mutedText cursor-pointer`}
                     key={color}
                     style={{ background: `${color}` }}
                   ></div>

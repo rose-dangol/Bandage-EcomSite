@@ -38,7 +38,7 @@ const Navbar = () => {
   const [cartNumber, setCartNumber] = useState(0);
   useEffect(() => {
     setCartNumber(cartItems?.length);
-  });
+  },[cartItems]);
   return (
     <div className="text-md w-full sticky top-0 z-500 bg-white/90">
       <div className="p-6 flex justify-between items-center">
@@ -111,9 +111,9 @@ const Navbar = () => {
             )}
           </div>
           <div className="flex gap-4 items-center relative">
-            <span className="cursor-pointer">
+            {/* <span className="cursor-pointer">
               <Search size={"20px"} />
-            </span>
+            </span> */}
             <span
               className="cursor-pointer relative"
               onClick={() => navigate("/cart")}

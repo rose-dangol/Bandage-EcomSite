@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { Navbar } from "../../component";
 import { useMutation } from "@tanstack/react-query";
 import { userLogin, userSignup } from "../../services/user.service";
-import { isEmailValid, isPasswordValid } from "../../utils/helper";
+// import { isEmailValid, isPasswordValid } from "../../utils/helper";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import toast from "react-hot-toast";
 
 type UserDataType = {
   email: string;
@@ -19,15 +19,21 @@ type SignupDataType = UserDataType & {
 };
 
 const Auth = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [formstate, setFormState] = useState<"Login" | "Signup">("Login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [emailError, setEmailError] = useState("");
-  const [usernameError, setUsernameError] = useState("");
+  const [firstnameError, setFirstNameError] = useState("");
+  const [lastnameError, setLastNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
   const { setLocalStorage } = useLocalStorage();
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -43,10 +49,12 @@ const Auth = () => {
     onSuccess: (data) => {
       setLocalStorage("authToken", data?.access);
       setLocalStorage("userData", email);
-      navigate("/");
+      // navigate("/");
+      window.open("/")
     },
     onError: (error: any) => {
-      setEmailError(error.response?.data?.message || "Login failed");
+      console.log(error)
+      setPasswordError(error.response?.data?.message || "Login failed");
     },
   });
 
@@ -60,67 +68,56 @@ const Auth = () => {
       confirmPassword,
     }: SignupDataType) =>
       userSignup(firstName, lastName, email, password, confirmPassword),
-    onSuccess: (data) => {
-      setLocalStorage("authToken", data?.access);
-      setLocalStorage("userData", email);
-      navigate("/");
+    onSuccess: () => {
+      setFormState("Login");
+      toast.success("Registered Successfully!")
     },
     onError: (error: any) => {
-      setEmailError(error.response?.data?.message || "Signup failed");
+      const errors = error.response.data.error[0];
+      switch (errors.field) {
+        case "email":
+          setEmailError(errors.message);
+          break;
+        case "firstName":
+          setFirstNameError(errors.message);
+          break;
+        case "lastName":
+          setLastNameError(errors.message);
+          break;
+        case "password":
+          setPasswordError(errors.message);
+          break;
+        case "confirmPassword":
+          setConfirmPasswordError(errors.message);
+          break;
+      }
+      // toast.error(error.response.data.error[0].message || "Signup failed");
     },
   });
 
   const handleLogin = () => {
-    setEmailError("");
-    setPasswordError("");
-
-    if (email === "") {
-      setEmailError("This field must be filled.");
-      return;
-    }
-    if (password === "") {
-      setPasswordError("This field must be filled.");
-      return;
-    }
-    if (!isEmailValid(email)) {
-      setEmailError("Invalid email.");
-      return;
-    }
-    if (!isPasswordValid(password)) {
-      setPasswordError(
-        "Password must be 8-16 chars with uppercase, lowercase, number, and special char."
-      );
-      return;
-    }
-
+    // if (!isEmailValid(email)) {
+    //   setEmailError("Invalid email.");
+    //   return;
+    // }
+    // if (!isPasswordValid(password)) {
+    //   setPasswordError(
+    //     "Password must be 8-16 chars with uppercase, lowercase, number, and special char."
+    //   );
+    //   return;
+    // }
     LoginMutation.mutate({ email, password });
   };
 
   const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setEmailError("");
-    setPasswordError("");
-
-    if (email === "") {
-      setEmailError("This field must be filled.");
-      return;
-    }
-    if (password === "") {
-      setPasswordError("This field must be filled.");
-      return;
-    }
-    if (!isEmailValid(email)) {
-      setEmailError("Invalid email.");
-      return;
-    }
-    if (!isPasswordValid(password)) {
-      setPasswordError(
-        "Password must be 8-16 chars with uppercase, lowercase, number, and special char."
-      );
-      return;
-    }
-
-    SignupMutation.mutate({ email, password, username });
+      SignupMutation.mutate({
+        firstName,
+        lastName,
+        email,
+        password,
+        confirmPassword,
+      });
   };
 
   return (
@@ -136,22 +133,6 @@ const Auth = () => {
             {formstate == "Login" ? (
               <div className="flex flex-col gap-6 pt-5">
                 <h1 className="heading-1">Login</h1>
-                {/* <div className="flex flex-col gap-2">
-                  <label className="block text-sm font-medium">Username</label>
-                  <input
-                    type="text"
-                    placeholder="Enter your username"
-                    className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
-                    value={username}
-                    onChange={(e) => {
-                      setUsername(e.target.value);
-                      setUsernameError("");
-                    }}
-                  />
-                  {usernameError && (
-                    <span className="text-red-500 text-sm">{usernameError}</span>
-                  )}
-                </div> */}
                 <div className="flex flex-col gap-2">
                   <label className="block text-sm font-medium">Email</label>
                   <input
@@ -246,15 +227,15 @@ const Auth = () => {
                       type="text"
                       placeholder="Firstname"
                       className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
-                      value={username}
+                      value={firstName}
                       onChange={(e) => {
-                        setUsername(e.target.value);
-                        setUsernameError("");
+                        setFirstName(e.target.value);
+                        setFirstNameError("");
                       }}
                     />
-                    {usernameError && (
+                    {firstnameError && (
                       <span className="text-red-500 text-sm">
-                        {usernameError}
+                        {firstnameError}
                       </span>
                     )}
                   </div>
@@ -266,15 +247,15 @@ const Auth = () => {
                       type="text"
                       placeholder="Lastname"
                       className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
-                      value={username}
+                      value={lastName}
                       onChange={(e) => {
-                        setUsername(e.target.value);
-                        setUsernameError("");
+                        setLastName(e.target.value);
+                        setLastNameError("");
                       }}
                     />
-                    {usernameError && (
+                    {lastnameError && (
                       <span className="text-red-500 text-sm">
-                        {usernameError}
+                        {lastnameError}
                       </span>
                     )}
                   </div>
@@ -323,15 +304,15 @@ const Auth = () => {
                     type="password"
                     placeholder="Confirm Password"
                     className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
-                    value={password}
+                    value={confirmPassword}
                     onChange={(e) => {
-                      setPassword(e.target.value);
-                      setPasswordError("");
+                      setConfirmPassword(e.target.value);
+                      setConfirmPasswordError("");
                     }}
                   />
-                  {passwordError && (
+                  {confirmPasswordError && (
                     <span className="text-sm text-red-500">
-                      {passwordError}
+                      {confirmPasswordError}
                     </span>
                   )}
                 </div>
