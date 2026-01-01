@@ -93,7 +93,7 @@ const Landing = () => {
               <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
                 <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full w-3/5">
                   <span className="heading-3">Top Product of the Week</span>
-                  <Link to={''} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
+                  <Link to={'/shop'} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
                     Explore items
                   </Link>
                 </div>
@@ -111,7 +111,7 @@ const Landing = () => {
                 <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link to={''} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link to={'/shop'} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
                       Explore items
                     </Link>
                   </div>
@@ -126,7 +126,7 @@ const Landing = () => {
                 <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link to={''} className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link to={'/shop'} className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
                       Explore items
                     </Link>
                   </div>

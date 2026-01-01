@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Breadcrumb, Container, DialogBox } from "../../component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/helper";
 import toast from "react-hot-toast";
 import {
@@ -24,6 +24,7 @@ import {
   updateCartQuantity,
 } from "../../services/cart.service";
 import { UpdateCartDataType } from "../Cart";
+import { useWishlistContext } from "../../context/WishlistContext";
 
 type CartDataType = {
   id?: number;
@@ -40,6 +41,19 @@ const ProductDetail = () => {
   const [selectDialog, setSelectDialog] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
   const [quantity, setQuantity] = useState(0);
+  const [wishlistExist, setWishlistExist] = useState();
+
+  const { wishlist, AddMutation, RemoveMutation } = useWishlistContext();
+
+  useEffect(() => {
+    const idFound = wishlist.find((item) => item.productId == id)?.id;
+    setWishlistExist(idFound);
+    if (idFound) {
+      setIsFilled(true);
+    } else {
+      setIsFilled(false);
+    }
+  }, [wishlist, id]);
 
   // Fetching product data
   const {
@@ -114,14 +128,21 @@ const ProductDetail = () => {
       const data: CartDataType = { id, quantity };
       const productExist = cartItems.find((item) => item.productId == id)?.id;
       if (productExist) {
-        UpdateCart.mutate({id: productExist, newQuantity:quantity});
+        UpdateCart.mutate({ id: productExist, newQuantity: quantity });
       } else {
         addCart.mutate(data);
       }
     }
   };
-  const handleWishlist = () => {
-    setIsFilled(!isFilled);
+
+  const handleWishlist = (id: number) => {
+    if (isFilled === false) {
+      AddMutation.mutate(id);
+      setIsFilled(true);
+    } else {
+      RemoveMutation.mutate(wishlistExist);
+      setIsFilled(!isFilled);
+    }
   };
 
   return (
@@ -281,7 +302,7 @@ const ProductDetail = () => {
                   fill={isFilled ? "red" : "white"}
                   stroke={isFilled ? "red" : "gray"}
                   className="text-gray-600 cursor-pointer hover:scale-110 transition"
-                  onClick={() => handleWishlist()}
+                  onClick={() => handleWishlist(id)}
                 />
               </div>
               <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">

@@ -8,11 +8,13 @@ export const userLogin = async (email: string,password: string) => {
   return response.data.data;   //access + refresh
 };
 
-export const userSignup = async (email: string , password: string, username: string)=>{
-  const response = await api.post("signup/", {
+export const userSignup = async (firstName:string,lastName:string,email: string , password: string, confirmPassword: string)=>{
+  const response = await api.post("register/", {
+    firstName,
+    lastName,
     email,
     password,
-    username,
+    confirmPassword,
   });
   return response.data.data;
 }

@@ -13,6 +13,7 @@ import { useUserContext } from "../../context/UserContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCart } from "../../services/cart.service";
+import { useWishlistContext } from "../../context/WishlistContext";
 
 const Navbar = () => {
   const [mobileView, setMobileView] = useState(false);
@@ -21,6 +22,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isFilled, setIsFilled] = useState(false);
   const [userShow, setUserShow] = useState(false);
+  const { wishlistCount } = useWishlistContext();
 
   const authToken = JSON.parse(localStorage.getItem("authToken"));
   const userData = getLocalStorage("userData");
@@ -121,7 +123,10 @@ const Navbar = () => {
                 {cartNumber}
               </div>
             </span>
-            <span className="cursor-pointer">
+            <span
+              className="cursor-pointer relative"
+              onClick={() => navigate("/wishlist")}
+            >
               <Heart
                 size="20px"
                 fill={isFilled ? "currentColor" : "none"}
@@ -129,6 +134,9 @@ const Navbar = () => {
                 onMouseEnter={() => setIsFilled(true)}
                 onMouseLeave={() => setIsFilled(false)}
               />
+              <div className="absolute -top-2 -right-1 bg-white text-primary rounded-full flex items-center justify-center text-xs font-bold">
+                {wishlistCount}
+              </div>
             </span>
             {authToken ? (
               <span>

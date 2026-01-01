@@ -44,7 +44,6 @@ const Cart = () => {
   });
 
   const updateQuantity = (id: number, newQuantity: number) => {
-    console.log(newQuantity)
     if (newQuantity < 1) return;
     UpdateCart.mutate({ id, newQuantity });
     setCart(

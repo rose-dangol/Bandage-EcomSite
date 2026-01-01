@@ -7,10 +7,11 @@ import {
   AllProducts,
   Layout,
   ProductDetail,
-  Cart
+  Cart,
+  Wishlist,
+  CreateProduct,
 } from "../pages";
 import PublicRoutes from "./publicRoutes";
-import CreateProduct from "../pages/CreateProduct";
 
 const AppRoutes = () => {
   return (
@@ -25,7 +26,8 @@ const AppRoutes = () => {
           <Route path="/shop" element={<AllProducts />} />
           <Route path="/shop/products/:id/" element={<ProductDetail />} />
           <Route path="/updateProduct/:id?" element={<CreateProduct />} />
-          <Route path="/cart" element={<Cart/>}/>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/wishlist" element={<Wishlist />} />
         </Route>
       </Route>
     </Routes>

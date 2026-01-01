@@ -13,7 +13,9 @@ type UserDataType = {
 };
 
 type SignupDataType = UserDataType & {
-  username: string;
+  firstName: string;
+  lastName: string;
+  confirmPassword: string;
 };
 
 const Auth = () => {
@@ -36,7 +38,8 @@ const Auth = () => {
 
   // Login Mutation
   const LoginMutation = useMutation({
-    mutationFn: ({ email, password }: UserDataType) => userLogin(email, password),
+    mutationFn: ({ email, password }: UserDataType) =>
+      userLogin(email, password),
     onSuccess: (data) => {
       setLocalStorage("authToken", data?.access);
       setLocalStorage("userData", email);
@@ -49,8 +52,14 @@ const Auth = () => {
 
   // Signup Mutation
   const SignupMutation = useMutation({
-    mutationFn: ({ email, password, username }: SignupDataType) =>
-      userSignup(email, password, username),
+    mutationFn: ({
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+    }: SignupDataType) =>
+      userSignup(firstName, lastName, email, password, confirmPassword),
     onSuccess: (data) => {
       setLocalStorage("authToken", data?.access);
       setLocalStorage("userData", email);
@@ -62,14 +71,9 @@ const Auth = () => {
   });
 
   const handleLogin = () => {
-    setUsernameError("");
     setEmailError("");
     setPasswordError("");
 
-    if (username === "") {
-      setUsernameError("This field must be filled.");
-      return;
-    }
     if (email === "") {
       setEmailError("This field must be filled.");
       return;
@@ -94,14 +98,9 @@ const Auth = () => {
 
   const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setUsernameError("");
     setEmailError("");
     setPasswordError("");
 
-    if (username === "") {
-      setUsernameError("This field must be filled.");
-      return;
-    }
     if (email === "") {
       setEmailError("This field must be filled.");
       return;
@@ -129,7 +128,7 @@ const Auth = () => {
       <Navbar />
       <div className="min-h-full flex">
         {/* form */}
-        <div className="md:w-3/4 w-full flex items-center justify-center p-8">
+        <div className="lg:w-3/4 w-full flex items-center justify-center p-8">
           <div className="container mx-auto h-auto max-w-md p-10 py-16 rounded-lg shadow-lg">
             <div className="mb-10">
               <h2 className="heading-3 text-blueBlack">Bandage</h2>
@@ -137,7 +136,7 @@ const Auth = () => {
             {formstate == "Login" ? (
               <div className="flex flex-col gap-6 pt-5">
                 <h1 className="heading-1">Login</h1>
-                <div className="flex flex-col gap-2">
+                {/* <div className="flex flex-col gap-2">
                   <label className="block text-sm font-medium">Username</label>
                   <input
                     type="text"
@@ -152,7 +151,7 @@ const Auth = () => {
                   {usernameError && (
                     <span className="text-red-500 text-sm">{usernameError}</span>
                   )}
-                </div>
+                </div> */}
                 <div className="flex flex-col gap-2">
                   <label className="block text-sm font-medium">Email</label>
                   <input
@@ -233,23 +232,52 @@ const Auth = () => {
                 </span>
               </div>
             ) : (
-              <form className="flex flex-col gap-6 pt-5" onSubmit={handleSignup}>
+              <form
+                className="flex flex-col gap-6 pt-5"
+                onSubmit={handleSignup}
+              >
                 <h1 className="heading-1">Sign Up</h1>
-                <div className="flex flex-col gap-2">
-                  <label className="block text-sm font-medium">Username</label>
-                  <input
-                    type="text"
-                    placeholder="Enter your username"
-                    className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
-                    value={username}
-                    onChange={(e) => {
-                      setUsername(e.target.value);
-                      setUsernameError("");
-                    }}
-                  />
-                  {usernameError && (
-                    <span className="text-red-500 text-sm">{usernameError}</span>
-                  )}
+                <div className="flex gap-2">
+                  <div className="flex flex-col gap-2">
+                    <label className="block text-sm font-medium">
+                      FirstName
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Firstname"
+                      className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
+                      value={username}
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                        setUsernameError("");
+                      }}
+                    />
+                    {usernameError && (
+                      <span className="text-red-500 text-sm">
+                        {usernameError}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <label className="block text-sm font-medium">
+                      Lastname
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Lastname"
+                      className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
+                      value={username}
+                      onChange={(e) => {
+                        setUsername(e.target.value);
+                        setUsernameError("");
+                      }}
+                    />
+                    {usernameError && (
+                      <span className="text-red-500 text-sm">
+                        {usernameError}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -287,6 +315,26 @@ const Auth = () => {
                     </span>
                   )}
                 </div>
+                <div className="flex flex-col gap-2">
+                  <label className="block text-sm font-medium">
+                    Confirm Password
+                  </label>
+                  <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    className="w-full px-4 py-3 bg-[#9ae9f33d] rounded focus:outline-secondary"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setPasswordError("");
+                    }}
+                  />
+                  {passwordError && (
+                    <span className="text-sm text-red-500">
+                      {passwordError}
+                    </span>
+                  )}
+                </div>
 
                 <button
                   type="submit"
@@ -311,7 +359,7 @@ const Auth = () => {
         </div>
 
         {/* image */}
-        <div className="hidden md:inline h-[calc(100vh-80px)] w-2/5">
+        <div className="hidden lg:inline min-h-screen w-2/5">
           <img
             src="/images/auth-pic.png"
             alt="AuthPage"

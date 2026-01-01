@@ -2,7 +2,6 @@ import api from "../axios/apiClient";
 
 export const fetchCart = async () => {
   const response = await api.get("cart/");
-  // console.log("inside the api", response);
   return response.data.data;
 };
 
@@ -19,7 +18,6 @@ export const updateCartQuantity = async (id: number, newQuantity: number) => {
     const response = await api.patch(`cart/${id}`, {
       quantity: newQuantity,
     });
-    console.log(response.data.data)
     return ( response.data.data);
     
   } catch (error) {

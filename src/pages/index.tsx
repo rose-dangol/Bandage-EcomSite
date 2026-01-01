@@ -5,3 +5,6 @@ export { default as AboutUs } from "./AboutUs";
 export { default as Layout } from "./Layout";
 export { default as ProductDetail } from "./ProductDetail";
 export { default as Cart } from "./Cart";
+export { default as Wishlist } from "./Wishlist";
+export { default as CreateProduct} from "./CreateProduct";
+

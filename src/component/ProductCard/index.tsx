@@ -55,10 +55,15 @@ const ProductCard = ({ products, viewType }: ProductCardType) => {
             onClick={() => handleClick(product?.id)}
           >
             {product.image?.[0] && (
-              <div className="h-75 w-full">
+              <div
+                className={`${viewType ? "h-75 w-full" : "h-75 w-75"}
+              `}
+              >
                 <img
                   src={product.image[0]}
-                  className="h-full w-full object-cover"
+                  className={`h-full w-full ${
+                    viewType ? "object-cover" : "object-scale-down"
+                  } `}
                   alt="product-image"
                 />
               </div>
@@ -85,6 +90,7 @@ const ProductCard = ({ products, viewType }: ProductCardType) => {
                   <div
                     className={`w-5 h-5 rounded-full bg-${color}-500 cursor-pointer`}
                     key={color}
+                    style={{ background: `${color}` }}
                   ></div>
                 ))}
               </div>
