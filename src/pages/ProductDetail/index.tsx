@@ -18,13 +18,10 @@ import { Breadcrumb, Container, DialogBox } from "../../component";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/helper";
 import toast from "react-hot-toast";
-import {
-  AddToCart,
-  fetchCart,
-  updateCartQuantity,
-} from "../../services/cart.service";
+
 import { UpdateCartDataType } from "../Cart";
 import { useWishlistContext } from "../../context/WishlistContext";
+import { useCartContext } from "../../context/CartContext";
 
 type CartDataType = {
   id?: number;
@@ -35,6 +32,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [showDialog, setShowDialog] = useState(false);
@@ -44,9 +42,10 @@ const ProductDetail = () => {
   const [wishlistExist, setWishlistExist] = useState();
 
   const { wishlist, AddMutation, RemoveMutation } = useWishlistContext();
+  const { cart, CartAddMutation, CartUpdateMutation } = useCartContext();
 
   useEffect(() => {
-    const idFound = wishlist.find((item) => item.productId == id)?.id;
+    const idFound = wishlist.find((item:{productId?:number}) => item.productId == Number(id))?.id;
     setWishlistExist(idFound);
     if (idFound) {
       setIsFilled(true);
@@ -70,46 +69,8 @@ const ProductDetail = () => {
     mutationFn: (id: number) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
   });
-  const { data: cartItems = [] } = useQuery({
-    queryKey: ["cartItem"],
-    queryFn: () => fetchCart(),
-    refetchOnWindowFocus: false,
-  });
 
-  const addCart = useMutation({
-    mutationFn: ({ id, quantity }: CartDataType) => AddToCart(id, quantity),
-    onSuccess: () => {
-      toast.success("Item added to cart sucessfully!");
-    },
-  });
-  const UpdateCart = useMutation({
-    mutationFn: ({ id, newQuantity }: UpdateCartDataType) =>
-      updateCartQuantity(id, newQuantity),
-    onSuccess: () => {
-      toast.success("Item added to cart sucessfully!");
-    },
-  });
-
-  if (isLoading)
-    return (
-      <div className="flex items-center justify-center py-20">Loading...</div>
-    );
-
-  if (!product)
-    return (
-      <div className="flex items-center justify-center py-20">
-        No Product found
-      </div>
-    );
-
-  if (error)
-    return (
-      <div className="flex items-center justify-center py-20">
-        Error: {error.message}
-      </div>
-    );
-
-  const imageUrls = product.image;
+  const imageUrls = product?.image;
   const currentImage = imageUrls?.[currentImageIndex];
 
   const handlePrevImage = () => {
@@ -129,11 +90,11 @@ const ProductDetail = () => {
       toast.error("Cart should have atleast one item");
     } else {
       const data: CartDataType = { id, quantity };
-      const productExist = cartItems.find((item) => item.productId == id)?.id;
+      const productExist = cart.find((item:{productId?:number}) => item.productId == id)?.id;
       if (productExist) {
-        UpdateCart.mutate({ id: productExist, newQuantity: quantity });
+        CartUpdateMutation.mutate({ id: productExist, newQuantity: quantity });
       } else {
-        addCart.mutate(data);
+        CartAddMutation.mutate(data);
       }
     }
   };
@@ -147,6 +108,25 @@ const ProductDetail = () => {
       setIsFilled(!isFilled);
     }
   };
+
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center py-20">Loading...</div>
+    );
+
+  if (!product)
+    return (
+      <div className="flex items-center justify-center py-20">
+        No Product found
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="flex items-center justify-center py-20">
+        Error: {error.message}
+      </div>
+    );
 
   return (
     <div className="bg-[#FAFAFA]">
@@ -305,7 +285,7 @@ const ProductDetail = () => {
                   fill={isFilled ? "red" : "white"}
                   stroke={isFilled ? "red" : "gray"}
                   className="text-gray-600 cursor-pointer hover:scale-110 transition"
-                  onClick={() => handleWishlist(id)}
+                  onClick={() => handleWishlist(Number(id))}
                 />
               </div>
               <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
@@ -362,7 +342,7 @@ const ProductDetail = () => {
                   </button>
                   <button
                     onClick={() => {
-                      handleAddToCart(id, quantity);
+                      handleAddToCart(Number(id), quantity);
                       setSelectDialog(false);
                     }}
                     className="px-4 py-2 bg-green-800 text-white rounded heading-6 cursor-pointer hover:bg-green-600 transition"

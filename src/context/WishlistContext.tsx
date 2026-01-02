@@ -25,6 +25,13 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
     queryKey: ["wishlistItem"],
     queryFn: () => getWishlist(),
   });
+  
+  useEffect(() => {
+    if (wishlistItem?.length > 0) {
+      setWishlist(wishlistItem);
+      setWishlistCount(wishlistItem?.length);
+    }
+  }, [wishlistItem]);
 
   const AddMutation = useMutation({
     mutationKey: ["wishlistItem"],
@@ -36,12 +43,6 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
       toast.error(error.message);
     },
   });
-  useEffect(() => {
-    if (wishlistItem?.length>0) {
-      setWishlist(wishlistItem);
-      setWishlistCount(wishlistItem?.length);
-    }
-  }, [wishlistItem]);
 
   const RemoveMutation = useMutation({
     mutationFn: (productId: number) => removeWishlist(productId),

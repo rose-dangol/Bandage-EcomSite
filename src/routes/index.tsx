@@ -10,6 +10,7 @@ import {
   Cart,
   Wishlist,
   CreateProduct,
+  Checkout,
 } from "../pages";
 import PublicRoutes from "./publicRoutes";
 
@@ -28,6 +29,7 @@ const AppRoutes = () => {
           <Route path="/updateProduct/:id?" element={<CreateProduct />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/checkout" element={<Checkout />} />
         </Route>
       </Route>
     </Routes>

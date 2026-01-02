@@ -1,13 +1,15 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { Trash2, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "../../utils/helper";
-import { deleteCart, fetchCart, updateCartQuantity } from "../../services/cart.service";
-import { useEffect, useState } from "react";
+import {
+  deleteCart,
+} from "../../services/cart.service";
+import { Link } from "react-router-dom";
+import { useCartContext } from "../../context/CartContext";
 
 export interface UpdateCartDataType {
   id: number;
   newQuantity: number;
-};
+}
 
 type CartDataType = {
   id: number;
@@ -21,41 +23,26 @@ type CartDataType = {
 
 const Cart = () => {
   const {
-    data: cartItems = [], 
+    cart,
+    setCart,
     isLoading,
     error,
-  } = useQuery({
-    queryKey: ["cartItem"],
-    queryFn: () => fetchCart(),
-    refetchOnWindowFocus: false,
-  });
-
-  const [cart, setCart] = useState<CartDataType[]>([]); 
-
-  useEffect(() => {
-    if (cartItems && cartItems.length > 0) {
-      setCart(cartItems);
-    }
-  }, [cartItems]);
-
-  const UpdateCart = useMutation({
-    mutationFn: ({ id, newQuantity }: UpdateCartDataType) =>
-      updateCartQuantity(id, newQuantity),
-  });
+    CartUpdateMutation,
+  } = useCartContext();
 
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
-    UpdateCart.mutate({ id, newQuantity });
+    CartUpdateMutation.mutate({ id, newQuantity });
     setCart(
-      cart.map((item: CartDataType) => 
+      cart.map((item: CartDataType) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       )
     );
   };
 
-  const handleRemoveCart =(id:number)=>{
-    deleteCart(id)
-  }
+  const handleRemoveCart = (id: number) => {
+    deleteCart(id);
+  };
 
   if (isLoading) {
     return (
@@ -75,7 +62,7 @@ const Cart = () => {
     );
   }
 
-  const total: number = cart.reduce( 
+  const total: number = cart.reduce(
     (total: number, item: CartDataType) => total + item.price * item.quantity,
     0
   );
@@ -86,7 +73,7 @@ const Cart = () => {
         {/* Header */}
         <div className="mb-8 flex justify-center items-center gap-3">
           <ShoppingCart className="w-8 h-8 text-blueBlack" />
-          <p className="heading-3">Your Cart ({cart.length})</p> 
+          <p className="heading-3">Your Cart ({cart.length})</p>
         </div>
 
         {!cart || cart.length === 0 ? (
@@ -165,7 +152,10 @@ const Cart = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <button className="hover:scale-125" onClick={()=>handleRemoveCart(item.id)}>
+                      <button
+                        className="hover:scale-125"
+                        onClick={() => handleRemoveCart(item.id)}
+                      >
                         <Trash2 className="w-4 h-4 text-red-600" />
                       </button>
                     </td>
@@ -183,26 +173,29 @@ const Cart = () => {
                     {/* subtotal */}
                     <div className="flex justify-between heading-6">
                       <span className="text-gray-600">Subtotal:</span>
-                      <span>{formatCurrency(Number(total.toFixed(2)))}</span>  
+                      <span>{formatCurrency(Number(total.toFixed(2)))}</span>
                     </div>
 
-                    {/* shipping */}
+                    {/* tax */}
                     <div className="flex justify-between heading-6">
-                      <span className="text-gray-600">Shipping:</span>
-                      <span>{formatCurrency(10.0)}</span>
+                      <span className="text-gray-600">Tax:</span>
+                      <span>{formatCurrency(13.0)}</span>
                     </div>
 
                     {/* total */}
                     <div className="border-t pt-3 flex justify-between heading-4 text-blueBlack">
                       <span className="font-bold">Total:</span>
                       <span className="text-primary">
-                        {formatCurrency(Number((total + 10).toFixed(2)))}
+                        {formatCurrency(Number((total + 13).toFixed(2)))}
                       </span>
                     </div>
                   </div>
-                  <button className="self-center links py-3 px-5 text-white btn-transitions max-w-max mt-6 bg-blueBlack hover:bg-[#2b3458] cursor-pointer">
+                  <Link
+                    to={"/checkout"}
+                    className="self-center links py-3 px-5 text-white btn-transitions max-w-max mt-6 bg-blueBlack hover:bg-[#2b3458] cursor-pointer"
+                  >
                     Proceed to Checkout
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

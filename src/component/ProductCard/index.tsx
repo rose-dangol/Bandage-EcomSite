@@ -19,9 +19,10 @@ type ProductCardType = {
     status: string;
   }[];
   viewType: boolean;
+  visibleCount: number;
 };
 
-const ProductCard = ({ products, viewType, visibleCount}: ProductCardType) => {
+const ProductCard = ({ products, viewType, visibleCount }: ProductCardType) => {
   const navigate = useNavigate();
   const handleClick = (id: number) => {
     navigate(`/shop/products/${id}/`);
@@ -46,7 +47,7 @@ const ProductCard = ({ products, viewType, visibleCount}: ProductCardType) => {
             : "flex flex-wrap justify-evenly gap-3"
         }`}
       >
-        {products?.slice(0,visibleCount)?.map((product) => (
+        {products?.slice(0, visibleCount)?.map((product) => (
           <div
             className={`flex ${
               viewType ? "flex-col" : "flex-row w-[40%]"

@@ -4,8 +4,8 @@ import { formatCurrency } from "../../utils/helper";
 
 const Wishlist = () => {
   const { wishlist, RemoveMutation } = useWishlistContext();
-  const handleRemoveWishlist = (id:number) => {
-    RemoveMutation.mutate(id)
+  const handleRemoveWishlist = (id: number) => {
+    RemoveMutation.mutate(id);
   };
   return (
     <div className="flex flex-col gap-5 items-center pb-8">
@@ -26,7 +26,9 @@ const Wishlist = () => {
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                 Stock Status
               </th>
-              <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700 w-12"></th>
+              <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700 w-12">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -52,12 +54,18 @@ const Wishlist = () => {
                   price
                 </td>
                 <td className="px-6 py-4 font-semibold text-gray-900">stock</td>
-                <td className="px-6 py-4 text-center">
+                <td className="py-4 px-6 text-center flex justify-center gap-5 items-center">
+                  <div className="w-10 h-10 hover:scale-110 hover:cursor-pointer" onClick={()=>handleAddtoCart(item.productId)}>
+                    <img
+                      src="images/cart-plus.svg"
+                      alt=""
+                    />
+                  </div>
                   <button
                     className="hover:scale-125"
                     onClick={() => handleRemoveWishlist(item.id)}
                   >
-                    <Trash2 className="w-4 h-4 text-red-600" />
+                    <Trash2 className="w-6 h-6 text-red-600 hover:cursor-pointer" />
                   </button>
                 </td>
               </tr>

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   TextAlignJustify,
-  Search,
   Heart,
   ShoppingCart,
   ChevronDown,
@@ -11,17 +10,19 @@ import {
 } from "lucide-react";
 import { useUserContext } from "../../context/UserContext";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCart } from "../../services/cart.service";
+
 import { useWishlistContext } from "../../context/WishlistContext";
+import { useCartContext } from "../../context/CartContext";
 
 const Navbar = () => {
   const [mobileView, setMobileView] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const { getLocalStorage } = useLocalStorage();
   const navigate = useNavigate();
   const [isFilled, setIsFilled] = useState(false);
   const [userShow, setUserShow] = useState(false);
+  
+  const { getLocalStorage } = useLocalStorage();
+  const { cart } = useCartContext();
   const { wishlistCount } = useWishlistContext();
 
   const authToken = JSON.parse(localStorage.getItem("authToken"));
@@ -29,16 +30,6 @@ const Navbar = () => {
 
   const { logout } = useUserContext();
 
-  const { data: cartItems } = useQuery({
-    queryKey: ["cartItem"],
-    queryFn: () => fetchCart(),
-    refetchOnWindowFocus: false,
-  });
-
-  const [cartNumber, setCartNumber] = useState(0);
-  useEffect(() => {
-    setCartNumber(cartItems?.length);
-  },[cartItems]);
   return (
     <div className="text-md w-full sticky top-0 z-500 bg-white/90">
       <div className="p-6 flex justify-between items-center">
@@ -78,7 +69,7 @@ const Navbar = () => {
               )}
             </div>
             <Link to={"/about"}>About</Link>
-            <Link to={""}>Blog</Link>
+            <Link to={"/updateProduct"}>Add</Link>
             <Link to={""}>Contact</Link>
             <Link to={""}>Pages</Link>
           </div>
@@ -120,7 +111,7 @@ const Navbar = () => {
             >
               <ShoppingCart size="20px" className="hover:text-secondary" />
               <div className="absolute -top-2 -right-1 bg-white text-primary rounded-full flex items-center justify-center text-xs font-bold">
-                {cartNumber}
+                {cart.length}
               </div>
             </span>
             <span
