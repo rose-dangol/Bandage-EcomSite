@@ -71,7 +71,7 @@ const Navbar = () => {
             <Link to={"/about"}>About</Link>
             <Link to={"/updateProduct"}>Add</Link>
             <Link to={""}>Contact</Link>
-            <Link to={""}>Pages</Link>
+            <Link to={"/allpage"}>Pages</Link>
           </div>
         </div>
 

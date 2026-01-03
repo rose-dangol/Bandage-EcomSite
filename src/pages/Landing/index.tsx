@@ -12,20 +12,33 @@ import { useState } from "react";
 
 const Landing = () => {
   const navigate = useNavigate();
-    const [visibleCount, setVisibleCount] = useState<number>(4)
+  const [visibleCount, setVisibleCount] = useState<number>(4);
   const {
     data: products,
     isLoading,
     error,
   } = useQuery({
     queryKey: ["products"],
-    queryFn: ()=>fetchProducts(),
+    queryFn: () => fetchProducts(),
     refetchOnWindowFocus: false,
   });
-  if (isLoading) return <div className="text-center cursor-progress heading-6">Loading...</div>;
-  if (error) return <div className="text-center cursor-progress heading-6 text-red-700">Error: {error.message}</div>;
-  if (!products) return <div className="text-center cursor-progress heading-6 text-red-600">No products found</div>;
-  
+  // if (isLoading)
+  //   return (
+  //     <div className="text-center cursor-progress heading-6">Loading...</div>
+  //   );
+  if (error)
+    return (
+      <div className="text-center cursor-progress heading-6 text-red-700">
+        Error: {error.message}
+      </div>
+    );
+  if (!products)
+    return (
+      <div className="text-center cursor-progress heading-6 text-red-600">
+        No products found
+      </div>
+    );
+
   return (
     <div className="w-full cursor-default">
       {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}
@@ -33,7 +46,10 @@ const Landing = () => {
         <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] md:w-19/20 w-full items-center flex flex-col gap-5 md:flex-row md:justify-end min-h-96 md:h-145 mx-auto">
           {/* banner texts*/}
           <div className="flex flex-col justify-center items-center md:justify-around md:items-start pt-10 gap-4 md:gap-6 md:w-1/2 md:pl-25 px-4 md:px-0">
-            <Link to={''} className="heading-5 uppercase text-secondary hover:text-primary">
+            <Link
+              to={""}
+              className="heading-5 uppercase text-secondary hover:text-primary"
+            >
               Summer 2025
             </Link>
             <span className="md:heading-1 heading-2 text-blueBlack md:text-left text-center uppercase">
@@ -95,7 +111,10 @@ const Landing = () => {
               <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-7/10 md:h-2/5 h-1/2">
                 <div className="text-white flex flex-col md:p-5 gap-3 items-start justify-center h-full md:w-3/5 w-full">
                   <span className="heading-3">Top Product of the Week</span>
-                  <Link to={'/shop'} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
+                  <Link
+                    to={"/shop"}
+                    className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary"
+                  >
                     Explore items
                   </Link>
                 </div>
@@ -113,7 +132,10 @@ const Landing = () => {
                 <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-3/4 md:h-3/5 h-7/10">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link to={'/shop'} className="btn-text border-2 border-amber-50 rounded md:px-5 px-2 py-4 md:w-3/4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link
+                      to={"/shop"}
+                      className="btn-text border-2 border-amber-50 rounded md:px-5 px-2 py-4 md:w-3/4 w-full uppercase btn-transitions hover:bg-white hover:text-primary"
+                    >
                       Explore items
                     </Link>
                   </div>
@@ -128,7 +150,10 @@ const Landing = () => {
                 <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-3/4 md:h-3/5 h-7/10">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link to={'/shop'} className="btn-text border-2 rounded border-amber-50 md:px-5 px-2 py-4 md:w-3/4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link
+                      to={"/shop"}
+                      className="btn-text border-2 rounded border-amber-50 md:px-5 px-2 py-4 md:w-3/4 w-full uppercase btn-transitions hover:bg-white hover:text-primary"
+                    >
                       Explore items
                     </Link>
                   </div>
@@ -140,15 +165,23 @@ const Landing = () => {
 
         {/* featured products */}
         <div className={`mx-auto ${getLayoutClass()}`}>
-          <ProductCard products={products.data} visibleCount={visibleCount} viewType={true} />
+          <ProductCard
+            products={products.data}
+            visibleCount={visibleCount}
+            viewType={true}
+          />
           <button
             className="mx-auto btn-transitions uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
             onClick={() => {
-              setVisibleCount(prev=>prev+4)
+              if (visibleCount > 10) {
+                setVisibleCount((prev) => prev - 4);
+              } else {
+                setVisibleCount((prev) => prev + 4);
+              }
               // navigate("/shop");
             }}
           >
-            Load more products
+            {visibleCount > 10 ? "Load Less Products" : "Load more products"}
           </button>
         </div>
 

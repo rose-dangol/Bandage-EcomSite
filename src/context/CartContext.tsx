@@ -8,6 +8,7 @@ import {
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import {
   AddToCart,
+  deleteCart,
   fetchCart,
   updateCartQuantity,
 } from "../services/cart.service";
@@ -34,11 +35,14 @@ export type UpdateCartDataType = {
 };
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
+  const queryClient = new QueryClient();
   const [cart, setCart] = useState<CartDataType[]>([]);
 
-  const queryClient = new QueryClient();
-
-  const { data: cartItems = [], isLoading, error} = useQuery({
+  const {
+    data: cartItems = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["cartItem"],
     queryFn: () => fetchCart(),
     refetchOnWindowFocus: false,
@@ -69,6 +73,16 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     },
   });
 
+  const RemoveCartMutation = useMutation({
+    mutationFn: (id: number) => deleteCart(id),
+    onSuccess: (data) => {
+      toast.success(data.message || "Item removed from cart.");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Error removing item.");
+    },
+  });
+
   const value = {
     cart,
     setCart,
@@ -76,6 +90,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     error,
     CartAddMutation,
     CartUpdateMutation,
+    RemoveCartMutation,
   };
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };

@@ -19,11 +19,10 @@ import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/helper";
 import toast from "react-hot-toast";
 
-import { UpdateCartDataType } from "../Cart";
 import { useWishlistContext } from "../../context/WishlistContext";
 import { useCartContext } from "../../context/CartContext";
 
-type CartDataType = {
+export type CartDataType = {
   id?: number;
   quantity?: number;
 };
@@ -109,10 +108,10 @@ const ProductDetail = () => {
     }
   };
 
-  if (isLoading)
-    return (
-      <div className="flex items-center justify-center py-20">Loading...</div>
-    );
+  // if (isLoading)
+  //   return (
+  //     <div className="flex items-center justify-center py-20">Loading...</div>
+  //   );
 
   if (!product)
     return (

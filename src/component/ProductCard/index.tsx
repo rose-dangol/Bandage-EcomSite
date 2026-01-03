@@ -18,8 +18,8 @@ type ProductCardType = {
     priceAfterDiscount: number;
     status: string;
   }[];
-  viewType: boolean;
-  visibleCount: number;
+  viewType?: boolean;
+  visibleCount?: number;
 };
 
 const ProductCard = ({ products, viewType, visibleCount }: ProductCardType) => {
@@ -51,7 +51,7 @@ const ProductCard = ({ products, viewType, visibleCount }: ProductCardType) => {
           <div
             className={`flex ${
               viewType ? "flex-col" : "flex-row w-[40%]"
-            } gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:scale-105`}
+            } gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:shadow-md hover:scale-105`}
             key={product?.id}
             onClick={() => handleClick(product?.id)}
           >

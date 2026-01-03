@@ -11,6 +11,8 @@ import {
   Wishlist,
   CreateProduct,
   Checkout,
+  CategorizedProduct,
+  PageList,
 } from "../pages";
 import PublicRoutes from "./publicRoutes";
 
@@ -25,11 +27,13 @@ const AppRoutes = () => {
         <Route path="/about" element={<AboutUs />} />
         <Route element={<ProtectedRoutes />}>
           <Route path="/shop" element={<AllProducts />} />
+          <Route path="/shop/products" element={<CategorizedProduct />} />
           <Route path="/shop/products/:id/" element={<ProductDetail />} />
           <Route path="/updateProduct/:id?" element={<CreateProduct />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/allpage" element={<PageList />} />
         </Route>
       </Route>
     </Routes>

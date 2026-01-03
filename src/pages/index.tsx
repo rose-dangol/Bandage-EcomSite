@@ -8,4 +8,6 @@ export { default as Cart } from "./Cart";
 export { default as Wishlist } from "./Wishlist";
 export { default as CreateProduct} from "./CreateProduct";
 export { default as Checkout} from "./Checkout";
+export { default as CategorizedProduct} from "./CategorizedProduct";
+export { default as PageList} from "./PageList";
 

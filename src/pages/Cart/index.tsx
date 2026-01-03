@@ -28,6 +28,7 @@ const Cart = () => {
     isLoading,
     error,
     CartUpdateMutation,
+    RemoveCartMutation,
   } = useCartContext();
 
   const updateQuantity = (id: number, newQuantity: number) => {
@@ -41,18 +42,18 @@ const Cart = () => {
   };
 
   const handleRemoveCart = (id: number) => {
-    deleteCart(id);
+    RemoveCartMutation.mutate(id);
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <p className="text-lg text-gray-600">Loading your cart...</p>
-        </div>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <div className="text-center">
+  //         <p className="text-lg text-gray-600">Loading your cart...</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return (
@@ -114,7 +115,7 @@ const Cart = () => {
                       <div className="flex items-center gap-4">
                         <div className="w-30 h-30 overflow-hidden bg-gray-100">
                           <img
-                            src={item.image}
+                            src={item.image[0]}
                             alt={item.productName}
                             className="w-full h-full object-cover"
                           />

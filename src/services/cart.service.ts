@@ -6,6 +6,7 @@ export const fetchCart = async () => {
 };
 
 export const AddToCart = async (id: number, quantity: number) => {
+  console.log(id,"inside service")
   const response = await api.post("cart/", {
     productId: id,
     quantity: quantity,

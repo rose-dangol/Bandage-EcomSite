@@ -1,19 +1,37 @@
-import { Heart, Trash2 } from "lucide-react";
+import { Heart, ShoppingBasket, ShoppingCart, Trash2 } from "lucide-react";
 import { useWishlistContext } from "../../context/WishlistContext";
 import { formatCurrency } from "../../utils/helper";
-
+import { useCartContext } from "../../context/CartContext";
+type CartDataType = {
+  id?: number;
+  quantity?: number;
+};
+type WishlistDataType = {
+  id?: number;
+  productId: number;
+  productName: string;
+  price: number;
+  image: string[];
+};
 const Wishlist = () => {
   const { wishlist, RemoveMutation } = useWishlistContext();
+  const { CartAddMutation } = useCartContext();
   const handleRemoveWishlist = (id: number) => {
     RemoveMutation.mutate(id);
   };
+  const handleAddtoCart = (id: number) => {
+    let quantity = 1;
+    const data = { id, quantity } as CartDataType;
+    CartAddMutation.mutate(data);
+  };
   return (
     <div className="flex flex-col gap-5 items-center pb-8">
-      <div className="flex flex-col items-center gap-3">
+      <div className="flex items-center gap-3">
         <Heart size={"50px"} stroke="#4a5565" strokeWidth={"1.5px"} />
         <p className="heading-2 text-gray-600">My Wishlist</p>
       </div>
       <div className="min-w-7xl mx-auto">
+        {wishlist?.length>0?(
         <table className="w-full">
           <thead className="bg-gray-100 border-b border-blueBlack">
             <tr>
@@ -32,34 +50,32 @@ const Wishlist = () => {
             </tr>
           </thead>
           <tbody>
-            {wishlist.map((item) => (
+            {wishlist.map((item:WishlistDataType) => (
               <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-6 py-4 text-blueBlack">
                   <div className="flex items-center gap-4">
-                    {/* <div className="w-30 h-30 overflow-hidden bg-gray-100">
+                    <div className="w-30 h-30 overflow-hidden bg-gray-100">
                           <img
-                            src={item.image}
+                            src={item.image[0]}
                             alt={item.productName}
                             className="w-full h-full object-cover"
                           />
-                        </div> */}
+                        </div>
                     <span className="heading-5 capitalize">
-                      {/* {item.productName} */}
-                      {item.productId} name aucha
+                      {item.productName}
                     </span>
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  {/* {formatCurrency(item.price)} */}
-                  price
+                  {formatCurrency(item.price)}
                 </td>
                 <td className="px-6 py-4 font-semibold text-gray-900">stock</td>
                 <td className="py-4 px-6 text-center flex justify-center gap-5 items-center">
-                  <div className="w-10 h-10 hover:scale-110 hover:cursor-pointer" onClick={()=>handleAddtoCart(item.productId)}>
-                    <img
-                      src="images/cart-plus.svg"
-                      alt=""
-                    />
+                  <div
+                    className="w-10 h-10 hover:scale-110 hover:cursor-pointer"
+                    onClick={() => handleAddtoCart(item.productId)}
+                  >
+                    <img src="images/cart-plus.svg" alt="" />
                   </div>
                   <button
                     className="hover:scale-125"
@@ -72,6 +88,13 @@ const Wishlist = () => {
             ))}
           </tbody>
         </table>
+        ):(
+          <div className="text-center py-16">
+            <ShoppingBasket className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+            <p className="text-lg text-gray-500">Your wishlist is empty</p>
+          </div>
+        )
+        }
       </div>
     </div>
   );

@@ -90,7 +90,7 @@ function Creatable({ setCategory, name }: CreatableProps) {
                   <div
                     key={c.id}
                     className={`p-2 cursor-pointer hover:bg-gray-100 ${c?.name?.toLowerCase()?.includes(inputValue?.toLowerCase())?"text-white bg-primary hover:text-blueBlack":"bg-white"}`}
-                    onClick={() => {handleSelectCategory(c); console.log(c)}}
+                    onClick={() => {handleSelectCategory(c)}}
                   >
                     {c.name}
                   </div>

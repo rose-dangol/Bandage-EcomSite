@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
 import { WishlistProvider } from "./context/WishlistContext";
 import { CartProvider } from "./context/CartContext";
+import Loader from "./hooks/useIsFetching";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ const Provider = ({ children }: PropsWithChildren) => {
           <WishlistProvider>
             <ReactQueryDevtools initialIsOpen={false} />
             <Toaster position="bottom-center" />
+            <Loader />
             <UserProvider>{children}</UserProvider>
           </WishlistProvider>
         </CartProvider>
