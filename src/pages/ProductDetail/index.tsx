@@ -14,7 +14,7 @@ import {
   Trash,
 } from "lucide-react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Breadcrumb, Container, DialogBox } from "../../component";
+import { Breadcrumb, Container, DialogBox, Reviews } from "../../component";
 import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/helper";
 import toast from "react-hot-toast";
@@ -39,29 +39,33 @@ const ProductDetail = () => {
   const [isFilled, setIsFilled] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [wishlistExist, setWishlistExist] = useState();
+  const [review, setReview] = useState(false);
+  const [description, setDescription] = useState(false);
+  const [additional, setAdditional] = useState(false);
 
-  const { wishlist, AddMutation, RemoveMutation } = useWishlistContext();
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
+  const { wishlistItem, AddMutation, RemoveMutation } = useWishlistContext();
   const { cart, CartAddMutation, CartUpdateMutation } = useCartContext();
 
   useEffect(() => {
-    const idFound = wishlist.find((item:{productId?:number}) => item.productId == Number(id))?.id;
+    const idFound = wishlistItem.find(
+      (item: { productId?: number }) => item.productId == Number(id)
+    )?.id;
     setWishlistExist(idFound);
     if (idFound) {
       setIsFilled(true);
     } else {
       setIsFilled(false);
     }
-  }, [wishlist, id]);
+  }, [wishlistItem, id]);
 
   // Fetching product data
-  const {
-    data: product,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: product, error } = useQuery({
     queryKey: ["product", id],
     queryFn: () => fetchProductById(id),
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   const DeleteMutation = useMutation({
@@ -89,7 +93,9 @@ const ProductDetail = () => {
       toast.error("Cart should have atleast one item");
     } else {
       const data: CartDataType = { id, quantity };
-      const productExist = cart.find((item:{productId?:number}) => item.productId == id)?.id;
+      const productExist = cart.find(
+        (item: { productId?: number }) => item.productId == id
+      )?.id;
       if (productExist) {
         CartUpdateMutation.mutate({ id: productExist, newQuantity: quantity });
       } else {
@@ -133,15 +139,15 @@ const ProductDetail = () => {
         <div className="py-7">
           <Breadcrumb location={location} />
         </div>
-        <div className="flex md:flex-row flex-col gap-15 pb-12">
+        <div className="flex lg:flex-row flex-col gap-15 pb-12">
           {/* images */}
-          <div className="flex flex-col gap-4 w-1/2">
+          <div className="flex flex-col gap-4 lg:w-1/2">
             {/* main image */}
             <div className="relative overflow-hidden w-full h-125">
               {currentImage ? (
                 <img
                   src={currentImage}
-                  alt={product.name}
+                  alt={product?.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -166,7 +172,7 @@ const ProductDetail = () => {
                 </>
               )}
             </div>
-            {product.image.length > 1 && (
+            {product?.image?.length > 1 && (
               <div className="flex gap-2">
                 {product.image.map((url: string, idx: number) => (
                   <div
@@ -190,10 +196,10 @@ const ProductDetail = () => {
           </div>
 
           {/* product data */}
-          <div className="flex flex-col pt-3 w-1/2 gap-7">
+          <div className="flex flex-col pt-3 lg:w-1/2 gap-7">
             <div className="flex flex-col gap-2">
               <span className="heading-4 text-blueBlack capitalize">
-                {product.name}
+                {product?.name}
               </span>
 
               {/* review */}
@@ -205,7 +211,7 @@ const ProductDetail = () => {
                   <Star color="#F3CD03" fill="#F3CD03" />
                 </div>
                 <span className="text-grayText">
-                  {product.reviews?.length || 0} Reviews
+                  {product?.reviews?.length || 0} Reviews
                 </span>
               </div>
 
@@ -238,12 +244,12 @@ const ProductDetail = () => {
                 </span>
               </div>
               <div className="w-[75%] mb-2">
-                <p className="paragraph text-[#858585] text-left">
+                <p className="paragraph text-[#858585] text-left line-clamp-3">
                   {product.description || "Description not available."}
                 </p>
               </div>
 
-              {product.category && (
+              {product?.category && (
                 <div className="heading-6">
                   <span className="text-grayText">Category: </span>
                   <span className="text-blueBlack capitalize">
@@ -251,7 +257,7 @@ const ProductDetail = () => {
                   </span>
                 </div>
               )}
-              {product.colors?.length > 0 && (
+              {product?.colors?.length > 0 && (
                 <div className="flex gap-3">
                   {product.colors.map((color: string, index: number) => (
                     <button
@@ -271,9 +277,9 @@ const ProductDetail = () => {
                 </div>
               )}
             </div>
-            <div className="flex gap-3 pt-6 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
               <button
-                className="max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition cursor-pointer"
+                className="sm:max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition cursor-pointer"
                 onClick={() => setSelectDialog(true)}
               >
                 Select Options
@@ -354,16 +360,18 @@ const ProductDetail = () => {
           </div>
 
           {/* action */}
-          <div className="flex flex-col items-center gap-8 text-grayText pt-10">
-            <SquarePen
-              className="hover:text-blueBlack cursor-pointer"
-              onClick={() => navigate(`/updateProduct/${id}`)}
-            />
-            <Trash
-              className="hover:text-red-500 cursor-pointer"
-              onClick={() => setShowDialog(true)}
-            />
-          </div>
+          {userData.isAdmin && (
+            <div className="flex lg:flex-col items-center justify-center lg:justify-start gap-8 text-grayText pt-10">
+              <SquarePen
+                className="hover:text-blueBlack cursor-pointer"
+                onClick={() => navigate(`/updateProduct/${id}`)}
+              />
+              <Trash
+                className="hover:text-red-500 cursor-pointer"
+                onClick={() => setShowDialog(true)}
+              />
+            </div>
+          )}
           {showDialog && (
             <DialogBox
               title={"Delete Confirmation"}
@@ -391,10 +399,47 @@ const ProductDetail = () => {
         </div>
 
         {/* Description Section */}
-        <div className="flex justify-center gap-15 links text-grayText mt-3 border-b py-5 border-b-[#ECECEC] w-[80%] mx-auto">
-          <span>Description</span>
-          <span>Additional Information</span>
-          <span>Reviews ()</span>
+        <div className="flex flex-col">
+          <div className="flex justify-center gap-15 links text-grayText mt-3 border-b py-5 border-b-[#ECECEC] w-[80%] mx-auto">
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setDescription(true);
+                setReview(false);
+                setAdditional(false);
+              }}
+            >
+              Description
+            </div>
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setAdditional(true);
+                setDescription(false);
+                setReview(false);
+              }}
+            >
+              Additional Information
+            </div>
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setReview(true);
+                setDescription(false);
+                setAdditional(false);
+              }}
+            >
+              Reviews (3)
+            </div>
+          </div>
+          {/* {review&& <Reviews id={id}/>}  */}
+          {review && <Reviews id={id} />}
+          {description && <div>{product.description}</div>}
+          {additional && (
+            <div>
+              {product.description}, {product.category.name}
+            </div>
+          )}
         </div>
       </Container>
     </div>

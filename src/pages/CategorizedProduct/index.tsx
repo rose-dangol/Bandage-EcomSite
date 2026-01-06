@@ -63,7 +63,6 @@ const CategorizedProduct = () => {
       fetchProducts();
     }
   }, [searchParams]);
-  console.log(products);
 
   const handleClick = (id: number) => {
     navigate(`/shop/products/${id}/`);

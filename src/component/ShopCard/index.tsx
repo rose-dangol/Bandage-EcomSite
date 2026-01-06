@@ -1,13 +1,19 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import Breadcrumb from "../Breadcrumb";
 import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "../../services/category.service";
+import { fetchCategories } from "../../services/category.service";
+
+type categoryType = {
+  id?: number;
+  name?: string;
+  img?: string;
+};
 const ShopCard = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { data: categories } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories(),
+    queryFn: () => fetchCategories(),
     refetchOnWindowFocus: false,
   });
   return (
@@ -18,10 +24,14 @@ const ShopCard = () => {
       </div>
 
       <div className="flex lg:flex-row flex-col gap-4 justify-between items-center pb-12">
-        {categories?.slice(0, 4).map((category) => (
-          <div className="h-56 w-auto relative" onClick={() => navigate(`products?catgoryId=${category.id}`)}>
+        {categories?.slice(0, 4).map((category: categoryType) => (
+          <div
+            className="h-56 w-auto relative"
+            onClick={() => navigate(`products?catgoryId=${category.id}`)}
+            key={category.id}
+          >
             <img
-              src="/images/shop-cards-1.jpg"
+              src="/images/shop-cards-4.jpg"
               alt={category.name}
               className="h-full w-full object-cover"
             />

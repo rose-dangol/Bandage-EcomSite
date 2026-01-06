@@ -1,7 +1,7 @@
 import axios from "axios";
 const API_BASE = import.meta.env.VITE_API_URL;
 
-export const getCategories = async () => {
+export const fetchCategories = async () => {
   const response = await axios.get(`${API_BASE}categories/`);
   return response.data.data;
 };
@@ -13,7 +13,12 @@ export const addCategory = async (categoryData:string) => {
   return response.data;
 };
 
-export const getCategoryById = async (id:number) => {
+export const fetchCategoryById = async (id:number) => {
   const response = await axios.get(`${API_BASE}categories/${id}`);
+  return response.data.data;
+};
+
+export const deleteCategory = async (id:number) => {
+  const response = await axios.delete(`${API_BASE}categories/${id}`);
   return response.data.data;
 };

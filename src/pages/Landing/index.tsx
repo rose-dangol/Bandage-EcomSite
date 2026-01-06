@@ -5,22 +5,19 @@ import {
   Container,
 } from "../../component/index";
 import { getLayoutClass } from "../../utils/helper";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../../services/products.service";
 import { useState } from "react";
 
 const Landing = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [visibleCount, setVisibleCount] = useState<number>(4);
-  const {
-    data: products,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data: products, error } = useQuery({
     queryKey: ["products"],
     queryFn: () => fetchProducts(),
     refetchOnWindowFocus: false,
+    retry: 1,
   });
   // if (isLoading)
   //   return (
@@ -32,31 +29,24 @@ const Landing = () => {
         Error: {error.message}
       </div>
     );
-  if (!products)
-    return (
-      <div className="text-center cursor-progress heading-6 text-red-600">
-        No products found
-      </div>
-    );
-
   return (
     <div className="w-full cursor-default">
       {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}
       <div className="py-6 md:py-10 w-full mx-auto md:pl-10 md:pr-15">
-        <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] md:w-19/20 w-full items-center flex flex-col gap-5 md:flex-row md:justify-end min-h-96 md:h-145 mx-auto">
+        <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] md:w-19/20 w-full items-center flex flex-col gap-5 lg:flex-row md:justify-end min-h-96 lg:h-145 mx-auto">
           {/* banner texts*/}
-          <div className="flex flex-col justify-center items-center md:justify-around md:items-start pt-10 gap-4 md:gap-6 md:w-1/2 md:pl-25 px-4 md:px-0">
+          <div className="flex flex-col justify-center items-center lg:justify-around lg:items-start pt-10 gap-4 lg:gap-6 lg:w-1/2 lg:pl-25 px-4 lg:px-0">
             <Link
               to={""}
               className="heading-5 uppercase text-secondary hover:text-primary"
             >
               Summer 2025
             </Link>
-            <span className="md:heading-1 heading-2 text-blueBlack md:text-left text-center uppercase">
+            <span className="lg:heading-1 heading-2 text-blueBlack lg:text-left text-center uppercase">
               new collection
             </span>
-            <div className="max-w-[65%] md:text-left text-center">
-              <span className="md:heading-4 text-grayText">
+            <div className="max-w-[65%] lg:text-left text-center">
+              <span className="lg:heading-4 text-grayText">
                 We know how large object will act, but things on a small scale.
               </span>
             </div>
@@ -69,22 +59,27 @@ const Landing = () => {
           </div>
 
           {/* banner image */}
-          <div className="hidden md:inline md:w-1/2 w-full h-full justify-items-end relative">
-            <img src="/images/Ellipse-bg.png" alt="bg-ellipse" loading="lazy" />
+          <div className="md:inline md:w-1/2 w-full h-full lg:justify-items-end justify-items-center relative">
+            <img
+              src="/images/Ellipse-bg.png"
+              alt="bg-ellipse"
+              loading="lazy"
+              className="lg:w-auto w-[90%]"
+            />
             <img
               src="/images/Ellipse-midSize-top.png"
               alt=""
-              className="absolute top-0 left-15"
+              className="absolute top-0 lg:left-15 left-0"
             />
             <img
               src="/images/bannerImage-girl.png"
               alt="bg-ellipse"
-              className="absolute bottom-0 -right-20"
+              className="absolute bottom-0 lg:-right-20"
             />
             <img
               src="/images/Ellipse-purple-right.png"
               alt="bg-ellipse"
-              className="absolute -right-18 top-1/5"
+              className="absolute lg:-right-18 top-1/5"
             />
             <img
               src="/images/Ellipse-purple-left.png"
@@ -166,7 +161,7 @@ const Landing = () => {
         {/* featured products */}
         <div className={`mx-auto ${getLayoutClass()}`}>
           <ProductCard
-            products={products.data}
+            products={products?.data}
             visibleCount={visibleCount}
             viewType={true}
           />
@@ -174,7 +169,7 @@ const Landing = () => {
             className="mx-auto btn-transitions uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
             onClick={() => {
               if (visibleCount > 10) {
-                setVisibleCount((prev) => prev - 4);
+                setVisibleCount((prev) => prev - 8);
               } else {
                 setVisibleCount((prev) => prev + 4);
               }

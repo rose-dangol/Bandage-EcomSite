@@ -6,6 +6,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { getLayoutClass } from "../../utils/helper";
+import { Link } from "react-router-dom";
 
 const PRODUCT_DATA = [
   {
@@ -54,7 +55,7 @@ const DetailedProduct = () => {
             Featured Posts
           </span>
         </div>
-        <div className="grid lg:grid-cols-2 grid-cols-1 mx-auto gap-8">
+        <div className="grid xl:grid-cols-2 grid-cols-1 mx-auto gap-8">
           {PRODUCT_DATA.map((product) => (
             <div
               className="flex md:flex-row flex-col gap-3 relative"
@@ -72,7 +73,7 @@ const DetailedProduct = () => {
                 Sale!
               </div>
               {/* option icons */}
-              <div className="hidden md:flex flex-row gap-5 justify-center items-center absolute bottom-8 left-10">
+              <div className="hidden lg:flex xl:flex-row flex-col xxl:flex-col gap-5 justify-center items-center absolute bottom-8 left-10">
                 <div className="bg-white rounded-full h-10 w-10 p-2">
                   <Heart className="object-cover h-full w-full" />
                 </div>
@@ -151,7 +152,7 @@ const DetailedProduct = () => {
                 </div>
                 <div className="group">
                   <button className="flex justify-center items-center gap-3 mt-2 w-1/2 md:border-2 cursor-pointer border-primary md:text-primary text-grayText py-2.5 rounded-3xl btn-transitions group-hover:bg-secondary group-hover:text-white group-hover:border-secondary">
-                    <span className="heading-6">Learn More</span>
+                    <Link to={'/shop'} className="heading-6">Learn More</Link>
                     <ChevronRight />
                   </button>
                 </div>

@@ -32,6 +32,7 @@ const axiosInstance = (baseURL: string, contentType = "application/json") => {
         const errorMessage = error.response.data.message || "An error occurred";
 
         if (statusCode === 401) {
+          localStorage.clear();
           // Handle unauthorized error, for example by redirecting to login
           console.error("Unauthorized access - redirecting to login");
         } else if (statusCode === 500) {

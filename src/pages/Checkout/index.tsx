@@ -6,9 +6,9 @@ const Checkout = () => {
   const [shippingMethod, setShippingMethod] = useState("delivery");
 
   return (
-    <div className="w-full min-h-screen flex bg-gray-50">
+    <div className="w-full min-h-screen flex lg:flex-row flex-col-reverse bg-gray-50">
       {/* left */}
-      <div className="flex flex-col gap-6 w-1/2 px-16 py-12 border-r border-gray-200 bg-white">
+      <div className="flex flex-col gap-6 lg:w-1/2 px-16 py-12 border-r border-gray-200 bg-white">
         <h1 className="heading-2 text-blueBlack">Checkout</h1>
         <div className="flex flex-col gap-3">
           <label className="heading-5 text-blueBlack">
@@ -93,7 +93,7 @@ const Checkout = () => {
         </div>
       </div>
 
-      <div className="w-1/2 px-16 py-20 flex flex-col gap-6">
+      <div className="lg:w-1/2 px-16 py-20 flex flex-col gap-6">
         <h2 className="heading-3 text-blueBlack">Order Summary</h2>
         <div className="bg-white rounded-lg p-6 shadow-sm">
           <p className="text-gray-500 text-center py-8">Order details</p>

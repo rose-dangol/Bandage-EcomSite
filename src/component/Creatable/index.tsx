@@ -1,14 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addCategory, getCategories } from "../../services/category.service";
+import { addCategory, fetchCategories } from "../../services/category.service";
 import React, { useState, useEffect } from "react";
 import { useClickAway } from "../../hooks/useClickAway";
 
 type CreatableProps = {
   setCategory: React.Dispatch<React.SetStateAction<number>>;
   name: string;
+  category: string
 };
 
-function Creatable({ setCategory, name }: CreatableProps) {
+function Creatable({ category, setCategory, name }: CreatableProps) {
   const [inputValue, setInputValue] = useState(name);
   const [categoryList, setCategoryList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -16,8 +17,9 @@ function Creatable({ setCategory, name }: CreatableProps) {
 
   const { data: categories = [] } = useQuery({
     queryKey: ["category"],
-    queryFn: getCategories,
+    queryFn: fetchCategories,
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   useEffect(() => {
@@ -27,7 +29,6 @@ function Creatable({ setCategory, name }: CreatableProps) {
   const { mutate } = useMutation({
     mutationFn: async (inputValue: string) => await addCategory(inputValue),
     onSuccess: (data) => {
-      // queryClient.invalidateQueries({ queryKey: ["category"] });
       setCategoryList((prev) => [...prev, data.data]);
       setCategory(data.data.id);
     },
@@ -55,6 +56,9 @@ function Creatable({ setCategory, name }: CreatableProps) {
     setIsOpen(false);
   };
 
+  const filteredCatList = category ? categoryList : categoryList.filter((ca) => ca.name.includes(inputValue));
+
+
   return (
     <div ref={containerRef} className="relative w-full">
       <div className="border border-mutedText rounded p-2">
@@ -63,7 +67,11 @@ function Creatable({ setCategory, name }: CreatableProps) {
           placeholder="Select or Create"
           value={inputValue}
           className="w-full outline-none"
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => {
+            setCategory(undefined)
+            setInputValue(e.target.value)
+          }}
+          
           onFocus={() => setIsOpen(true)}
         />
       </div>
@@ -83,13 +91,15 @@ function Creatable({ setCategory, name }: CreatableProps) {
                 </button>
               </div>
             )}
+
+            
           {(inputValue === "" || isCategoryIncluded) &&
-              // .filter((ca) => ca.name.includes(inputValue))
-            categoryList?.map((c) => {
+              filteredCatList?.map((c) => {
+
                 return (
                   <div
                     key={c.id}
-                    className={`p-2 cursor-pointer hover:bg-gray-100 ${c?.name?.toLowerCase()?.includes(inputValue?.toLowerCase())?"text-white bg-primary hover:text-blueBlack":"bg-white"}`}
+                    className={`p-2 cursor-pointer hover:bg-gray-100 ${inputValue.length > 0 && c.name.toLowerCase() === inputValue.toLowerCase() ? "text-white bg-primary hover:text-blueBlack":"bg-white"}`}
                     onClick={() => {handleSelectCategory(c)}}
                   >
                     {c.name}

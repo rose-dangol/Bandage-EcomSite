@@ -6,6 +6,7 @@ import { userLogin, userSignup } from "../../services/user.service";
 // import { isEmailValid, isPasswordValid } from "../../utils/helper";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 type UserDataType = {
   email: string;
@@ -19,7 +20,7 @@ type SignupDataType = UserDataType & {
 };
 
 const Auth = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formstate, setFormState] = useState<"Login" | "Signup">("Login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -47,13 +48,15 @@ const Auth = () => {
     mutationFn: ({ email, password }: UserDataType) =>
       userLogin(email, password),
     onSuccess: (data) => {
+      const payload = JSON.parse(atob(data.access.split('.')[1]));
+      console.log(payload)
+      setLocalStorage("userData", payload)
       setLocalStorage("authToken", data?.access);
-      setLocalStorage("userData", email);
-      // navigate("/");
-      window.open("/")
+      // setLocalStorage("userData", email);
+      navigate("/");
+      // window.open("/")
     },
     onError: (error: any) => {
-      console.log(error)
       setPasswordError(error.response?.data?.message || "Login failed");
     },
   });

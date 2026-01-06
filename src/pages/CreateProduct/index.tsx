@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   addProduct,
   fetchProductById,
@@ -11,6 +11,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Trash2, CirclePlus } from "lucide-react";
 import toast from "react-hot-toast";
 import { urlToObject, validateColorName } from "../../utils/helper";
+import { queryClient } from "../../provider";
 
 interface FormDataType {
   name: string;
@@ -42,7 +43,6 @@ const CreateProduct = () => {
   const { id } = useParams();
   const [error, setError] = useState<ErrorType>({});
   const [colorInput, setColorInput] = useState<string>("");
-  const queryClient = useQueryClient();
   const [category, setCategory] = useState();
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
@@ -58,6 +58,7 @@ const CreateProduct = () => {
     queryFn: () => fetchProductById(id),
     enabled: !!id,
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 
   useEffect(() => {
@@ -264,14 +265,14 @@ const CreateProduct = () => {
 
   return (
     <Container>
-      <div className="flex justify-between py-6">
+      <div className="flex md:flex-row flex-col gap-4 justify-between py-6">
         <span className="heading-3">
           {product ? "Update Products" : "Add Product"}
         </span>
         <Breadcrumb location={location} />
       </div>
 
-      <div className="w-full max-w-2xl p-6 space-y-6">
+      <div className="w-full max-w-2xl p-6 space-y-6 overflow-x-auto">
         <div className="flex flex-col gap-2 pt-5">
           <label className="font-normal leading-6 tracking-[0.1px] text-[#252B42]">
             Name
@@ -362,7 +363,7 @@ const CreateProduct = () => {
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex md:flex-row flex-col gap-2">
           <div className="flex flex-col flex-1">
             <label className="font-normal leading-6 tracking-[0.1px] text-[#252B42]">
               Price
@@ -402,6 +403,7 @@ const CreateProduct = () => {
             Category
           </label>
           <Creatable
+            category={category}
             setCategory={setCategory}
             name={product?.category?.name || ""}
           />

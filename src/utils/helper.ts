@@ -40,3 +40,23 @@ export const isPasswordValid = (password: string) => {
 
   return passwordRegex.test(password);
 };
+export const dateFormatter = (date: Date | string) => {
+  const d = new Date(date);
+
+  const day = d.getDate();
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  const time = d.toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return `${day} ${month}, ${year} at ${time}`;
+};
+
+export const numberFormatter = (count:number)=>{
+  if(count<1000) return count
+  return (count / 1000).toFixed(1) + "K";
+}

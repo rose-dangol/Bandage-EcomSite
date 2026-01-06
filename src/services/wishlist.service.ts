@@ -1,7 +1,7 @@
 import api from "../axios/apiClient";
 
 
-export const getWishlist = async () => {
+export const fetchWishlist = async () => {
   try {
     const response = await api.get("wishlist/");
     return response.data.data;

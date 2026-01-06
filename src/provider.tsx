@@ -6,10 +6,12 @@ import { PropsWithChildren } from "react";
 import { WishlistProvider } from "./context/WishlistContext";
 import { CartProvider } from "./context/CartContext";
 import Loader from "./hooks/useIsFetching";
+import { useScrollToTop } from "./hooks/useScrollToTop";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 const Provider = ({ children }: PropsWithChildren) => {
+  useScrollToTop();
   return (
     <>
       <QueryClientProvider client={queryClient}>

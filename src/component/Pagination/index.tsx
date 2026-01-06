@@ -4,22 +4,22 @@ type PaginationPropsType = {
     limit?: number
   },
   currentPage: number,
-  onPageChange: (page:number)=>void,
+  hanldePageChange: (page:number)=>void,
 }
-const Pagination = ({ meta, currentPage, onPageChange }:PaginationPropsType) => {
+const Pagination = ({ meta, currentPage, hanldePageChange }:PaginationPropsType) => {
   if (!meta) return null;
 
   const totalPages = Array.from({ length: meta.totalPages }, (_, i) => i + 1);
 
   const handlePrevious = () => {
     if (currentPage > 1) {
-      onPageChange(currentPage - 1);
+      hanldePageChange(currentPage - 1);
     }
   };
 
   const handleNext = () => {
     if (currentPage < meta.totalPages) {
-      onPageChange(currentPage + 1);
+      hanldePageChange(currentPage + 1);
     }
   };
 
@@ -35,7 +35,7 @@ const Pagination = ({ meta, currentPage, onPageChange }:PaginationPropsType) => 
       {totalPages.map((i) => (
         <button
           key={i}
-          onClick={() => onPageChange(i)}
+          onClick={() => hanldePageChange(i)}
           className={`p-6 flex items-center links border-r border-mutedText btn-transitions ${
             currentPage === i
               ? "text-white bg-primary"

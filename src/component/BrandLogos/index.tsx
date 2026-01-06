@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const BrandLogos = () => {
   return (
     <div className={`${getLayoutClass()} py-12`}>
-      <div className="flex flex-col md:flex-row justify-center lg:gap-30 gap-5 items-center">
+      <div className="flex flex-col md:flex-row flex-wrap justify-center lg:gap-30 gap-5 items-center">
         <Link to={""}>
           <img
             src='/BrandLogo/Lyft_logo.svg'

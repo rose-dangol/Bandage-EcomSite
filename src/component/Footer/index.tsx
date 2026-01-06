@@ -43,7 +43,7 @@ export default function Footer() {
 
       {/*footer Links Grid */}
       <div className="py-12 bg-white p-10">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-8 md:gap-12">
           {Object.entries(FooterLinks).map(([key, section]) => (
             <div key={key} className="flex flex-col gap-4">
               <span className="heading-5 text-blueBlack">{section.title}</span>
@@ -59,7 +59,7 @@ export default function Footer() {
               </div>
             </div>
           ))}
-          <div className="md:col-span-1 flex flex-col gap-4">
+          <div className="lg:col-span-1 md:col-span-2 flex flex-col gap-4">
             <span className="heading-5 text-blueBlack">Get In Touch</span>
             {/* borders */}
             <div className="flex">

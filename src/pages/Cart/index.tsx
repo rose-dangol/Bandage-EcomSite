@@ -1,8 +1,5 @@
 import { Trash2, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "../../utils/helper";
-import {
-  deleteCart,
-} from "../../services/cart.service";
 import { Link } from "react-router-dom";
 import { useCartContext } from "../../context/CartContext";
 
@@ -14,22 +11,20 @@ export interface UpdateCartDataType {
 type CartDataType = {
   id: number;
   cartId?: number;
-  productId?: number;
-  productName: string;
-  price: number;
-  image: string;
+  product: {
+    id: number;
+    name: string;
+    price: number;
+    priceAfterDiscount: number;
+    image: string;
+  };
   quantity: number;
+  created_at: Date;
 };
 
 const Cart = () => {
-  const {
-    cart,
-    setCart,
-    isLoading,
-    error,
-    CartUpdateMutation,
-    RemoveCartMutation,
-  } = useCartContext();
+  const { cart, setCart, error, CartUpdateMutation, RemoveCartMutation } =
+    useCartContext();
 
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -64,7 +59,8 @@ const Cart = () => {
   }
 
   const total: number = cart.reduce(
-    (total: number, item: CartDataType) => total + item.price * item.quantity,
+    (total: number, item: CartDataType) =>
+      total + item.product.price * item.quantity,
     0
   );
 
@@ -83,7 +79,7 @@ const Cart = () => {
             <p className="text-lg text-gray-500">Your cart is empty</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 overflow-x-auto">
             {/* Cart Table */}
             <table className="w-full">
               <thead className="bg-gray-100 border-b border-blueBlack">
@@ -115,17 +111,19 @@ const Cart = () => {
                       <div className="flex items-center gap-4">
                         <div className="w-30 h-30 overflow-hidden bg-gray-100">
                           <img
-                            src={item.image[0]}
-                            alt={item.productName}
+                            src={item.product.image}
+                            alt={item.product.name}
                             className="w-full h-full object-cover"
                           />
                         </div>
                         <span className="heading-5 capitalize">
-                          {item.productName}
+                          {item.product.name}
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">{formatCurrency(item.price)}</td>
+                    <td className="px-6 py-4">
+                      {formatCurrency(item.product.price)}
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 border border-gray-300 rounded w-fit p-1">
                         <button
@@ -149,7 +147,7 @@ const Cart = () => {
                     </td>
                     <td className="px-6 py-4 font-semibold text-gray-900">
                       {formatCurrency(
-                        Number((item.price * item.quantity).toFixed(2))
+                        Number((item.product?.price * item.quantity).toFixed(2))
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -166,7 +164,7 @@ const Cart = () => {
             </table>
 
             {/* order summary (toal+shipping etx*/}
-            <div className="flex justify-end">
+            <div className="flex lg:justify-end justify-center">
               <div className="rounded-lg shadow-md max-w-md">
                 <div className="flex flex-col gap-3 p-5 text-blueBlack">
                   <p className="heading-3">Order Summary</p>

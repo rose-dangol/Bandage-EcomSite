@@ -8,7 +8,7 @@ const PageList = () => {
     { name: "Auth", path: "/auth" },
     { name: "About Us", path: "/about" },
     { name: "All Products", path: "/shop" },
-    { name: "Category Page", path: "/category" },
+    { name: "Category Page", path: "/shop/products?categoryId=9" },
     { name: "Product Details", path: "/shop/products/1" },
     { name: "Create Product", path: "/updateProduct" },
     { name: "Update Product", path: "/updateProduct/1" },

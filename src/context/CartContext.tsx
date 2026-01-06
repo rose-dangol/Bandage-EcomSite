@@ -5,9 +5,9 @@ import {
   useEffect,
   useState,
 } from "react";
-import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  AddToCart,
+  addToCart,
   deleteCart,
   fetchCart,
   updateCartQuantity,
@@ -35,7 +35,6 @@ export type UpdateCartDataType = {
 };
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const queryClient = new QueryClient();
   const [cart, setCart] = useState<CartDataType[]>([]);
 
   const {
@@ -46,6 +45,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     queryKey: ["cartItem"],
     queryFn: () => fetchCart(),
     refetchOnWindowFocus: false,
+    retry: 1,
   });
   useEffect(() => {
     if (cartItems?.length > 0) {
@@ -54,7 +54,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   }, [cartItems]);
 
   const CartAddMutation = useMutation({
-    mutationFn: ({ id, quantity }: AddCartDataType) => AddToCart(id, quantity),
+    mutationFn: ({ id, quantity }: AddCartDataType) => addToCart(id, quantity),
     onSuccess: (data) => {
       toast.success(data?.message || "Item added to cart sucessfully!");
     },
