@@ -21,10 +21,12 @@ import toast from "react-hot-toast";
 
 import { useWishlistContext } from "../../context/WishlistContext";
 import { useCartContext } from "../../context/CartContext";
+import { useUserContext } from "../../context/UserContext";
+import { fetchReviews } from "../../services/review.service";
 
-export type CartDataType = {
-  id?: number;
-  quantity?: number;
+export type CartAddDataType = {
+  id: number;
+  quantity: number;
 };
 
 const ProductDetail = () => {
@@ -43,13 +45,12 @@ const ProductDetail = () => {
   const [description, setDescription] = useState(false);
   const [additional, setAdditional] = useState(false);
 
-  const userData = JSON.parse(localStorage.getItem("userData"));
-
-  const { wishlistItem, AddMutation, RemoveMutation } = useWishlistContext();
-  const { cart, CartAddMutation, CartUpdateMutation } = useCartContext();
+  const { wishlistItems, AddMutation, RemoveMutation } = useWishlistContext();
+  const { carts, CartAddMutation, CartUpdateMutation } = useCartContext();
+  const { userData } = useUserContext();
 
   useEffect(() => {
-    const idFound = wishlistItem.find(
+    const idFound = wishlistItems.find(
       (item: { productId?: number }) => item.productId == Number(id)
     )?.id;
     setWishlistExist(idFound);
@@ -58,7 +59,7 @@ const ProductDetail = () => {
     } else {
       setIsFilled(false);
     }
-  }, [wishlistItem, id]);
+  }, [wishlistItems, id]);
 
   // Fetching product data
   const { data: product, error } = useQuery({
@@ -68,9 +69,17 @@ const ProductDetail = () => {
     retry: 1,
   });
 
-  const DeleteMutation = useMutation({
+  const DeleteProductMutation = useMutation({
     mutationFn: (id: number) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
+  });
+
+  //review data fetch
+  const { data: reviews } = useQuery({
+    queryKey: ["reviews", id],
+    queryFn: () => fetchReviews(Number(id)),
+    refetchOnWindowFocus: false,
+    enabled: !!id,
   });
 
   const imageUrls = product?.image;
@@ -90,16 +99,16 @@ const ProductDetail = () => {
 
   const handleAddToCart = (id: number, quantity: number) => {
     if (quantity === 0) {
-      toast.error("Cart should have atleast one item");
+      toast.error("Cart should have at least one item");
     } else {
-      const data: CartDataType = { id, quantity };
-      const productExist = cart.find(
+      const data: CartAddDataType = { id, quantity };
+      const productExist = carts.find(
         (item: { productId?: number }) => item.productId == id
       )?.id;
       if (productExist) {
         CartUpdateMutation.mutate({ id: productExist, newQuantity: quantity });
       } else {
-        CartAddMutation.mutate(data);
+        CartAddMutation(data);
       }
     }
   };
@@ -386,7 +395,7 @@ const ProductDetail = () => {
                 </button>
                 <button
                   onClick={() => {
-                    DeleteMutation.mutate(Number(id));
+                    DeleteProductMutation.mutate(Number(id));
                     setShowDialog(false);
                   }}
                   className="px-4 py-2 bg-red-500 text-white rounded heading-6 cursor-pointer hover:bg-red-600 transition"
@@ -433,7 +442,7 @@ const ProductDetail = () => {
             </div>
           </div>
           {/* {review&& <Reviews id={id}/>}  */}
-          {review && <Reviews id={id} />}
+          {review && <Reviews id={id} reviews={reviews} />}
           {description && <div>{product.description}</div>}
           {additional && (
             <div>

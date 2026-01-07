@@ -9,7 +9,6 @@ import {
   UserRound,
 } from "lucide-react";
 import { useUserContext } from "../../context/UserContext";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 import { useWishlistContext } from "../../context/WishlistContext";
 import { useCartContext } from "../../context/CartContext";
@@ -21,14 +20,9 @@ const Navbar = () => {
   const [isFilled, setIsFilled] = useState(false);
   const [userShow, setUserShow] = useState(false);
 
-  const { getLocalStorage } = useLocalStorage();
-  const { cart } = useCartContext();
+  const { userData, authToken, logout } = useUserContext();
+  const { carts } = useCartContext();
   const { wishlistCount } = useWishlistContext();
-
-  const authToken = JSON.parse(localStorage.getItem("authToken"));
-  const userData = getLocalStorage("userData");
-
-  const { logout } = useUserContext();
 
   return (
     <div className="text-md w-full sticky top-0 z-500 bg-white/90">
@@ -112,7 +106,7 @@ const Navbar = () => {
               >
                 <ShoppingCart size="20px" className="hover:text-secondary" />
                 <div className="absolute -top-2 -right-1 bg-white text-primary rounded-full flex items-center justify-center text-xs font-bold">
-                  {cart.length}
+                  {carts.length}
                 </div>
               </span>
               <span

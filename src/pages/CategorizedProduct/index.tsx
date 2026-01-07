@@ -5,20 +5,20 @@ import { formatCurrency, getLayoutClass } from "../../utils/helper";
 import { Breadcrumb } from "../../component";
 
 type ProductType = {
-  category?: {
+  category: {
     id: number;
     name: string;
     image?: null;
   };
-  colors?: [];
-  description?: string;
+  colors: [];
+  description: string;
   discount?: number;
-  id?: number;
-  image?: string[];
-  name?: string;
-  price?: number;
-  priceAfterDiscount?: number;
-  status?: string;
+  id: number;
+  image: string[];
+  name: string;
+  price: number;
+  priceAfterDiscount: number;
+  status: string;
 }[];
 
 const CategorizedProduct = () => {

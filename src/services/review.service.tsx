@@ -12,8 +12,8 @@ export const fetchReviews = async (id: number) => {
 export const addReviews = async (
   id: number,
   reviewData: {
-    description?: string;
-    rating?: number;
+    description: string;
+    rating: number;
   }
 ) => {
   try {

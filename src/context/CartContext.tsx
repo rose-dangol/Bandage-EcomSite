@@ -6,36 +6,42 @@ import {
   useState,
 } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import {
   addToCart,
   deleteCart,
   fetchCart,
   updateCartQuantity,
 } from "../services/cart.service";
-import toast from "react-hot-toast";
+import { queryClient } from "../provider";
 
 export const CartContext = createContext(null);
 
-type CartDataType = {
+export type CartDataType = {
   id: number;
   cartId?: number;
-  productId?: number;
-  productName: string;
-  price: number;
-  image: string;
+  product: {
+    id: number;
+    name: string;
+    price: number;
+    priceAfterDiscount: number;
+    image: string;
+  };
   quantity: number;
 };
+
 export type AddCartDataType = {
-  id?: number;
-  quantity?: number;
+  id: number;
+  quantity: number;
 };
+
 export type UpdateCartDataType = {
   id: number;
   newQuantity: number;
 };
 
 export const CartProvider = ({ children }: PropsWithChildren) => {
-  const [cart, setCart] = useState<CartDataType[]>([]);
+  const [carts, setCarts] = useState<CartDataType[]>([]);
 
   const {
     data: cartItems = [],
@@ -47,26 +53,30 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     refetchOnWindowFocus: false,
     retry: 1,
   });
+
   useEffect(() => {
     if (cartItems?.length > 0) {
-      setCart(cartItems);
+      setCarts(cartItems);
     }
   }, [cartItems]);
 
-  const CartAddMutation = useMutation({
+  const { mutate: CartAddMutation } = useMutation({
     mutationFn: ({ id, quantity }: AddCartDataType) => addToCart(id, quantity),
     onSuccess: (data) => {
-      toast.success(data?.message || "Item added to cart sucessfully!");
+      toast.success(data?.message || "Item added to cart successfully!");
+      queryClient.invalidateQueries({ queryKey: ["cartItem"] });
     },
     onError: (error) => {
       toast.error(error.message || "Error Adding Item to Cart :(");
     },
   });
+
   const CartUpdateMutation = useMutation({
     mutationFn: ({ id, newQuantity }: UpdateCartDataType) =>
       updateCartQuantity(id, newQuantity),
     onSuccess: (data) => {
-      toast.success(data.message || "Cart Updated sucessfully!");
+      toast.success(data.message || "Cart Updated successfully!");
+      queryClient.invalidateQueries({ queryKey: ["cartItem"] });
     },
     onError: (error) => {
       toast.error(error.message || "Error adding item to cart");
@@ -77,6 +87,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     mutationFn: (id: number) => deleteCart(id),
     onSuccess: (data) => {
       toast.success(data.message || "Item removed from cart.");
+      queryClient.invalidateQueries({ queryKey: ["cartItem"] });
     },
     onError: (error) => {
       toast.error(error.message || "Error removing item.");
@@ -84,14 +95,15 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
   });
 
   const value = {
-    cart,
-    setCart,
+    carts,
+    setCarts,
     isLoading,
     error,
     CartAddMutation,
     CartUpdateMutation,
     RemoveCartMutation,
   };
+
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 

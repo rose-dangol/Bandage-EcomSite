@@ -1,18 +1,26 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { addCategory, fetchCategories } from "../../services/category.service";
 import React, { useState, useEffect } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+
+import { addCategory, fetchCategories } from "../../services/category.service";
 import { useClickAway } from "../../hooks/useClickAway";
 
 type CreatableProps = {
   setCategory: React.Dispatch<React.SetStateAction<number>>;
   name: string;
-  category: string
+  category: string;
+};
+
+type CategoryListType = {
+  id: number;
+  name: string;
+  img?: string;
 };
 
 function Creatable({ category, setCategory, name }: CreatableProps) {
-  const [inputValue, setInputValue] = useState(name);
-  const [categoryList, setCategoryList] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState<string>(name);
+  const [categoryList, setCategoryList] = useState<CategoryListType[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const containerRef = useClickAway(() => setIsOpen(false));
 
   const { data: categories = [] } = useQuery({
@@ -26,7 +34,7 @@ function Creatable({ category, setCategory, name }: CreatableProps) {
     setCategoryList(categories);
   }, [categories]);
 
-  const { mutate } = useMutation({
+  const { mutate: AddCategoryMutation } = useMutation({
     mutationFn: async (inputValue: string) => await addCategory(inputValue),
     onSuccess: (data) => {
       setCategoryList((prev) => [...prev, data.data]);
@@ -52,12 +60,13 @@ function Creatable({ category, setCategory, name }: CreatableProps) {
   };
 
   const handleAddCategory = (inputValue: string) => {
-    mutate(inputValue);
+    AddCategoryMutation(inputValue);
     setIsOpen(false);
   };
 
-  const filteredCatList = category ? categoryList : categoryList.filter((ca) => ca.name.includes(inputValue));
-
+  const filteredCatList = category
+    ? categoryList
+    : categoryList.filter((ca) => ca.name.includes(inputValue));
 
   return (
     <div ref={containerRef} className="relative w-full">
@@ -68,10 +77,9 @@ function Creatable({ category, setCategory, name }: CreatableProps) {
           value={inputValue}
           className="w-full outline-none"
           onChange={(e) => {
-            setCategory(undefined)
-            setInputValue(e.target.value)
+            setCategory(undefined);
+            setInputValue(e.target.value);
           }}
-          
           onFocus={() => setIsOpen(true)}
         />
       </div>
@@ -92,20 +100,25 @@ function Creatable({ category, setCategory, name }: CreatableProps) {
               </div>
             )}
 
-            
           {(inputValue === "" || isCategoryIncluded) &&
-              filteredCatList?.map((c) => {
-
-                return (
-                  <div
-                    key={c.id}
-                    className={`p-2 cursor-pointer hover:bg-gray-100 ${inputValue.length > 0 && c.name.toLowerCase() === inputValue.toLowerCase() ? "text-white bg-primary hover:text-blueBlack":"bg-white"}`}
-                    onClick={() => {handleSelectCategory(c)}}
-                  >
-                    {c.name}
-                  </div>
-                );
-              })}
+            filteredCatList?.map((c) => {
+              return (
+                <div
+                  key={c.id}
+                  className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                    inputValue.length > 0 &&
+                    c.name.toLowerCase() === inputValue.toLowerCase()
+                      ? "text-white bg-primary hover:text-blueBlack"
+                      : "bg-white"
+                  }`}
+                  onClick={() => {
+                    handleSelectCategory(c);
+                  }}
+                >
+                  {c.name}
+                </div>
+              );
+            })}
         </div>
       )}
     </div>

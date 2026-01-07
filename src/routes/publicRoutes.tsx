@@ -1,10 +1,10 @@
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useUserContext } from "../context/UserContext";
 import { Navigate, Outlet } from "react-router-dom";
 
 const PublicRoutes = () => {
-  const { getLocalStorage } = useLocalStorage();
-  const userData = getLocalStorage('authToken');
-  return userData? <Navigate to={"/"} /> : <Outlet />;
+  const { userData } = useUserContext();
+
+  return userData ? <Navigate to={"/"} /> : <Outlet />;
 };
 
 export default PublicRoutes;

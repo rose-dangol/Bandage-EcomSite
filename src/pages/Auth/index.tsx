@@ -8,20 +8,21 @@ import { useLocalStorage } from "../../hooks/useLocalStorage";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-type UserDataType = {
+interface LoginDataType {
   email: string;
   password: string;
-};
+}
 
-type SignupDataType = UserDataType & {
+interface SignupDataType extends LoginDataType {
   firstName: string;
   lastName: string;
   confirmPassword: string;
-};
+}
 
 const Auth = () => {
   const navigate = useNavigate();
   const [formstate, setFormState] = useState<"Login" | "Signup">("Login");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -45,16 +46,13 @@ const Auth = () => {
 
   // Login Mutation
   const LoginMutation = useMutation({
-    mutationFn: ({ email, password }: UserDataType) =>
-      userLogin(email, password),
+    mutationFn: (loginData: LoginDataType) => userLogin(loginData),
     onSuccess: (data) => {
-      const payload = JSON.parse(atob(data.access.split('.')[1]));
-      console.log(payload)
-      setLocalStorage("userData", payload)
+      const payload = JSON.parse(atob(data.access.split(".")[1]));
+      console.log(payload);
+      setLocalStorage("userData", payload);
       setLocalStorage("authToken", data?.access);
-      // setLocalStorage("userData", email);
       navigate("/");
-      // window.open("/")
     },
     onError: (error: any) => {
       setPasswordError(error.response?.data?.message || "Login failed");
@@ -63,17 +61,10 @@ const Auth = () => {
 
   // Signup Mutation
   const SignupMutation = useMutation({
-    mutationFn: ({
-      firstName,
-      lastName,
-      email,
-      password,
-      confirmPassword,
-    }: SignupDataType) =>
-      userSignup(firstName, lastName, email, password, confirmPassword),
+    mutationFn: (signupData: SignupDataType) => userSignup(signupData),
     onSuccess: () => {
       setFormState("Login");
-      toast.success("Registered Successfully!")
+      toast.success("Registered Successfully!");
     },
     onError: (error: any) => {
       const errors = error.response.data.error[0];
@@ -99,28 +90,20 @@ const Auth = () => {
   });
 
   const handleLogin = () => {
-    // if (!isEmailValid(email)) {
-    //   setEmailError("Invalid email.");
-    //   return;
-    // }
-    // if (!isPasswordValid(password)) {
-    //   setPasswordError(
-    //     "Password must be 8-16 chars with uppercase, lowercase, number, and special char."
-    //   );
-    //   return;
-    // }
-    LoginMutation.mutate({ email, password });
+    const loginData = { email, password };
+    LoginMutation.mutate(loginData);
   };
 
   const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-      SignupMutation.mutate({
-        firstName,
-        lastName,
-        email,
-        password,
-        confirmPassword,
-      });
+    const signupData = {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+    };
+    SignupMutation.mutate(signupData);
   };
 
   return (

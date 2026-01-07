@@ -1,4 +1,4 @@
-import { useMutation, useQuery,} from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   createContext,
   PropsWithChildren,
@@ -17,28 +17,26 @@ import { queryClient } from "../provider";
 export const WishlistContext = createContext(null);
 
 export const WishlistProvider = ({ children }: PropsWithChildren) => {
-  const [wishlist, setWishlist] = useState([]);
   const [wishlistCount, setWishlistCount] = useState<number>(0);
 
-  const { data: wishlistItem = [] } = useQuery({
-    queryKey: ["wishlistItem"],
+  const { data: wishlistItems = [] } = useQuery({
+    queryKey: ["wishlistItems"],
     queryFn: () => fetchWishlist(),
-    refetchOnWindowFocus:false,
+    refetchOnWindowFocus: false,
     retry: 1,
   });
-  
+
   useEffect(() => {
-    if (wishlistItem?.length > 0) {
-      setWishlist(wishlistItem);
-      setWishlistCount(wishlistItem?.length);
+    if (wishlistItems?.length > 0) {
+      setWishlistCount(wishlistItems?.length);
     }
-  }, [wishlistItem]);
+  }, [wishlistItems]);
 
   const AddMutation = useMutation({
-    mutationKey: ["wishlistItem"],
+    mutationKey: ["wishlistItems"],
     mutationFn: (productId: number) => addToWishlist(productId),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({queryKey:["wishlistItem"]})
+      queryClient.invalidateQueries({ queryKey: ["wishlistItems"] });
       toast.success(data.message + "❤️");
     },
     onError: (error) => {
@@ -49,13 +47,13 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
   const RemoveMutation = useMutation({
     mutationFn: (productId: number) => removeWishlist(productId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["wishlistItem"] });
-      toast.success("Item removed from swishlist");
+      queryClient.invalidateQueries({ queryKey: ["wishlistItems"] });
+      toast.success("Item removed from wish list");
     },
   });
 
   const value = {
-    wishlistItem,
+    wishlistItems,
     wishlistCount,
     AddMutation,
     RemoveMutation,

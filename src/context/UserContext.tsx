@@ -1,51 +1,27 @@
 /* eslint-disable react-refresh/only-export-components */
 
-import { createContext, PropsWithChildren, useContext, useState } from "react";
+import { createContext, PropsWithChildren, useContext } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 export const UserContext = createContext(null);
 
-export const UserProvider = ({ children }:PropsWithChildren) => {
-  const { setLocalStorage, getLocalStorage } = useLocalStorage();
-  const [user, setUser] = useState(() => {
-    const loggedUser = getLocalStorage("user");
-    return loggedUser?.isLoggedIn
-      ? loggedUser
-      : {
-          email: "",
-          password: "",
-          isLoggedIn: false,
-        };
-  });
-  const login = (email:string, password: string) => {
-    const userData = {
-      ...user,
-      email: email,
-      password: password,
-      isLoggedIn: true,
-    };
-    setUser(userData);
-    setLocalStorage("user", userData);
-  };
-  const logout = () => {
-    const clearUser = {
-      ...user,
-      email: "",
-      password: "",
-      isLoggedIn: false,
+export const UserProvider = ({ children }: PropsWithChildren) => {
+  const { getLocalStorage } = useLocalStorage();
 
-    };
-    setUser(clearUser);
-    // setLocalStorage("user", JSON.stringify(clearUser));
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('userData')
+  const userData = getLocalStorage("userData");
+  const authToken = getLocalStorage("authToken");
+
+  const logout = () => {
+    localStorage.clear();
     window.location.reload();
   };
+
   const value = {
-    user,
-    login,
+    userData,
+    authToken,
     logout,
   };
+
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 

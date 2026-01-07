@@ -13,6 +13,7 @@ import {
   Checkout,
   CategorizedProduct,
   PageList,
+  NotFound,
 } from "../pages";
 import PublicRoutes from "./publicRoutes";
 
@@ -35,6 +36,7 @@ const AppRoutes = () => {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/allpage" element={<PageList />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

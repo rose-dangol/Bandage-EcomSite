@@ -1,36 +1,30 @@
 import { Trash2, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "../../utils/helper";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useCartContext } from "../../context/CartContext";
+import { useEffect, useState } from "react";
+
+import { CartDataType } from "../../context/CartContext";
 
 export interface UpdateCartDataType {
   id: number;
   newQuantity: number;
 }
 
-type CartDataType = {
-  id: number;
-  cartId?: number;
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    priceAfterDiscount: number;
-    image: string;
-  };
-  quantity: number;
-  created_at: Date;
-};
+const tax: number = 13;
 
 const Cart = () => {
-  const { cart, setCart, error, CartUpdateMutation, RemoveCartMutation } =
+  const { carts, setCarts, error, CartUpdateMutation, RemoveCartMutation } =
     useCartContext();
+  const navigate = useNavigate();
+  const [isAllChecked, setIsAllChecked] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
     CartUpdateMutation.mutate({ id, newQuantity });
-    setCart(
-      cart.map((item: CartDataType) =>
+    setCarts(
+      carts.map((item: CartDataType) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       )
     );
@@ -39,6 +33,8 @@ const Cart = () => {
   const handleRemoveCart = (id: number) => {
     RemoveCartMutation.mutate(id);
   };
+
+  const handleCheckout = () => {};
 
   // if (isLoading) {
   //   return (
@@ -58,22 +54,41 @@ const Cart = () => {
     );
   }
 
-  const total: number = cart.reduce(
+  const total: number = carts.reduce(
     (total: number, item: CartDataType) =>
-      total + item.product.price * item.quantity,
+      total + item.product.priceAfterDiscount * item.quantity,
     0
   );
 
+  let c: number[] = [];
+  useEffect(() => {
+    if (carts.length > selectedItems.length) {
+      setIsAllChecked(false);
+    }
+    console.log(selectedItems);
+  }, [selectedItems]);
+  const handleSelectAll = () => {
+    if (isAllChecked) {
+      setIsAllChecked(false);
+      c = [];
+      setSelectedItems(c);
+    } else {
+      setIsAllChecked(true);
+      c = carts.map((data: CartDataType) => data.id);
+      setSelectedItems(c);
+    }
+  };
+
   return (
-    <div className="bg-linear-to-br from-base-100 to-base-200 p-4 md:p-8">
+    <div className="bg-linear-to-br p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex justify-center items-center gap-3">
           <ShoppingCart className="w-8 h-8 text-blueBlack" />
-          <p className="heading-3">Your Cart ({cart.length})</p>
+          <p className="heading-3">Your Cart ({carts.length})</p>
         </div>
 
-        {!cart || cart.length === 0 ? (
+        {!carts || carts.length === 0 ? (
           <div className="text-center py-16">
             <ShoppingCart className="w-16 h-16 mx-auto text-gray-400 mb-4" />
             <p className="text-lg text-gray-500">Your cart is empty</p>
@@ -84,6 +99,13 @@ const Cart = () => {
             <table className="w-full">
               <thead className="bg-gray-100 border-b border-blueBlack">
                 <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
+                    <input
+                      type="checkbox"
+                      checked={isAllChecked}
+                      onChange={() => handleSelectAll()}
+                    />
+                  </th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                     Item
                   </th>
@@ -102,13 +124,35 @@ const Cart = () => {
                 </tr>
               </thead>
               <tbody>
-                {cart.map((item: CartDataType) => (
+                {carts.map((item: CartDataType) => (
                   <tr
                     key={item.id}
                     className="hover:bg-gray-50 transition-colors"
                   >
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={
+                          isAllChecked ? true : selectedItems.includes(item.id)
+                        }
+                        onChange={() => {
+                          if (!selectedItems.includes(item.id)) {
+                            setSelectedItems((prev) => [...prev, item.id]);
+                          } else {
+                            setSelectedItems((prev) =>
+                              prev.filter((id) => id != item.id)
+                            );
+                          }
+                        }}
+                      />
+                    </td>
                     <td className="px-6 py-4 text-blueBlack">
-                      <div className="flex items-center gap-4">
+                      <div
+                        className="flex items-center gap-4 cursor-pointer"
+                        onClick={() =>
+                          navigate(`/shop/products/${item.product.id}`)
+                        }
+                      >
                         <div className="w-30 h-30 overflow-hidden bg-gray-100">
                           <img
                             src={item.product.image}
@@ -122,7 +166,14 @@ const Cart = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      {formatCurrency(item.product.price)}
+                      <div className="flex flex-col gap-3 items-center">
+                        <span className="paragraph">
+                          {formatCurrency(item.product.priceAfterDiscount)}
+                        </span>
+                        <span className="line-through text-mutedText">
+                          {formatCurrency(item.product.price)}
+                        </span>
+                      </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2 border border-gray-300 rounded w-fit p-1">
@@ -147,7 +198,11 @@ const Cart = () => {
                     </td>
                     <td className="px-6 py-4 font-semibold text-gray-900">
                       {formatCurrency(
-                        Number((item.product?.price * item.quantity).toFixed(2))
+                        Number(
+                          (
+                            item.product?.priceAfterDiscount * item.quantity
+                          ).toFixed(2)
+                        )
                       )}
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -163,7 +218,7 @@ const Cart = () => {
               </tbody>
             </table>
 
-            {/* order summary (toal+shipping etx*/}
+            {/* order summary (total+shipping etx*/}
             <div className="flex lg:justify-end justify-center">
               <div className="rounded-lg shadow-md max-w-md">
                 <div className="flex flex-col gap-3 p-5 text-blueBlack">
@@ -178,23 +233,24 @@ const Cart = () => {
                     {/* tax */}
                     <div className="flex justify-between heading-6">
                       <span className="text-gray-600">Tax:</span>
-                      <span>{formatCurrency(13.0)}</span>
+                      <span>{formatCurrency(tax)}</span>
                     </div>
 
                     {/* total */}
                     <div className="border-t pt-3 flex justify-between heading-4 text-blueBlack">
                       <span className="font-bold">Total:</span>
                       <span className="text-primary">
-                        {formatCurrency(Number((total + 13).toFixed(2)))}
+                        {formatCurrency(Number((total + tax).toFixed(2)))}
                       </span>
                     </div>
                   </div>
-                  <Link
-                    to={"/checkout"}
+                  <div
+                    onClick={() => handleCheckout}
+                    // to={"/checkout"}
                     className="self-center links py-3 px-5 text-white btn-transitions max-w-max mt-6 bg-blueBlack hover:bg-[#2b3458] cursor-pointer"
                   >
                     Proceed to Checkout
-                  </Link>
+                  </div>
                 </div>
               </div>
             </div>

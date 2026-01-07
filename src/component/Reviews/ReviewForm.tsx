@@ -49,6 +49,7 @@ const ReviewForm = ({ id }: { id: string }) => {
   };
 
   const handleSubmit = () => {
+    if (isPending) return;
     if (reviewData.description === "") {
       setReviewError("Description cannot be empty.");
       return;
@@ -62,6 +63,12 @@ const ReviewForm = ({ id }: { id: string }) => {
       return;
     }
     addReview();
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "Enter") {
+      handleSubmit();
+    }
   };
   return (
     <div className="flex flex-col gap-4 mt-6">
@@ -110,9 +117,9 @@ const ReviewForm = ({ id }: { id: string }) => {
       </div> */}
       <button
         onClick={handleSubmit}
-        className={`mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-secondary btn-transitions ${
-          isPending && "disabled"
-        } cursor-pointer`}
+        className={`mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-secondary btn-transitions cursor-pointer`}
+        disabled={isPending}
+        onKeyDown={handleKeyPress}
       >
         {isPending ? "Submitting" : "Submit Review"}
       </button>
