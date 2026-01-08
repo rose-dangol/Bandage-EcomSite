@@ -19,7 +19,7 @@ Bandage is a full-featured e-commerce application designed with simplicity and p
 
 Visit Bandage: [https://bandage-ecomsite.onrender.com/](https://bandage-ecomsite.onrender.com/)
 
-## ✨ Features
+## Features
 
 ### Customer Features
 
