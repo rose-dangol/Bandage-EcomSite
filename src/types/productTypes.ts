@@ -12,5 +12,5 @@ export type ProductDataType = {
   name: string;
   price: number;
   priceAfterDiscount: number;
-  status: string;
+  status: "active" | "inactive";
 };

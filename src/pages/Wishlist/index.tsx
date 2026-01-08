@@ -13,7 +13,7 @@ type WishlistDataType = {
     price: number;
     priceAfterDiscount: number;
     image: string;
-    status: string;
+    status: "active" | "inactive";
   };
 };
 
