@@ -5,7 +5,7 @@ export const fetchReviews = async (id: number) => {
     const response = await api.get(`products/${id}/reviews/`);
     return response.data.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -20,7 +20,7 @@ export const addReviews = async (
     const response = await api.post(`products/${id}/reviews/`, reviewData);
     return response.data.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 
@@ -31,6 +31,6 @@ export const deleteReviews = async (productId: number, reviewId: number) => {
     );
     return response.data.data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };

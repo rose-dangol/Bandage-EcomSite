@@ -166,7 +166,6 @@ const Landing = () => {
               } else {
                 setVisibleCount((prev) => prev + 4);
               }
-              // navigate("/shop");
             }}
           >
             {visibleCount > 10 ? "Load Less Products" : "Load more products"}

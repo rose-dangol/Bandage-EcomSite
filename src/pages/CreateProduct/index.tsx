@@ -262,7 +262,7 @@ const CreateProduct = () => {
         }
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
   if (isProductsLoading) return <h1>Loading...</h1>;
