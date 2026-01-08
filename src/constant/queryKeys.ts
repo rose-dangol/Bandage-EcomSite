@@ -1,7 +1,7 @@
 export const QUERY_KEYS = {
     products: 'products',
-    category: 'categories',
+    categories: 'categories',
     reviews: 'reviews',
-    cart: 'cartItems',
-    wishlist: 'wishlistItems',
+    cartItems: 'cartItems',
+    wishlistItems: 'wishlistItems',
 }

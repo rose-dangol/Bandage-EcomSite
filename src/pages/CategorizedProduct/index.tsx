@@ -25,18 +25,7 @@ const CategorizedProduct = () => {
   useEffect(() => {
     if (products && categoryId) {
       let categorizedData = products.data.filter(
-        (item: {
-          category?: { id: number; name: string; image?: null };
-          colors?: [];
-          description?: string;
-          discount?: number;
-          id?: number;
-          image?: string[];
-          name?: string;
-          price?: number;
-          priceAfterDiscount?: number;
-          status?: string;
-        }) => item.category?.id === Number(categoryId)
+        (item: ProductDataType) => item.category?.id === Number(categoryId)
       );
       setCategorizedProducts(categorizedData);
     }

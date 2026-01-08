@@ -27,6 +27,7 @@ export type CartDataType = {
     price: number;
     priceAfterDiscount: number;
     image: string;
+    status: string;
   };
   quantity: number;
 };
@@ -49,7 +50,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: [QUERY_KEYS.cart],
+    queryKey: [QUERY_KEYS.cartItems],
     queryFn: () => fetchCart(),
   });
 
@@ -63,7 +64,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     mutationFn: ({ id, quantity }: AddCartDataType) => addToCart(id, quantity),
     onSuccess: (data) => {
       toast.success(data?.message || "Item added to cart successfully!");
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cart] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cartItems] });
     },
     onError: (error) => {
       toast.error(error.message || "Error Adding Item to Cart :(");
@@ -75,7 +76,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
       updateCartQuantity(id, newQuantity),
     onSuccess: (data) => {
       toast.success(data.message || "Cart Updated successfully!");
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cart] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cartItems] });
     },
     onError: (error) => {
       toast.error(error.message || "Error adding item to cart");
@@ -86,7 +87,7 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     mutationFn: (id: number) => deleteCart(id),
     onSuccess: (data) => {
       toast.success(data.message || "Item removed from cart.");
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cart] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cartItems] });
     },
     onError: (error) => {
       toast.error(error.message || "Error removing item.");

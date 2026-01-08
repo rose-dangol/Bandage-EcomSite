@@ -42,7 +42,7 @@ const ProductDetail = () => {
   const [selectDialog, setSelectDialog] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
   const [quantity, setQuantity] = useState(0);
-  const [wishlistExist, setWishlistExist] = useState();
+  const [isWishListAvailable, setIsWishListAvailable] = useState();
   const [review, setReview] = useState(false);
   const [description, setDescription] = useState(false);
   const [additional, setAdditional] = useState(false);
@@ -53,9 +53,9 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const idFound = wishlistItems.find(
-      (item: { productId?: number }) => item.productId == Number(id)
+      (item: { product: { id: number } }) => item.product.id == Number(id)
     )?.id;
-    setWishlistExist(idFound);
+    setIsWishListAvailable(idFound);
     if (idFound) {
       setIsFilled(true);
     } else {
@@ -117,15 +117,10 @@ const ProductDetail = () => {
       addMutation.mutate(id);
       setIsFilled(true);
     } else {
-      removeMutation.mutate(wishlistExist);
+      removeMutation.mutate(isWishListAvailable);
       setIsFilled(!isFilled);
     }
   };
-
-  // if (isLoading)
-  //   return (
-  //     <div className="flex items-center justify-center py-20">Loading...</div>
-  //   );
 
   if (!product)
     return (
@@ -238,7 +233,7 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              {/*availablity  */}
+              {/*availability  */}
               <div className="mb-6 inline-block heading-6 space-x-3">
                 <span className="text-grayText">Availability :</span>
                 <span
@@ -442,7 +437,6 @@ const ProductDetail = () => {
               Reviews (3)
             </div>
           </div>
-          {/* {review&& <Reviews id={id}/>}  */}
           {review && <Reviews id={id} reviews={reviews} />}
           {description && <div>{product.description}</div>}
           {additional && (

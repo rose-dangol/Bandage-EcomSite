@@ -118,7 +118,10 @@ const Cart = () => {
                 {carts.map((item: CartDataType) => (
                   <tr
                     key={item.id}
-                    className="hover:bg-gray-50 transition-colors"
+                    className={`hover:bg-gray-50 transition-colors ${
+                      item.product.status === "inactive" &&
+                      "bg-gray-300 opacity-50 pointer-events-none"
+                    }`}
                   >
                     <td className="px-6 py-4">
                       <input
@@ -198,7 +201,7 @@ const Cart = () => {
                     </td>
                     <td className="px-6 py-4 text-center">
                       <button
-                        className="hover:scale-125"
+                        className="hover:scale-125 cursor-pointer"
                         onClick={() => handleRemoveCart(item.id)}
                       >
                         <Trash2 className="w-4 h-4 text-red-600" />

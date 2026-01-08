@@ -16,7 +16,7 @@ const ShopCard = ({ products }: { products: ProductDataType[] }) => {
   const navigate = useNavigate();
 
   const { data: categories } = useQuery({
-    queryKey: [QUERY_KEYS.category],
+    queryKey: [QUERY_KEYS.categories],
     queryFn: () => fetchCategories(),
   });
   return (

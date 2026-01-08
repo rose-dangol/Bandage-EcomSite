@@ -21,7 +21,7 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
   const [wishlistCount, setWishlistCount] = useState<number>(0);
 
   const { data: wishlistItems = [] } = useQuery({
-    queryKey: [QUERY_KEYS.wishlist],
+    queryKey: [QUERY_KEYS.wishlistItems],
     queryFn: () => fetchWishlist(),
   });
 
@@ -34,7 +34,7 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
   const addMutation = useMutation({
     mutationFn: (productId: number) => addToWishlist(productId),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.wishlist] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.wishlistItems] });
       toast.success(data.message + "❤️");
     },
     onError: (error) => {
@@ -45,7 +45,7 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
   const removeMutation = useMutation({
     mutationFn: (productId: number) => removeWishlist(productId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.wishlist] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.wishlistItems] });
       toast.success("Item removed from wish list");
     },
   });

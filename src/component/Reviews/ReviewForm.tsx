@@ -89,9 +89,6 @@ const ReviewForm = ({ id }: { id: string }) => {
         {ratingError && <p className="text-red-400 paragraph">{ratingError}</p>}
       </div>
       <div className="flex flex-col gap-2 mt-3">
-        {/* <label className="font-normal leading-6 tracking-[0.1px] text-[#252B42]">
-          Review
-        </label> */}
         <textarea
           placeholder="Share your thoughts with other customers"
           name="description"
@@ -103,21 +100,6 @@ const ReviewForm = ({ id }: { id: string }) => {
         {reviewError && <p className="text-red-500 paragraph">{reviewError}</p>}
       </div>
 
-      {/* <div className="flex flex-col gap-2 pt-5">
-        <label className="font-normal leading-6 tracking-[0.1px] text-[#252B42]">
-          Rating
-        </label>
-        <input
-          type="number"
-          max={5}
-          min={1}
-          name="rating"
-          value={reviewData.rating}
-          onChange={handleChange}
-          className="w-full px-4 py-2 border border-[#E6E6E6] rounded outline-none focus:border-primary bg-[#F9F9F9] transition placeholder:text-grayText focus:outline-none focus:ring-2 focus:ring-primary"
-        />
-        {ratingError && <p className="text-red-400">{ratingError}</p>}
-      </div> */}
       <button
         onClick={handleSubmit}
         className={`mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-secondary btn-transitions cursor-pointer`}

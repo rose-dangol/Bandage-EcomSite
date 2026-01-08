@@ -25,9 +25,8 @@ function Creatable({ category, setCategory, name }: CreatableProps) {
   const containerRef = useClickAway(() => setIsOpen(false));
 
   const { data: categories = [] } = useQuery({
-    queryKey: [QUERY_KEYS.category],
+    queryKey: [QUERY_KEYS.categories],
     queryFn: fetchCategories,
-    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
