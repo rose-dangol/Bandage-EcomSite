@@ -1,3 +1,5 @@
+export type ProductStatusType = "active" | "inactive";
+
 export type ProductDataType = {
   category: {
     id: number;
@@ -12,5 +14,5 @@ export type ProductDataType = {
   name: string;
   price: number;
   priceAfterDiscount: number;
-  status: "active" | "inactive";
+  status: ProductStatusType;
 };

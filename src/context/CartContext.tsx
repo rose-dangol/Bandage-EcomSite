@@ -15,6 +15,7 @@ import {
 } from "../services/cart.service";
 import { queryClient } from "../provider";
 import { QUERY_KEYS } from "../constant/queryKeys";
+import { ProductStatusType } from "../types/productTypes";
 
 export const CartContext = createContext(null);
 
@@ -27,7 +28,7 @@ export type CartDataType = {
     price: number;
     priceAfterDiscount: number;
     image: string;
-    status: "active" | "inactive";
+    status: ProductStatusType;
   };
   quantity: number;
 };

@@ -4,6 +4,7 @@ import { formatCurrency } from "../../utils/helper";
 import { useCartContext } from "../../context/CartContext";
 import { CartAddDataType } from "../ProductDetail";
 import { Container } from "../../component";
+import { ProductStatusType } from "../../types/productTypes";
 
 type WishlistDataType = {
   id: number;
@@ -13,7 +14,7 @@ type WishlistDataType = {
     price: number;
     priceAfterDiscount: number;
     image: string;
-    status: "active" | "inactive";
+    status: ProductStatusType;
   };
 };
 
