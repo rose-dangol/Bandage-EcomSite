@@ -11,15 +11,6 @@ Bandage is a full-featured e-commerce application designed with simplicity and p
 - **HTTP Client**: Axios
 - **Routing**: React Router
 
-## Backend
-
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: PostgreSQL
-- **Authentication**: JWT (JSON Web Tokens)
-- **ORM**: Sequelize
-- **Validation**: Zod
-
 ## Deployment
 
 - **Hosting**: Render
@@ -44,7 +35,6 @@ Visit Bandage: [https://bandage-ecomsite.onrender.com/](https://bandage-ecomsite
 - Admin dashboard for product management
 - Add, edit, and delete products
 - Manage inventory and stock levels
-- View and manage customer orders
 
 ### Technical Features
 
@@ -52,4 +42,3 @@ Visit Bandage: [https://bandage-ecomsite.onrender.com/](https://bandage-ecomsite
 - Optimized API queries with React Query
 - Type-safe development with TypeScript
 - Responsive and accessible UI with Tailwind CSS
-- PostgreSQL database for reliable data persistence
