@@ -26,7 +26,6 @@ export const addReviews = async (
 
 export const deleteReviews = async (productId: number, reviewId: number) => {
   try {
-    console.log(reviewId);
     const response = await api.delete(
       `products/${productId}/reviews/${reviewId}`
     );
