@@ -12,4 +12,9 @@ export default defineConfig({
       "dryadic-kathlene-filtrable.ngrok-free.dev",
     ],
   },
+  resolve: {
+    alias: {
+      "@": "/src",
+    },
+  },
 });
