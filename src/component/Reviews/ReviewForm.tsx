@@ -4,6 +4,7 @@ import { addReviews } from "../../services/review.service";
 import toast from "react-hot-toast";
 import { queryClient } from "../../provider";
 import { Rating } from "react-simple-star-rating";
+import { QUERY_KEYS } from "../../constant/queryKeys";
 
 const ReviewForm = ({ id }: { id: string }) => {
   const productId = Number(id);
@@ -16,11 +17,11 @@ const ReviewForm = ({ id }: { id: string }) => {
   const [reviewError, setReviewError] = useState("");
   const [ratingError, setRatingError] = useState("");
 
-  const { mutate: addReview, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () => addReviews(productId, reviewData),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["reviews", id],
+        queryKey: [QUERY_KEYS.reviews, id],
       });
       toast.success("Review Added!");
       setReviewData({
@@ -41,6 +42,7 @@ const ReviewForm = ({ id }: { id: string }) => {
     setRatingError("");
     setReviewError("");
   };
+
   const handleRating = (rate: number) => {
     setReviewData((prev) => ({
       ...prev,
@@ -62,7 +64,7 @@ const ReviewForm = ({ id }: { id: string }) => {
       setRatingError("Rating cannot be more than 5.");
       return;
     }
-    addReview();
+    mutate();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLButtonElement>) => {
@@ -70,6 +72,7 @@ const ReviewForm = ({ id }: { id: string }) => {
       handleSubmit();
     }
   };
+
   return (
     <div className="flex flex-col gap-4 mt-6">
       <p className="heading-5 text-center">Rate the product</p>

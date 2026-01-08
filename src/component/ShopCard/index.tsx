@@ -2,19 +2,22 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Breadcrumb from "../Breadcrumb";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "../../services/category.service";
+import { QUERY_KEYS } from "../../constant/queryKeys";
+import { ProductDataType } from "../../types/productTypes";
 
 type categoryType = {
-  id?: number;
-  name?: string;
+  id: number;
+  name: string;
   img?: string;
 };
-const ShopCard = () => {
+
+const ShopCard = ({ products }: { products: ProductDataType[] }) => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const { data: categories } = useQuery({
-    queryKey: ["categories"],
+    queryKey: [QUERY_KEYS.category],
     queryFn: () => fetchCategories(),
-    refetchOnWindowFocus: false,
   });
   return (
     <div className="w-full">
@@ -26,8 +29,8 @@ const ShopCard = () => {
       <div className="flex lg:flex-row flex-col gap-4 justify-between items-center pb-12">
         {categories?.slice(0, 4).map((category: categoryType) => (
           <div
-            className="h-56 w-auto relative"
-            onClick={() => navigate(`products?catgoryId=${category.id}`)}
+            className="h-56 w-auto relative cursor-pointer hover:shadow-lg"
+            onClick={() => navigate(`products?categoryId=${category.id}`)}
             key={category.id}
           >
             <img
@@ -40,7 +43,13 @@ const ShopCard = () => {
               <span className="heading-5 uppercase text-white">
                 {category.name}
               </span>
-              <span className="paragraph text-white">5 Items</span>
+              <span className="paragraph text-white">
+                {
+                  products?.filter((p) => p.category.id === Number(category.id))
+                    .length
+                }{" "}
+                Items
+              </span>
             </div>
           </div>
         ))}

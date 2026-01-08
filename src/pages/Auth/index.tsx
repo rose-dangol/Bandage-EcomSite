@@ -21,6 +21,7 @@ interface SignupDataType extends LoginDataType {
 
 const Auth = () => {
   const navigate = useNavigate();
+
   const [formstate, setFormState] = useState<"Login" | "Signup">("Login");
 
   const [email, setEmail] = useState("");
@@ -45,11 +46,10 @@ const Auth = () => {
   };
 
   // Login Mutation
-  const LoginMutation = useMutation({
+  const loginMutation = useMutation({
     mutationFn: (loginData: LoginDataType) => userLogin(loginData),
     onSuccess: (data) => {
       const payload = JSON.parse(atob(data.access.split(".")[1]));
-      console.log(payload);
       setLocalStorage("userData", payload);
       setLocalStorage("authToken", data?.access);
       navigate("/");
@@ -60,7 +60,7 @@ const Auth = () => {
   });
 
   // Signup Mutation
-  const SignupMutation = useMutation({
+  const signupMutation = useMutation({
     mutationFn: (signupData: SignupDataType) => userSignup(signupData),
     onSuccess: () => {
       setFormState("Login");
@@ -91,7 +91,7 @@ const Auth = () => {
 
   const handleLogin = () => {
     const loginData = { email, password };
-    LoginMutation.mutate(loginData);
+    loginMutation.mutate(loginData);
   };
 
   const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
@@ -103,7 +103,7 @@ const Auth = () => {
       password,
       confirmPassword,
     };
-    SignupMutation.mutate(signupData);
+    signupMutation.mutate(signupData);
   };
 
   return (
@@ -183,9 +183,9 @@ const Auth = () => {
                   type="button"
                   className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded btn-transitions hover:bg-secondary disabled:opacity-50"
                   onClick={handleLogin}
-                  disabled={LoginMutation.isPending}
+                  disabled={loginMutation.isPending}
                 >
-                  {LoginMutation.isPending ? "Logging in..." : "Log In"}
+                  {loginMutation.isPending ? "Logging in..." : "Log In"}
                 </button>
                 <span className="text-center text-sm text-grayText inline">
                   I don't have an account?
@@ -306,9 +306,9 @@ const Auth = () => {
                 <button
                   type="submit"
                   className="w-2/5 mx-auto bg-primary text-white font-medium py-3 rounded btn-transitions hover:bg-secondary disabled:opacity-50"
-                  disabled={SignupMutation.isPending}
+                  disabled={signupMutation.isPending}
                 >
-                  {SignupMutation.isPending ? "Signing up..." : "Sign Up"}
+                  {signupMutation.isPending ? "Signing up..." : "Sign Up"}
                 </button>
                 <span className="text-center text-sm text-grayText inline">
                   Already have an account?

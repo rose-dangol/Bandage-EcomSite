@@ -5,6 +5,7 @@ import { deleteReviews, fetchReviews } from "../../services/review.service";
 import { queryClient } from "../../provider";
 import { dateFormatter } from "../../utils/helper";
 import { useUserContext } from "../../context/UserContext";
+import { QUERY_KEYS } from "../../constant/queryKeys";
 
 type ReviewDataType = {
   id: number;
@@ -21,13 +22,12 @@ const ReviewList = ({ id }: { id: string }) => {
   const { userData } = useUserContext();
 
   const { data } = useQuery({
-    queryKey: ["reviews", id],
+    queryKey: [QUERY_KEYS.reviews, id],
     queryFn: () => fetchReviews(Number(id)),
-    refetchOnWindowFocus: false,
     enabled: !!id,
   });
 
-  const DeleteReview = useMutation({
+  const { mutate: deleteReview } = useMutation({
     mutationFn: ({
       productId,
       reviewId,
@@ -37,7 +37,7 @@ const ReviewList = ({ id }: { id: string }) => {
     }) => deleteReviews(productId, reviewId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["reviews", id],
+        queryKey: [QUERY_KEYS.reviews, id],
       });
       toast.success("Review Added!");
     },
@@ -45,7 +45,7 @@ const ReviewList = ({ id }: { id: string }) => {
 
   if (data?.reviews?.length <= 0) {
     return (
-      <p className="text-primary text-center">There aer no reviews yet!</p>
+      <p className="text-primary text-center">There are no reviews yet!</p>
     );
   }
 
@@ -68,7 +68,7 @@ const ReviewList = ({ id }: { id: string }) => {
                 <button
                   className="cursor-pointer hover:text-red-600"
                   onClick={() =>
-                    DeleteReview.mutate({
+                    deleteReview({
                       productId: Number(id),
                       reviewId: review.id,
                     })

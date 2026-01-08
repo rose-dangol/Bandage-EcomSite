@@ -1,28 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../../utils/helper";
+import { ProductDataType } from "../../types/productTypes";
 
 type ProductCardType = {
-  products: {
-    category: {
-      id: number;
-      name: string;
-      image?: null;
-    };
-    colors: [];
-    description: string;
-    discount: number;
-    id: number;
-    image: string[];
-    name: string;
-    price: number;
-    priceAfterDiscount: number;
-    status: string;
-  }[];
-  viewType?: boolean;
+  products: ProductDataType[];
+  layoutType?: string;
   visibleCount?: number;
 };
 
-const ProductCard = ({ products, viewType, visibleCount }: ProductCardType) => {
+const ProductCard = ({
+  products,
+  layoutType: layoutType = "Grid",
+  visibleCount,
+}: ProductCardType) => {
   const navigate = useNavigate();
 
   const handleClick = (id: number) => {
@@ -44,7 +34,7 @@ const ProductCard = ({ products, viewType, visibleCount }: ProductCardType) => {
       </div>
       <div
         className={`mx-auto p-5 md:px-20 ${
-          viewType
+          layoutType === "Grid"
             ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-x-5"
             : "flex flex-col gap-3"
         }`}
@@ -54,31 +44,38 @@ const ProductCard = ({ products, viewType, visibleCount }: ProductCardType) => {
         ) : (
           products.slice(0, visibleCount).map((product) => (
             <div
-              className={`flex ${
-                viewType ? "flex-col" : "flex-row"
-              } gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:shadow-md hover:scale-105`}
+              className={`flex gap-2 pb-3 cursor-pointer transition delay-150 duration-300 ease-in-out hover:-translate-y-2.5 hover:shadow-md hover:scale-105 
+                ${layoutType === "Grid" ? "flex-col" : "flex-row"}`}
               key={product?.id}
               onClick={() => handleClick(product?.id)}
             >
               {product.image?.[0] && (
                 <div
-                  className={`${viewType ? "h-75 w-full" : "h-75 w-75"}
+                  className={`${
+                    layoutType === "Grid" ? "h-75 w-full" : "h-75 w-75"
+                  }
                 `}
                 >
                   <img
                     src={product.image[0]}
-                    className={`h-full w-full ${
-                      viewType ? "object-cover" : "object-cover"
-                    } `}
-                    alt="product-image"
+                    className="h-full w-full object-cover"
+                    alt={product.name}
                   />
                 </div>
               )}
-              <div className="flex flex-col p-6.25 pb-8.75 items-center justify-center gap-2.5 text-[#252B42] ">
+              <div
+                className={`flex flex-col p-6.25 pb-8.75 items-center justify-center gap-2.5 text-[#252B42] w-full ${
+                  layoutType === "List" && "overflow-x-hidden items-start"
+                }`}
+              >
                 <span className="heading-5 text-blueBlack text-center capitalize">
                   {product?.name}
                 </span>
-                <div className="w-full text-center truncate">
+                <div
+                  className={`w-full text-center truncate ${
+                    layoutType === "List" && "text-left w-xs"
+                  }`}
+                >
                   <span className="w-full links text-grayText mb-1 whitespace-nowrap">
                     {product?.description}
                   </span>

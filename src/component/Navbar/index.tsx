@@ -14,11 +14,12 @@ import { useWishlistContext } from "../../context/WishlistContext";
 import { useCartContext } from "../../context/CartContext";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const [userShow, setUserShow] = useState(false);
+  const [isFilled, setIsFilled] = useState(false);
   const [mobileView, setMobileView] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
-  const [isFilled, setIsFilled] = useState(false);
-  const [userShow, setUserShow] = useState(false);
 
   const { userData, authToken, logout } = useUserContext();
   const { carts } = useCartContext();

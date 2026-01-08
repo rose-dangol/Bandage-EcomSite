@@ -11,18 +11,20 @@ export interface UpdateCartDataType {
   newQuantity: number;
 }
 
-const tax: number = 13;
+const TAX: number = 13;
 
 const Cart = () => {
-  const { carts, setCarts, error, CartUpdateMutation, RemoveCartMutation } =
-    useCartContext();
   const navigate = useNavigate();
+
   const [isAllChecked, setIsAllChecked] = useState(false);
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState<Number[]>([]);
+
+  const { carts, setCarts, error, cartUpdateMutation, removeCartMutation } =
+    useCartContext();
 
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return;
-    CartUpdateMutation.mutate({ id, newQuantity });
+    cartUpdateMutation.mutate({ id, newQuantity });
     setCarts(
       carts.map((item: CartDataType) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
@@ -31,20 +33,10 @@ const Cart = () => {
   };
 
   const handleRemoveCart = (id: number) => {
-    RemoveCartMutation.mutate(id);
+    removeCartMutation.mutate(id);
   };
 
   const handleCheckout = () => {};
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <div className="text-center">
-  //         <p className="text-lg text-gray-600">Loading your cart...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   if (error) {
     return (
@@ -65,7 +57,6 @@ const Cart = () => {
     if (carts.length > selectedItems.length) {
       setIsAllChecked(false);
     }
-    console.log(selectedItems);
   }, [selectedItems]);
   const handleSelectAll = () => {
     if (isAllChecked) {
@@ -80,8 +71,8 @@ const Cart = () => {
   };
 
   return (
-    <div className="bg-linear-to-br p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="w-full p-4 md:p-8">
+      <div className="mx-auto">
         {/* Header */}
         <div className="mb-8 flex justify-center items-center gap-3">
           <ShoppingCart className="w-8 h-8 text-blueBlack" />
@@ -96,7 +87,7 @@ const Cart = () => {
         ) : (
           <div className="space-y-6 overflow-x-auto">
             {/* Cart Table */}
-            <table className="w-full">
+            <table className="w-full min-w-max">
               <thead className="bg-gray-100 border-b border-blueBlack">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
@@ -233,14 +224,14 @@ const Cart = () => {
                     {/* tax */}
                     <div className="flex justify-between heading-6">
                       <span className="text-gray-600">Tax:</span>
-                      <span>{formatCurrency(tax)}</span>
+                      <span>{formatCurrency(TAX)}</span>
                     </div>
 
                     {/* total */}
                     <div className="border-t pt-3 flex justify-between heading-4 text-blueBlack">
                       <span className="font-bold">Total:</span>
                       <span className="text-primary">
-                        {formatCurrency(Number((total + tax).toFixed(2)))}
+                        {formatCurrency(Number((total + TAX).toFixed(2)))}
                       </span>
                     </div>
                   </div>

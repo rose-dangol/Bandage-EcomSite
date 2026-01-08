@@ -1,10 +1,4 @@
-import {
-  Heart,
-  Eye,
-  ShoppingCart,
-  Download,
-  ChevronRight,
-} from "lucide-react";
+import { Heart, Eye, ShoppingCart, Download, ChevronRight } from "lucide-react";
 import { getLayoutClass } from "../../utils/helper";
 import { Link } from "react-router-dom";
 
@@ -152,7 +146,9 @@ const DetailedProduct = () => {
                 </div>
                 <div className="group">
                   <button className="flex justify-center items-center gap-3 mt-2 w-1/2 md:border-2 cursor-pointer border-primary md:text-primary text-grayText py-2.5 rounded-3xl btn-transitions group-hover:bg-secondary group-hover:text-white group-hover:border-secondary">
-                    <Link to={'/shop'} className="heading-6">Learn More</Link>
+                    <Link to={"/shop"} className="heading-6">
+                      Learn More
+                    </Link>
                     <ChevronRight />
                   </button>
                 </div>

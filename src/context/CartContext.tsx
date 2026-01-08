@@ -14,6 +14,7 @@ import {
   updateCartQuantity,
 } from "../services/cart.service";
 import { queryClient } from "../provider";
+import { QUERY_KEYS } from "../constant/queryKeys";
 
 export const CartContext = createContext(null);
 
@@ -48,10 +49,8 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["cartItem"],
+    queryKey: [QUERY_KEYS.cart],
     queryFn: () => fetchCart(),
-    refetchOnWindowFocus: false,
-    retry: 1,
   });
 
   useEffect(() => {
@@ -60,34 +59,34 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     }
   }, [cartItems]);
 
-  const { mutate: CartAddMutation } = useMutation({
+  const { mutate: cartAddMutation } = useMutation({
     mutationFn: ({ id, quantity }: AddCartDataType) => addToCart(id, quantity),
     onSuccess: (data) => {
       toast.success(data?.message || "Item added to cart successfully!");
-      queryClient.invalidateQueries({ queryKey: ["cartItem"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cart] });
     },
     onError: (error) => {
       toast.error(error.message || "Error Adding Item to Cart :(");
     },
   });
 
-  const CartUpdateMutation = useMutation({
+  const cartUpdateMutation = useMutation({
     mutationFn: ({ id, newQuantity }: UpdateCartDataType) =>
       updateCartQuantity(id, newQuantity),
     onSuccess: (data) => {
       toast.success(data.message || "Cart Updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["cartItem"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cart] });
     },
     onError: (error) => {
       toast.error(error.message || "Error adding item to cart");
     },
   });
 
-  const RemoveCartMutation = useMutation({
+  const removeCartMutation = useMutation({
     mutationFn: (id: number) => deleteCart(id),
     onSuccess: (data) => {
       toast.success(data.message || "Item removed from cart.");
-      queryClient.invalidateQueries({ queryKey: ["cartItem"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.cart] });
     },
     onError: (error) => {
       toast.error(error.message || "Error removing item.");
@@ -99,9 +98,9 @@ export const CartProvider = ({ children }: PropsWithChildren) => {
     setCarts,
     isLoading,
     error,
-    CartAddMutation,
-    CartUpdateMutation,
-    RemoveCartMutation,
+    cartAddMutation,
+    cartUpdateMutation,
+    removeCartMutation,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

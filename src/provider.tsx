@@ -8,7 +8,14 @@ import { CartProvider } from "./context/CartContext";
 import Loader from "./hooks/useIsFetching";
 import { useScrollToTop } from "./hooks/useScrollToTop";
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const Provider = ({ children }: PropsWithChildren) => {
   useScrollToTop();

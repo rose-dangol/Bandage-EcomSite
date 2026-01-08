@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-export const useClickAway = (callback: ()=> void) => {
+export const useClickAway = (callback: () => void) => {
   const containerRef = useRef(null);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

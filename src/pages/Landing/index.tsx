@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   BrandLogos,
   ProductCard,
@@ -5,33 +8,27 @@ import {
   Container,
 } from "../../component/index";
 import { getLayoutClass } from "../../utils/helper";
-import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../../services/products.service";
-import { useState } from "react";
+import { QUERY_KEYS } from "../../constant/queryKeys";
 
 const Landing = () => {
-  // const navigate = useNavigate();
   const [visibleCount, setVisibleCount] = useState<number>(4);
+
   const { data: products, error } = useQuery({
-    queryKey: ["products"],
+    queryKey: [QUERY_KEYS.products],
     queryFn: () => fetchProducts(),
-    refetchOnWindowFocus: false,
-    retry: 1,
   });
-  // if (isLoading)
-  //   return (
-  //     <div className="text-center cursor-progress heading-6">Loading...</div>
-  //   );
+
   if (error)
     return (
       <div className="text-center cursor-progress heading-6 text-red-700">
         Error: {error.message}
       </div>
     );
+
   return (
     <div className="w-full cursor-default">
-      {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}
+      {/* Banner*/}
       <div className="py-6 md:py-10 w-full mx-auto md:pl-10 md:pr-15">
         <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] md:w-19/20 w-full items-center flex flex-col gap-5 lg:flex-row md:justify-end min-h-96 lg:h-145 mx-auto">
           {/* banner texts*/}
@@ -68,7 +65,7 @@ const Landing = () => {
             />
             <img
               src="/images/Ellipse-midSize-top.png"
-              alt=""
+              alt="ellipse"
               className="absolute top-0 lg:left-15 left-0"
             />
             <img
@@ -160,11 +157,7 @@ const Landing = () => {
 
         {/* featured products */}
         <div className={`mx-auto ${getLayoutClass()}`}>
-          <ProductCard
-            products={products?.data}
-            visibleCount={visibleCount}
-            viewType={true}
-          />
+          <ProductCard products={products?.data} visibleCount={visibleCount} />
           <button
             className="mx-auto btn-transitions uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
             onClick={() => {
@@ -188,14 +181,14 @@ const Landing = () => {
               <div className="h-125 w-2/5">
                 <img
                   src="images/about-left.jpg"
-                  alt=""
+                  alt="AboutUs"
                   className="h-full w-full object-cover"
                 />
               </div>
               <div className="h-125 w-1/2">
                 <img
                   src="images/about-right.jpg"
-                  alt=""
+                  alt="AboutUs"
                   className="h-full w-full object-cover"
                 />
               </div>

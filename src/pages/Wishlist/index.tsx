@@ -13,17 +13,17 @@ type WishlistDataType = {
 };
 
 const Wishlist = () => {
-  const { wishlistItems, RemoveMutation } = useWishlistContext();
-  const { CartAddMutation } = useCartContext();
+  const { wishlistItems, removeMutation } = useWishlistContext();
+  const { cartAddMutation } = useCartContext();
 
   const handleRemoveWishlist = (id: number) => {
-    RemoveMutation.mutate(id);
+    removeMutation.mutate(id);
   };
 
   const handleAddtoCart = (id: number) => {
     let quantity = 1;
     const data = { id, quantity } as CartAddDataType;
-    CartAddMutation(data);
+    cartAddMutation(data);
   };
 
   const handleAddAllToCart = () => {
@@ -32,9 +32,9 @@ const Wishlist = () => {
       wishlistItems.forEach((item: WishlistDataType) => {
         const id = item.productId;
         const data = { id, quantity } as CartAddDataType;
-        CartAddMutation(data);
+        cartAddMutation(data);
         setTimeout(() => {
-          RemoveMutation.mutate(item.id);
+          removeMutation.mutate(item.id);
         }, 500);
       });
     }
@@ -46,16 +46,16 @@ const Wishlist = () => {
         <Heart size={"50px"} stroke="#4a5565" strokeWidth={"1.5px"} />
         <p className="heading-2 text-gray-600">My Wishlist</p>
       </div>
-      <div className="min-w-7xl mx-auto">
+      <div className="w-full mx-auto">
         {wishlistItems?.length > 0 ? (
-          <div className="flex flex-col">
+          <div className="flex flex-col overflow-x-auto">
             <div
               className="mb-5 cursor-pointer bg-primary hover:bg-secondary btn-transitions links text-white max-w-max self-end rounded-xl px-3 py-2"
               onClick={handleAddAllToCart}
             >
               Add All To Cart
             </div>
-            <table className="w-full">
+            <table className="w-full overflow-x-auto">
               <thead className="bg-gray-100 border-b border-blueBlack">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
@@ -96,19 +96,21 @@ const Wishlist = () => {
                     <td className="px-6 py-4 font-semibold text-gray-900">
                       stock
                     </td>
-                    <td className="py-4 px-6 text-center flex justify-center gap-5 items-center">
-                      <button
-                        className="w-10 h-10 hover:scale-110 hover:cursor-pointer"
-                        onClick={() => handleAddtoCart(item.productId)}
-                      >
-                        <img src="images/cart-plus.svg" alt="" />
-                      </button>
-                      <button
-                        className="hover:scale-125"
-                        onClick={() => handleRemoveWishlist(item.id)}
-                      >
-                        <Trash2 className="w-6 h-6 text-red-600 hover:cursor-pointer" />
-                      </button>
+                    <td className="py-4 px-6">
+                      <div className="text-center flex justify-center gap-5 items-center">
+                        <button
+                          className="w-10 h-10 hover:scale-110 hover:cursor-pointer"
+                          onClick={() => handleAddtoCart(item.productId)}
+                        >
+                          <img src="images/cart-plus.svg" alt="Add-To-Cart" />
+                        </button>
+                        <button
+                          className="hover:scale-125"
+                          onClick={() => handleRemoveWishlist(item.id)}
+                        >
+                          <Trash2 className="w-6 h-6 text-red-600 hover:cursor-pointer" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

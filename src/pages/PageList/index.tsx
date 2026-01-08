@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
 const PageList = () => {
-  const pages = [
+  const PAGE_LIST = [
     { name: "Home", path: "/" },
     { name: "Auth", path: "/auth" },
     { name: "About Us", path: "/about" },
@@ -25,7 +25,7 @@ const PageList = () => {
         <div className="flex flex-col gap-6">
           <h2 className="heading-3 text-blueBlack font-bold">All Pages</h2>
           <div className="space-y-3">
-            {pages.map((page) => (
+            {PAGE_LIST.map((page) => (
               <Link
                 key={page.path}
                 to={page.path}

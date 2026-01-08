@@ -1,8 +1,7 @@
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  deleteProduct,
-  fetchProductById,
-} from "../../services/products.service";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   Heart,
   ShoppingCart,
@@ -13,16 +12,19 @@ import {
   Star,
   Trash,
 } from "lucide-react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+
+import {
+  deleteProduct,
+  fetchProductById,
+} from "../../services/products.service";
 import { Breadcrumb, Container, DialogBox, Reviews } from "../../component";
-import { useEffect, useState } from "react";
 import { formatCurrency } from "../../utils/helper";
-import toast from "react-hot-toast";
 
 import { useWishlistContext } from "../../context/WishlistContext";
 import { useCartContext } from "../../context/CartContext";
 import { useUserContext } from "../../context/UserContext";
 import { fetchReviews } from "../../services/review.service";
+import { QUERY_KEYS } from "../../constant/queryKeys";
 
 export type CartAddDataType = {
   id: number;
@@ -45,8 +47,8 @@ const ProductDetail = () => {
   const [description, setDescription] = useState(false);
   const [additional, setAdditional] = useState(false);
 
-  const { wishlistItems, AddMutation, RemoveMutation } = useWishlistContext();
-  const { carts, CartAddMutation, CartUpdateMutation } = useCartContext();
+  const { wishlistItems, addMutation, removeMutation } = useWishlistContext();
+  const { carts, cartAddMutation, cartUpdateMutation } = useCartContext();
   const { userData } = useUserContext();
 
   useEffect(() => {
@@ -63,22 +65,19 @@ const ProductDetail = () => {
 
   // Fetching product data
   const { data: product, error } = useQuery({
-    queryKey: ["product", id],
+    queryKey: [QUERY_KEYS.products, id],
     queryFn: () => fetchProductById(id),
-    refetchOnWindowFocus: false,
-    retry: 1,
   });
 
-  const DeleteProductMutation = useMutation({
+  const deleteProductMutation = useMutation({
     mutationFn: (id: number) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
   });
 
   //review data fetch
   const { data: reviews } = useQuery({
-    queryKey: ["reviews", id],
+    queryKey: [QUERY_KEYS.reviews, id],
     queryFn: () => fetchReviews(Number(id)),
-    refetchOnWindowFocus: false,
     enabled: !!id,
   });
 
@@ -106,19 +105,19 @@ const ProductDetail = () => {
         (item: { productId?: number }) => item.productId == id
       )?.id;
       if (productExist) {
-        CartUpdateMutation.mutate({ id: productExist, newQuantity: quantity });
+        cartUpdateMutation.mutate({ id: productExist, newQuantity: quantity });
       } else {
-        CartAddMutation(data);
+        cartAddMutation(data);
       }
     }
   };
 
   const handleWishlist = (id: number) => {
     if (isFilled === false) {
-      AddMutation.mutate(id);
+      addMutation.mutate(id);
       setIsFilled(true);
     } else {
-      RemoveMutation.mutate(wishlistExist);
+      removeMutation.mutate(wishlistExist);
       setIsFilled(!isFilled);
     }
   };
@@ -293,13 +292,15 @@ const ProductDetail = () => {
               >
                 Select Options
               </button>
-              <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
+              <div
+                onClick={() => handleWishlist(Number(id))}
+                className="min-h-12 min-w-12 cursor-pointer border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center"
+              >
                 <Heart
                   size={20}
                   fill={isFilled ? "red" : "white"}
                   stroke={isFilled ? "red" : "gray"}
-                  className="text-gray-600 cursor-pointer hover:scale-110 transition"
-                  onClick={() => handleWishlist(Number(id))}
+                  className="text-gray-600 hover:scale-110 transition"
                 />
               </div>
               <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
@@ -395,7 +396,7 @@ const ProductDetail = () => {
                 </button>
                 <button
                   onClick={() => {
-                    DeleteProductMutation.mutate(Number(id));
+                    deleteProductMutation.mutate(Number(id));
                     setShowDialog(false);
                   }}
                   className="px-4 py-2 bg-red-500 text-white rounded heading-6 cursor-pointer hover:bg-red-600 transition"

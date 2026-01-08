@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { addCategory, fetchCategories } from "../../services/category.service";
 import { useClickAway } from "../../hooks/useClickAway";
+import { QUERY_KEYS } from "../../constant/queryKeys";
 
 type CreatableProps = {
   setCategory: React.Dispatch<React.SetStateAction<number>>;
@@ -24,17 +25,16 @@ function Creatable({ category, setCategory, name }: CreatableProps) {
   const containerRef = useClickAway(() => setIsOpen(false));
 
   const { data: categories = [] } = useQuery({
-    queryKey: ["category"],
+    queryKey: [QUERY_KEYS.category],
     queryFn: fetchCategories,
     refetchOnWindowFocus: false,
-    retry: 1,
   });
 
   useEffect(() => {
     setCategoryList(categories);
   }, [categories]);
 
-  const { mutate: AddCategoryMutation } = useMutation({
+  const { mutate: addCategoryMutation } = useMutation({
     mutationFn: async (inputValue: string) => await addCategory(inputValue),
     onSuccess: (data) => {
       setCategoryList((prev) => [...prev, data.data]);
@@ -60,7 +60,7 @@ function Creatable({ category, setCategory, name }: CreatableProps) {
   };
 
   const handleAddCategory = (inputValue: string) => {
-    AddCategoryMutation(inputValue);
+    addCategoryMutation(inputValue);
     setIsOpen(false);
   };
 

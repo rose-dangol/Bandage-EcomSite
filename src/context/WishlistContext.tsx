@@ -13,6 +13,7 @@ import {
 } from "../services/wishlist.service";
 import toast from "react-hot-toast";
 import { queryClient } from "../provider";
+import { QUERY_KEYS } from "../constant/queryKeys";
 
 export const WishlistContext = createContext(null);
 
@@ -20,10 +21,8 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
   const [wishlistCount, setWishlistCount] = useState<number>(0);
 
   const { data: wishlistItems = [] } = useQuery({
-    queryKey: ["wishlistItems"],
+    queryKey: [QUERY_KEYS.wishlist],
     queryFn: () => fetchWishlist(),
-    refetchOnWindowFocus: false,
-    retry: 1,
   });
 
   useEffect(() => {
@@ -32,11 +31,10 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
     }
   }, [wishlistItems]);
 
-  const AddMutation = useMutation({
-    mutationKey: ["wishlistItems"],
+  const addMutation = useMutation({
     mutationFn: (productId: number) => addToWishlist(productId),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["wishlistItems"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.wishlist] });
       toast.success(data.message + "❤️");
     },
     onError: (error) => {
@@ -44,10 +42,10 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
     },
   });
 
-  const RemoveMutation = useMutation({
+  const removeMutation = useMutation({
     mutationFn: (productId: number) => removeWishlist(productId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["wishlistItems"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.wishlist] });
       toast.success("Item removed from wish list");
     },
   });
@@ -55,8 +53,8 @@ export const WishlistProvider = ({ children }: PropsWithChildren) => {
   const value = {
     wishlistItems,
     wishlistCount,
-    AddMutation,
-    RemoveMutation,
+    addMutation,
+    removeMutation,
   };
 
   return (
