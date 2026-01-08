@@ -17,6 +17,9 @@ html::-webkit-scrollbar {
   --color-mutedText: #bdbdbd;
   --font-sans: "Montserrat", sans-serif;
   --breakpoint-xl: 1377px;
+  --breakpoint-laptop: 1200px;
+  --breakpoint-sm: 425px;
+  --breakpoint-xxl: 2560px;
 }
 
 @utility section-space {
@@ -59,7 +62,7 @@ html::-webkit-scrollbar {
   @apply font-bold text-sm leading-6 tracking-[0.2px];
 }
 @utility mobile-menu {
-  @apply font-normal text-[30px] leading-[45px] tracking-[0.2px];
+  @apply font-normal text-[24px] leading-[45px] tracking-[0.2px];
 }
 @utility btn-transitions {
   @apply transition-colors duration-500 text-[16px];

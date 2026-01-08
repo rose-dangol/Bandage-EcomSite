@@ -4,7 +4,6 @@ export const getLayoutClass = () => {
 
 export const urlToObject = async (image: string): Promise<File> => {
   const imageName = image.split("products/");
-  // const imageUrl = `${import.meta.env.VITE_API_BASE}\\${image}`;
   const response = await fetch(image);
   // here image is url/location of image
   const blob = await response.blob();
@@ -15,7 +14,6 @@ export const urlToObject = async (image: string): Promise<File> => {
 export const validateColorName = (color: string) => {
   var style = new Option().style;
   style.color = color;
-  // Check if the computed color is the same as the input color
   return style.color == color;
 };
 
@@ -40,3 +38,23 @@ export const isPasswordValid = (password: string) => {
 
   return passwordRegex.test(password);
 };
+export const dateFormatter = (date: Date | string) => {
+  const d = new Date(date);
+
+  const day = d.getDate();
+  const month = d.toLocaleString("en-US", { month: "short" });
+  const year = d.getFullYear();
+
+  const time = d.toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return `${day} ${month}, ${year} at ${time}`;
+};
+
+export const numberFormatter = (count:number)=>{
+  if(count<1000) return count
+  return (count / 1000).toFixed(1) + "K";
+}

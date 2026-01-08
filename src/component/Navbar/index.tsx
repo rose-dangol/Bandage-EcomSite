@@ -1,26 +1,29 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   TextAlignJustify,
-  Search,
   Heart,
-  User,
   ShoppingCart,
   ChevronDown,
   LogOut,
+  UserRound,
 } from "lucide-react";
 import { useUserContext } from "../../context/UserContext";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
+
+import { useWishlistContext } from "../../context/WishlistContext";
+import { useCartContext } from "../../context/CartContext";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const [userShow, setUserShow] = useState(false);
+  const [isFilled, setIsFilled] = useState(false);
   const [mobileView, setMobileView] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const {getLocalStorage} = useLocalStorage()
 
-  const authToken = JSON.parse(localStorage.getItem('authToken'));
-  const userData = getLocalStorage('userData')
-
-  const { logout } = useUserContext();
+  const { userData, authToken, logout } = useUserContext();
+  const { carts } = useCartContext();
+  const { wishlistCount } = useWishlistContext();
 
   return (
     <div className="text-md w-full sticky top-0 z-500 bg-white/90">
@@ -51,47 +54,77 @@ const Navbar = () => {
                   >
                     All
                   </Link>
-                  <Link to={''} className="block px-4 py-2 hover:bg-gray-50">
+                  <Link to={""} className="block px-4 py-2 hover:bg-gray-50">
                     Women
                   </Link>
-                  <Link to={''} className="block px-4 py-2 hover:bg-gray-50">Men</Link>
+                  <Link to={""} className="block px-4 py-2 hover:bg-gray-50">
+                    Men
+                  </Link>
                 </div>
               )}
             </div>
             <Link to={"/about"}>About</Link>
-            <Link to={''}>Blog</Link>
-            <Link to={''}>Contact</Link>
-            <Link to={''}>Pages</Link>
+            <Link to={"/updateProduct"}>Add</Link>
+            <Link to={"/about"}>Contact</Link>
+            <Link to={"/allpage"}>Pages</Link>
           </div>
         </div>
 
         {/* right side */}
         <div className="flex gap-5 links text-primary">
           <div className="hidden md:flex items-center gap-1.5">
-            {authToken? (
-              <span className="text-[#252B42] text-lg">
-                {userData}
-              </span>
-            ) : (
+            {authToken ? (
               <>
-                <span>
-                  <User size={"20px"} />
-                </span>
-                <Link to={"/auth"}>Login / Register</Link>
+                <div
+                  className="relative inline-block"
+                  onMouseEnter={() => setUserShow(true)}
+                  onMouseLeave={() => setUserShow(false)}
+                >
+                  <UserRound
+                    size="20px"
+                    className="hover:text-secondary cursor-pointer"
+                  />
+
+                  {userShow && (
+                    <span className="absolute top-full -left-10 mt-2 text-blueBlack bg-gray-100 p-2 paragraph">
+                      {userData.name}
+                    </span>
+                  )}
+                </div>
               </>
+            ) : (
+              <Link to="/auth">Login / Register</Link>
             )}
           </div>
-          <div className="flex gap-4 items-center">
-            <span className="cursor-pointer">
+          {authToken && (
+            <div className="flex gap-4 items-center relative">
+              {/* <span className="cursor-pointer">
               <Search size={"20px"} />
-            </span>
-            <span className="cursor-pointer">
-              <ShoppingCart size={"20px"} />
-            </span>
-            <span className="cursor-pointer">
-              <Heart size={"20px"} />
-            </span>
-            {authToken? (
+            </span> */}
+              <span
+                className="cursor-pointer relative"
+                onClick={() => navigate("/cart")}
+              >
+                <ShoppingCart size="20px" className="hover:text-secondary" />
+                <div className="absolute -top-2 -right-1 bg-white text-primary rounded-full flex items-center justify-center text-xs font-bold">
+                  {carts.length}
+                </div>
+              </span>
+              <span
+                className="cursor-pointer relative"
+                onClick={() => navigate("/wishlist")}
+              >
+                <Heart
+                  size="20px"
+                  fill={isFilled ? "currentColor" : "none"}
+                  className="cursor-pointer transition"
+                  onMouseEnter={() => setIsFilled(true)}
+                  onMouseLeave={() => setIsFilled(false)}
+                />
+                <div className="absolute -top-2 -right-1 bg-white text-primary rounded-full flex items-center justify-center text-xs font-bold">
+                  {wishlistCount}
+                </div>
+              </span>
               <span>
                 <LogOut
                   size={"20px"}
@@ -99,24 +132,23 @@ const Navbar = () => {
                   onClick={logout}
                 />
               </span>
-            ) : (
-              <></>
-            )}
-            <span
-              className="inline md:hidden hover:bg-gray-100"
-              onClick={() => setMobileView(!mobileView)}
-            >
-              <TextAlignJustify size={"16px"} />
-            </span>
-          </div>
+              <span
+                className="inline lg:hidden hover:bg-gray-100 cursor-pointer"
+                onClick={() => setMobileView(!mobileView)}
+              >
+                <TextAlignJustify size={"16px"} />
+              </span>
+            </div>
+          )}
         </div>
       </div>
       {mobileView && (
         <div className="mobile-menu flex flex-col gap-3 justify-center items-center text-grayText p-7">
-          <Link to={''}>Home</Link>
-          <Link to={''}>Product</Link>
-          <Link to={''}>Pricing</Link>
-          <Link to={''}>Contact</Link>
+          <Link to={"/"}>Home</Link>
+          <Link to={"/shop"}>Product</Link>
+          <Link to={"/updateProduct"}>Add</Link>
+          <Link to={"/about"}>AboutUs</Link>
+          <Link to={"/allpage"}>Pages</Link>
         </div>
       )}
     </div>

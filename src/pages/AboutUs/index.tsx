@@ -11,14 +11,14 @@ const AboutUs = () => {
             <div className="h-125 w-2/5">
               <img
                 src="images/about-left.jpg"
-                alt=""
+                alt="AboutUs"
                 className="h-full w-full object-cover"
               />
             </div>
             <div className="h-125 w-1/2">
               <img
                 src="images/about-right.jpg"
-                alt=""
+                alt="AboutUs"
                 className="h-full w-full object-cover"
               />
             </div>

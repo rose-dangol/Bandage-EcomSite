@@ -3,16 +3,33 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { PropsWithChildren } from "react";
+import { WishlistProvider } from "./context/WishlistContext";
+import { CartProvider } from "./context/CartContext";
+import Loader from "./hooks/useIsFetching";
+import { useScrollToTop } from "./hooks/useScrollToTop";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const Provider = ({ children }: PropsWithChildren) => {
+  useScrollToTop();
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <Toaster position="bottom-center" />
-        <UserProvider>{children}</UserProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+            <Toaster position="bottom-center" />
+            <Loader />
+            <UserProvider>{children}</UserProvider>
+          </WishlistProvider>
+        </CartProvider>
       </QueryClientProvider>
     </>
   );

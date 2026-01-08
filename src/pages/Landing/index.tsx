@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import {
   BrandLogos,
   ProductCard,
@@ -5,40 +8,42 @@ import {
   Container,
 } from "../../component/index";
 import { getLayoutClass } from "../../utils/helper";
-import { Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { fetchProducts } from "../../services/products.service";
+import { QUERY_KEYS } from "../../constant/queryKeys";
 
 const Landing = () => {
-  const navigate = useNavigate();
-  const {
-    data: products,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["products"],
-    queryFn: ()=>fetchProducts(),
-    refetchOnWindowFocus: false,
+  const [visibleCount, setVisibleCount] = useState<number>(4);
+
+  const { data: products, error } = useQuery({
+    queryKey: [QUERY_KEYS.products],
+    queryFn: () => fetchProducts(),
   });
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!products) return <div>No products found</div>;
-  
+
+  if (error)
+    return (
+      <div className="text-center cursor-progress heading-6 text-red-700">
+        Error: {error.message}
+      </div>
+    );
+
   return (
     <div className="w-full cursor-default">
-      {/* <Banner/> gradient left to right 97e9fa 99e9f6 a2ebe6 abecd7 */}
+      {/* Banner*/}
       <div className="py-6 md:py-10 w-full mx-auto md:pl-10 md:pr-15">
-        <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] md:w-19/20 w-full items-center flex flex-col gap-5 md:flex-row md:justify-end min-h-96 md:h-145 mx-auto">
+        <div className="rounded-3xl bg-linear-to-r from-[#97e9fa] to-[#abecd7] md:w-19/20 w-full items-center flex flex-col gap-5 lg:flex-row md:justify-end min-h-96 lg:h-145 mx-auto">
           {/* banner texts*/}
-          <div className="flex flex-col justify-center items-center md:justify-around md:items-start pt-10 gap-4 md:gap-6 md:w-1/2 md:pl-25 px-4 md:px-0">
-            <Link to={''} className="heading-5 uppercase text-secondary hover:text-primary">
+          <div className="flex flex-col justify-center items-center lg:justify-around lg:items-start pt-10 gap-4 lg:gap-6 lg:w-1/2 lg:pl-25 px-4 lg:px-0">
+            <Link
+              to={""}
+              className="heading-5 uppercase text-secondary hover:text-primary"
+            >
               Summer 2025
             </Link>
-            <span className="md:heading-1 heading-2 text-blueBlack md:text-left text-center uppercase">
+            <span className="lg:heading-1 heading-2 text-blueBlack lg:text-left text-center uppercase">
               new collection
             </span>
-            <div className="max-w-[65%] md:text-left text-center">
-              <span className="md:heading-4 text-grayText">
+            <div className="max-w-[65%] lg:text-left text-center">
+              <span className="lg:heading-4 text-grayText">
                 We know how large object will act, but things on a small scale.
               </span>
             </div>
@@ -51,22 +56,27 @@ const Landing = () => {
           </div>
 
           {/* banner image */}
-          <div className="hidden md:inline md:w-1/2 w-full h-full justify-items-end relative">
-            <img src="/images/Ellipse-bg.png" alt="bg-ellipse" loading="lazy" />
+          <div className="md:inline md:w-1/2 w-full h-full lg:justify-items-end justify-items-center relative">
+            <img
+              src="/images/Ellipse-bg.png"
+              alt="bg-ellipse"
+              loading="lazy"
+              className="lg:w-auto w-[90%]"
+            />
             <img
               src="/images/Ellipse-midSize-top.png"
-              alt=""
-              className="absolute top-0 left-15"
+              alt="ellipse"
+              className="absolute top-0 lg:left-15 left-0"
             />
             <img
               src="/images/bannerImage-girl.png"
               alt="bg-ellipse"
-              className="absolute bottom-0 -right-20"
+              className="absolute bottom-0 lg:-right-20"
             />
             <img
               src="/images/Ellipse-purple-right.png"
               alt="bg-ellipse"
-              className="absolute -right-18 top-1/5"
+              className="absolute lg:-right-18 top-1/5"
             />
             <img
               src="/images/Ellipse-purple-left.png"
@@ -84,16 +94,19 @@ const Landing = () => {
         <div className={getLayoutClass()}>
           <div className="flex flex-col md:flex-row gap-4 md:h-142.5">
             {/* left */}
-            <div className="md:w-3/5 h-full relative">
+            <div className="md:w-3/5 h-139 md:h-full relative">
               <img
                 src="/images/top-week1.png"
                 alt="Top product"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-7/10 h-2/5">
-                <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full w-3/5">
+              <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-7/10 md:h-2/5 h-1/2">
+                <div className="text-white flex flex-col md:p-5 gap-3 items-start justify-center h-full md:w-3/5 w-full">
                   <span className="heading-3">Top Product of the Week</span>
-                  <Link to={''} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary">
+                  <Link
+                    to={"/shop"}
+                    className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-full uppercase btn-transitions hover:bg-white hover:text-primary"
+                  >
                     Explore items
                   </Link>
                 </div>
@@ -108,10 +121,13 @@ const Landing = () => {
                   alt="Product 2"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
+                <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-3/4 md:h-3/5 h-7/10">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link to={''} className="btn-text border-2 border-amber-50 rounded px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link
+                      to={"/shop"}
+                      className="btn-text border-2 border-amber-50 rounded md:px-5 px-2 py-4 md:w-3/4 w-full uppercase btn-transitions hover:bg-white hover:text-primary"
+                    >
                       Explore items
                     </Link>
                   </div>
@@ -123,10 +139,13 @@ const Landing = () => {
                   alt="Product 3"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 bg-primary/60 p-5 w-3/4 h-3/5">
+                <div className="absolute bottom-0 left-0 bg-primary/60 p-5 md:w-3/4 md:h-3/5 h-7/10">
                   <div className="text-white flex flex-col p-5 gap-3 items-start justify-center h-full">
                     <span className="heading-4">Top Product of the Week</span>
-                    <Link to={''} className="btn-text border-2 rounded border-amber-50 px-5 py-4 w-3/4 uppercase btn-transitions hover:bg-white hover:text-primary">
+                    <Link
+                      to={"/shop"}
+                      className="btn-text border-2 rounded border-amber-50 md:px-5 px-2 py-4 md:w-3/4 w-full uppercase btn-transitions hover:bg-white hover:text-primary"
+                    >
                       Explore items
                     </Link>
                   </div>
@@ -138,14 +157,18 @@ const Landing = () => {
 
         {/* featured products */}
         <div className={`mx-auto ${getLayoutClass()}`}>
-          <ProductCard products={products.data} viewType={true} />
+          <ProductCard products={products?.data} visibleCount={visibleCount} />
           <button
             className="mx-auto btn-transitions uppercase block border-2 border-primary rounded-md p-4 md:px-10 md:py-3 text-primary text-sm md:btn-text md:mt-5 mt-15 hover:bg-primary hover:text-white cursor-pointer"
             onClick={() => {
-              navigate("/shop");
+              if (visibleCount > 10) {
+                setVisibleCount((prev) => prev - 8);
+              } else {
+                setVisibleCount((prev) => prev + 4);
+              }
             }}
           >
-            Load more products
+            {visibleCount > 10 ? "Load Less Products" : "Load more products"}
           </button>
         </div>
 
@@ -157,14 +180,14 @@ const Landing = () => {
               <div className="h-125 w-2/5">
                 <img
                   src="images/about-left.jpg"
-                  alt=""
+                  alt="AboutUs"
                   className="h-full w-full object-cover"
                 />
               </div>
               <div className="h-125 w-1/2">
                 <img
                   src="images/about-right.jpg"
-                  alt=""
+                  alt="AboutUs"
                   className="h-full w-full object-cover"
                 />
               </div>

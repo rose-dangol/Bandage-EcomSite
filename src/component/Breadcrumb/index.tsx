@@ -1,8 +1,10 @@
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const Breadcrumb = ({ location:{} }) => {
-  const pathnames: string[] = location.pathname.split("/").filter((x:string) => x);
+const Breadcrumb = ({ location: {} }) => {
+  const pathnames: string[] = location.pathname
+    .split("/")
+    .filter((x: string) => x);
   let breadcrumbPath = "";
 
   return (
@@ -25,10 +27,7 @@ const Breadcrumb = ({ location:{} }) => {
           <span key={breadcrumbPath} className="flex items-center capitalize">
             {""}
             <ChevronRight />
-            <Link to={breadcrumbPath}>
-              {/* <ChevronRight /> */}
-              {name}
-            </Link>
+            <Link to={breadcrumbPath}>{name}</Link>
           </span>
         );
       })}

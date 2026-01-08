@@ -51,7 +51,7 @@ export const addProduct = async (productData: {
     });
     return response.data;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -69,7 +69,6 @@ export const updateProduct = async (
 ) => {
   const formData = new FormData();
 
-  // formData.append("image", convertedImage);
   formData.append("name", productData.name);
   formData.append("description", productData.description);
   productData.image.forEach((image) => {

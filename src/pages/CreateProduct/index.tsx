@@ -1,16 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Trash2, CirclePlus } from "lucide-react";
+import toast from "react-hot-toast";
+
+import { Breadcrumb, Container, Creatable } from "../../component";
 import {
   addProduct,
   fetchProductById,
   updateProduct,
 } from "../../services/products.service";
-
-import { useEffect, useState } from "react";
-import { Breadcrumb, Container, Creatable } from "../../component";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Trash2, CirclePlus } from "lucide-react";
-import toast from "react-hot-toast";
 import { urlToObject, validateColorName } from "../../utils/helper";
+import { queryClient } from "../../provider";
+import { QUERY_KEYS } from "../../constant/queryKeys";
 
 interface FormDataType {
   name: string;
@@ -36,13 +38,15 @@ type ErrorType = {
   image?: string;
   try?: number;
 };
+
 const CreateProduct = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
   const { id } = useParams();
+
   const [error, setError] = useState<ErrorType>({});
   const [colorInput, setColorInput] = useState<string>("");
-  const queryClient = useQueryClient();
   const [category, setCategory] = useState();
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
@@ -54,10 +58,9 @@ const CreateProduct = () => {
   });
 
   const { data: product, isLoading: isProductsLoading } = useQuery({
-    queryKey: ["product", id],
+    queryKey: [QUERY_KEYS.products, id],
     queryFn: () => fetchProductById(id),
     enabled: !!id,
-    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -84,7 +87,7 @@ const CreateProduct = () => {
       toast("This color exists already!", {
         icon: "🚨",
       });
-    } else if (validateColorName(colorInput)) {
+    } else if (validateColorName(colorInput.toLowerCase())) {
       setFormData((prev) => ({
         ...prev,
         colors: [...prev.colors, colorInput],
@@ -94,6 +97,7 @@ const CreateProduct = () => {
       setError({ color: "Color must be valid" });
     }
   };
+
   const handleRemoveColor = (index: number) => {
     setFormData((prev) => ({
       ...prev,
@@ -101,10 +105,10 @@ const CreateProduct = () => {
     }));
   };
 
-  const AddMutation = useMutation({
+  const addMutation = useMutation({
     mutationFn: (data: UpdatedFormDataType) => addProduct(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["products"] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.products] });
       setFormData({
         name: "",
         description: "",
@@ -120,7 +124,7 @@ const CreateProduct = () => {
     },
   });
 
-  const { mutate: UpdateMutation, isPending } = useMutation({
+  const { mutate: updateMutation, isPending } = useMutation({
     mutationFn: (data: UpdatedFormDataType) => updateProduct(id, data),
     onSuccess: () => {
       toast.success("Product updated successfully!");
@@ -130,6 +134,7 @@ const CreateProduct = () => {
       toast.error(`Error: ${error.message}`);
     },
   });
+
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -193,7 +198,7 @@ const CreateProduct = () => {
     }
 
     if (updatedFormData.image.length === 0) {
-      newError.image = "There should be atleast one image.";
+      newError.image = "There should be at least one image.";
     }
 
     if (Number(updatedFormData.price) <= 0) {
@@ -208,7 +213,7 @@ const CreateProduct = () => {
     }
 
     if (updatedFormData.colors.length === 0) {
-      newError.color = "Select atleast one color option";
+      newError.color = "Select at least one color option";
     }
     setError(newError);
 
@@ -251,27 +256,27 @@ const CreateProduct = () => {
 
       if (validateForm(updatedFormData)) {
         if (id) {
-          UpdateMutation(updatedFormData);
+          updateMutation(updatedFormData);
         } else {
-          AddMutation.mutate(updatedFormData);
+          addMutation.mutate(updatedFormData);
         }
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
   if (isProductsLoading) return <h1>Loading...</h1>;
 
   return (
     <Container>
-      <div className="flex justify-between py-6">
+      <div className="flex md:flex-row flex-col gap-4 justify-between py-6">
         <span className="heading-3">
           {product ? "Update Products" : "Add Product"}
         </span>
         <Breadcrumb location={location} />
       </div>
 
-      <div className="w-full max-w-2xl p-6 space-y-6">
+      <div className="w-full max-w-2xl p-6 space-y-6 overflow-x-auto">
         <div className="flex flex-col gap-2 pt-5">
           <label className="font-normal leading-6 tracking-[0.1px] text-[#252B42]">
             Name
@@ -362,7 +367,7 @@ const CreateProduct = () => {
           )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex md:flex-row flex-col gap-2">
           <div className="flex flex-col flex-1">
             <label className="font-normal leading-6 tracking-[0.1px] text-[#252B42]">
               Price
@@ -402,6 +407,7 @@ const CreateProduct = () => {
             Category
           </label>
           <Creatable
+            category={category}
             setCategory={setCategory}
             name={product?.category?.name || ""}
           />

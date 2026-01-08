@@ -1,9 +1,7 @@
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  deleteProduct,
-  fetchProductById,
-  getImageUrl,
-} from "../../services/products.service";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   Heart,
   ShoppingCart,
@@ -14,40 +12,115 @@ import {
   Star,
   Trash,
 } from "lucide-react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Breadcrumb, Container, DialogBox } from "../../component";
-import { useState } from "react";
+
+import {
+  deleteProduct,
+  fetchProductById,
+} from "../../services/products.service";
+import { Breadcrumb, Container, DialogBox, Reviews } from "../../component";
 import { formatCurrency } from "../../utils/helper";
+
+import { useWishlistContext } from "../../context/WishlistContext";
+import { useCartContext } from "../../context/CartContext";
+import { useUserContext } from "../../context/UserContext";
+import { fetchReviews } from "../../services/review.service";
+import { QUERY_KEYS } from "../../constant/queryKeys";
+
+export type CartAddDataType = {
+  id: number;
+  quantity: number;
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [showDialog, setShowDialog] = useState(false);
-  // const [isFilled, setIsFilled] = useState(false);
+  const [selectDialog, setSelectDialog] = useState(false);
+  const [isFilled, setIsFilled] = useState(false);
+  const [quantity, setQuantity] = useState(0);
+  const [isWishListAvailable, setIsWishListAvailable] = useState();
+  const [review, setReview] = useState(false);
+  const [description, setDescription] = useState(false);
+  const [additional, setAdditional] = useState(false);
+
+  const { wishlistItems, addMutation, removeMutation } = useWishlistContext();
+  const { carts, cartAddMutation, cartUpdateMutation } = useCartContext();
+  const { userData } = useUserContext();
+
+  useEffect(() => {
+    const idFound = wishlistItems.find(
+      (item: { product: { id: number } }) => item.product.id == Number(id)
+    )?.id;
+    setIsWishListAvailable(idFound);
+    if (idFound) {
+      setIsFilled(true);
+    } else {
+      setIsFilled(false);
+    }
+  }, [wishlistItems, id]);
 
   // Fetching product data
-  const {
-    data: product,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["product", id],
+  const { data: product, error } = useQuery({
+    queryKey: [QUERY_KEYS.products, id],
     queryFn: () => fetchProductById(id),
-    refetchOnWindowFocus: false,
   });
 
-  const DeleteMutation = useMutation({
+  const deleteProductMutation = useMutation({
     mutationFn: (id: number) => deleteProduct(id),
     onSuccess: () => navigate("/shop"),
   });
 
-  if (isLoading)
-    return (
-      <div className="flex items-center justify-center py-20">Loading...</div>
+  //review data fetch
+  const { data: reviews } = useQuery({
+    queryKey: [QUERY_KEYS.reviews, id],
+    queryFn: () => fetchReviews(Number(id)),
+    enabled: !!id,
+  });
+
+  const imageUrls = product?.image;
+  const currentImage = imageUrls?.[currentImageIndex];
+
+  const handlePrevImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? imageUrls.length - 1 : prev - 1
     );
+  };
+
+  const handleNextImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === imageUrls.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const handleAddToCart = (id: number, quantity: number) => {
+    if (quantity === 0) {
+      toast.error("Cart should have at least one item");
+    } else {
+      const data: CartAddDataType = { id, quantity };
+      const productExist = carts.find(
+        (item: { productId?: number }) => item.productId == id
+      )?.id;
+      if (productExist) {
+        cartUpdateMutation.mutate({ id: productExist, newQuantity: quantity });
+      } else {
+        cartAddMutation(data);
+      }
+    }
+  };
+
+  const handleWishlist = (id: number) => {
+    if (isFilled === false) {
+      addMutation.mutate(id);
+      setIsFilled(true);
+    } else {
+      removeMutation.mutate(isWishListAvailable);
+      setIsFilled(!isFilled);
+    }
+  };
 
   if (!product)
     return (
@@ -63,36 +136,21 @@ const ProductDetail = () => {
       </div>
     );
 
-  const imageUrls = product.image;
-  const currentImage = imageUrls?.[currentImageIndex];
-
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? imageUrls.length - 1 : prev - 1
-    );
-  };
-
-  const handleNextImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === imageUrls.length - 1 ? 0 : prev + 1
-    );
-  };
-
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
         <div className="py-7">
           <Breadcrumb location={location} />
         </div>
-        <div className="flex md:flex-row flex-col gap-15 pb-12">
+        <div className="flex lg:flex-row flex-col gap-15 pb-12">
           {/* images */}
-          <div className="flex flex-col gap-4 w-1/2">
+          <div className="flex flex-col gap-4 lg:w-1/2">
             {/* main image */}
             <div className="relative overflow-hidden w-full h-125">
               {currentImage ? (
                 <img
-                  src={(currentImage)}
-                  alt={product.name}
+                  src={currentImage}
+                  alt={product?.name}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -117,7 +175,7 @@ const ProductDetail = () => {
                 </>
               )}
             </div>
-            {product.image.length > 1 && (
+            {product?.image?.length > 1 && (
               <div className="flex gap-2">
                 {product.image.map((url: string, idx: number) => (
                   <div
@@ -130,7 +188,7 @@ const ProductDetail = () => {
                     }`}
                   >
                     <img
-                      src={(url)}
+                      src={url}
                       alt={`Thumbnail ${idx}`}
                       className="w-full h-full object-cover"
                     />
@@ -141,9 +199,11 @@ const ProductDetail = () => {
           </div>
 
           {/* product data */}
-          <div className="flex flex-col pt-3 w-1/2 gap-7">
+          <div className="flex flex-col pt-3 lg:w-1/2 gap-7">
             <div className="flex flex-col gap-2">
-              <span className="heading-4 text-blueBlack capitalize">{product.name}</span>
+              <span className="heading-4 text-blueBlack capitalize">
+                {product?.name}
+              </span>
 
               {/* review */}
               <div className="flex items-center gap-3 mb-4 heading-6">
@@ -154,7 +214,7 @@ const ProductDetail = () => {
                   <Star color="#F3CD03" fill="#F3CD03" />
                 </div>
                 <span className="text-grayText">
-                  {product.reviews?.length || 0} Reviews
+                  {product?.reviews?.length || 0} Reviews
                 </span>
               </div>
 
@@ -173,7 +233,7 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              {/*availablity  */}
+              {/*availability  */}
               <div className="mb-6 inline-block heading-6 space-x-3">
                 <span className="text-grayText">Availability :</span>
                 <span
@@ -187,12 +247,12 @@ const ProductDetail = () => {
                 </span>
               </div>
               <div className="w-[75%] mb-2">
-                <p className="paragraph text-[#858585] text-left">
+                <p className="paragraph text-[#858585] text-left line-clamp-3">
                   {product.description || "Description not available."}
                 </p>
               </div>
 
-              {product.category && (
+              {product?.category && (
                 <div className="heading-6">
                   <span className="text-grayText">Category: </span>
                   <span className="text-blueBlack capitalize">
@@ -200,7 +260,7 @@ const ProductDetail = () => {
                   </span>
                 </div>
               )}
-              {product.colors?.length > 0 && (
+              {product?.colors?.length > 0 && (
                 <div className="flex gap-3">
                   {product.colors.map((color: string, index: number) => (
                     <button
@@ -220,12 +280,23 @@ const ProductDetail = () => {
                 </div>
               )}
             </div>
-            <div className="flex gap-3 pt-6 border-t border-gray-200">
-              <button className="max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition">
+            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
+              <button
+                className="sm:max-w-max bg-primary hover:bg-secondary text-white heading-6 py-3 px-4 rounded-lg transition cursor-pointer"
+                onClick={() => setSelectDialog(true)}
+              >
                 Select Options
               </button>
-              <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
-                <Heart size={20} className="text-gray-600" />
+              <div
+                onClick={() => handleWishlist(Number(id))}
+                className="min-h-12 min-w-12 cursor-pointer border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center"
+              >
+                <Heart
+                  size={20}
+                  fill={isFilled ? "red" : "white"}
+                  stroke={isFilled ? "red" : "gray"}
+                  className="text-gray-600 hover:scale-110 transition"
+                />
               </div>
               <div className="min-h-12 min-w-12 border border-gray-300 hover:border-gray-400 rounded-full transition flex items-center justify-center">
                 <ShoppingCart size={20} className="text-gray-600" />
@@ -234,19 +305,78 @@ const ProductDetail = () => {
                 <Eye size={20} className="text-gray-600" />
               </div>
             </div>
+            {selectDialog && (
+              <DialogBox title={"Select Option"} subText="">
+                <div className="flex items-center justify-around mb-8">
+                  {product.colors?.length > 0 && (
+                    <div className="flex gap-3">
+                      {product.colors.map((color: string, index: number) => (
+                        <button
+                          key={index}
+                          onClick={() => setSelectedColor(color)}
+                          className={`w-7 h-7 rounded-full border-2 transition ${
+                            selectedColor === color
+                              ? "border-gray-900"
+                              : "border-gray-300 hover:border-gray-600"
+                          }`}
+                          style={{
+                            backgroundColor: color,
+                          }}
+                          title={color}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 border border-gray-300 rounded w-fit p-1">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-1">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="px-3 py-1 hover:bg-gray-100 cursor-pointer"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <div className="flex gap-3 justify-center">
+                  <button
+                    onClick={() => setSelectDialog(false)}
+                    className="px-4 py-2 border border-gray-300 rounded text-blueBlack heading-6 cursor-pointer hover:bg-gray-50 transition"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleAddToCart(Number(id), quantity);
+                      setSelectDialog(false);
+                    }}
+                    className="px-4 py-2 bg-green-800 text-white rounded heading-6 cursor-pointer hover:bg-green-600 transition"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </DialogBox>
+            )}
           </div>
 
           {/* action */}
-          <div className="flex flex-col items-center gap-8 text-grayText pt-10">
-            <SquarePen
-              className="hover:text-blueBlack cursor-pointer"
-              onClick={() => navigate(`/updateProduct/${id}`)}
-            />
-            <Trash
-              className="hover:text-red-500 cursor-pointer"
-              onClick={() => setShowDialog(true)}
-            />
-          </div>
+          {userData.isAdmin && (
+            <div className="flex lg:flex-col items-center justify-center lg:justify-start gap-8 text-grayText pt-10">
+              <SquarePen
+                className="hover:text-blueBlack cursor-pointer"
+                onClick={() => navigate(`/updateProduct/${id}`)}
+              />
+              <Trash
+                className="hover:text-red-500 cursor-pointer"
+                onClick={() => setShowDialog(true)}
+              />
+            </div>
+          )}
           {showDialog && (
             <DialogBox
               title={"Delete Confirmation"}
@@ -261,7 +391,7 @@ const ProductDetail = () => {
                 </button>
                 <button
                   onClick={() => {
-                    DeleteMutation.mutate(Number(id));
+                    deleteProductMutation.mutate(Number(id));
                     setShowDialog(false);
                   }}
                   className="px-4 py-2 bg-red-500 text-white rounded heading-6 cursor-pointer hover:bg-red-600 transition"
@@ -274,10 +404,46 @@ const ProductDetail = () => {
         </div>
 
         {/* Description Section */}
-        <div className="flex justify-center gap-15 links text-grayText mt-3 border-b py-5 border-b-[#ECECEC] w-[80%] mx-auto">
-          <span>Description</span>
-          <span>Additional Information</span>
-          <span>Reviews ()</span>
+        <div className="flex flex-col">
+          <div className="flex justify-center gap-15 links text-grayText mt-3 border-b py-5 border-b-[#ECECEC] w-[80%] mx-auto">
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setDescription(true);
+                setReview(false);
+                setAdditional(false);
+              }}
+            >
+              Description
+            </div>
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setAdditional(true);
+                setDescription(false);
+                setReview(false);
+              }}
+            >
+              Additional Information
+            </div>
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setReview(true);
+                setDescription(false);
+                setAdditional(false);
+              }}
+            >
+              Reviews (3)
+            </div>
+          </div>
+          {review && <Reviews id={id} reviews={reviews} />}
+          {description && <div>{product.description}</div>}
+          {additional && (
+            <div>
+              {product.description}, {product.category.name}
+            </div>
+          )}
         </div>
       </Container>
     </div>

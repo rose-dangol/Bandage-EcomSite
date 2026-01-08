@@ -1,10 +1,9 @@
 import { Outlet, Navigate } from "react-router-dom";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import { useUserContext } from "../context/UserContext";
 const ProtectedRoutes = () => {
-  const { getLocalStorage } = useLocalStorage();
-  const authToken = getLocalStorage("authToken");
+  const { authToken } = useUserContext();
 
-  return authToken? <Outlet /> : <Navigate to={"/auth"} />;
+  return authToken ? <Outlet /> : <Navigate to={"/auth"} />;
 };
 
 export default ProtectedRoutes;
