@@ -1,16 +1,55 @@
-# React + Vite
+# Bandage - An Ecommerce Site
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bandage is a full-featured e-commerce application designed with simplicity and performance in mind. The frontend delivers a smooth shopping experience with real-time data fetching, while the backend provides secure API endpoints with JWT authentication for both customers and administrators.
 
-Currently, two official plugins are available:
+## Frontend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Framework**: React with TypeScript
+- **Styling**: Tailwind CSS
+- **Data Fetching**: React Query
+- **State Management**: Context API
+- **HTTP Client**: Axios
+- **Routing**: React Router
 
-## React Compiler
+## Backend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: PostgreSQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **ORM**: Sequelize
+- **Validation**: Zod
 
-## Expanding the ESLint configuration
+## Deployment
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Hosting**: Render
+
+## Live Demo
+
+Visit Bandage: [https://bandage-ecomsite.onrender.com/](https://bandage-ecomsite.onrender.com/)
+
+## ✨ Features
+
+### Customer Features
+
+- User registration and login with JWT authentication
+- Browse products with advanced filtering
+- Add products to shopping cart
+- Wishlist management
+- Product reviews and ratings
+- Responsive design for all devices
+
+### Admin Features
+
+- Admin dashboard for product management
+- Add, edit, and delete products
+- Manage inventory and stock levels
+- View and manage customer orders
+
+### Technical Features
+
+- Secure JWT-based authentication
+- Optimized API queries with React Query
+- Type-safe development with TypeScript
+- Responsive and accessible UI with Tailwind CSS
+- PostgreSQL database for reliable data persistence
